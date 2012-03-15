@@ -97,8 +97,8 @@ void testApp::draw(){
 	ofRect(0, 400 + width, ofGetWidth(), 1);
 
 	//vertical lines
-	ofRect(300, 0, 1, ofGetHeight());
-	ofRect(500+width, 0, 1, ofGetHeight());
+	ofRect(300, 0, 1, 400 + width);
+	ofRect(500+width, 0, 1, 400 + width);
 	
 	glColor3f( pointAnim.getPercentDone(), 1 - pointAnim.getPercentDone() , 0);
 	glPointSize(10);
@@ -106,6 +106,46 @@ void testApp::draw(){
 
 	glColor3ub(255,255,255);
 	ofDrawBitmapString( ofToString( ofGetFrameRate()),  10, 10);
+	
+	int c = 0;
+	int size = 100;
+	int yy = 550;
+	int xx = 50;
+	int off = size/2;
+	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::LINEAR, "LINEAR"); c++;
+	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::EASE_IN, "EASE_IN"); c++;
+	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::EASE_OUT, "EASE_OUT"); c++;
+	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::EASE_IN_EASE_OUT, "EASE_IN_EASE_OUT"); c++;
+	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::TANH, "TANH"); c++;
+	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::SINH, "SINH"); c++;
+	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::BOUNCY, "BOUNCY"); c++;
+
+}
+
+void testApp::drawPlot(int x, int y, int size, ofxAnimatable::animCurve curve, string title){
+
+	int xx = x;
+	int yy = y;
+	float s = size;
+	float steps = size;
+	ofxAnimatableFloat a;
+	a.setCurve(curve);
+	a.setDuration(1);
+	a.reset(0);
+	a.animateTo(1);
+	glPointSize(1);
+	glColor4ub(255,255,255, 128);
+	ofLine(xx,yy + s, xx + s, yy + s);
+	ofLine(xx,yy, xx, yy + s);
+	glColor4ub(255,255,255, 255);
+	glBegin(GL_POINTS);
+	for (float i = 0 ; i< 1; i+= 1./100){
+		a.update(1./steps);
+		glVertex2f( xx + s * i, yy + s - s * a.val() );
+	}
+	glEnd();
+	ofDrawBitmapString(title, x, y + s + 15);
+
 }
 
 //--------------------------------------------------------------

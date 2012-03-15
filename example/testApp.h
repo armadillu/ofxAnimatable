@@ -9,6 +9,7 @@
 
 #define NUM_CURVES 7
 
+
 class testApp : public ofBaseApp{
 
 	public:
@@ -24,6 +25,9 @@ class testApp : public ofBaseApp{
 		void mouseReleased(int x, int y, int button);
 		void windowResized(int w, int h);
 
+		void drawPlot(int x, int y, int size, ofxAnimatable::animCurve curve, string title);
+	
+	
 		float position;
 	
 		ofxAnimatableFloat pos[NUM_CURVES];
