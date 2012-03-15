@@ -1,0 +1,1 @@
+Set of classes that to set up very simple animations, with curves, repeat modes and scheduling.
