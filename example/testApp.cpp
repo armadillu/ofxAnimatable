@@ -60,6 +60,7 @@ void testApp::setup(){
 //--------------------------------------------------------------
 void testApp::update(){
 
+	//app timebase, to send to all animatable objets
 	float dt = 1.0f / ofGetFrameRate();
 	
 	for ( int i = 0; i < NUM_CURVES; i++ )
@@ -73,11 +74,6 @@ void testApp::update(){
 	if ( !pointAnim.isOrWillBeAnimating() ){
 		pointAnim.animateToAfterDelay( ofPoint( ofRandom(0, ofGetWidth()), ofRandom(0, ofGetHeight())), 0.5);
 	}
-		
-//	fr = 30 + 30 * mouseY / ofGetHeight() ;
-//	fr = ofClamp(fr, 1, 60);
-//	ofSetFrameRate(fr);
-	
 }
 
 //--------------------------------------------------------------
@@ -90,7 +86,7 @@ void testApp::draw(){
 	}
 
 	//ball and floor
-	colorAnim.setColor();
+	colorAnim.applyCurrentColor();
 	ofCircle( ( 2 * ofGetFrameNum() )%ofGetWidth(), ball.val(), width);
 	
 	glColor3ub(255,255,255);

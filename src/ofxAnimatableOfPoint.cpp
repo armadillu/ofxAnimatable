@@ -23,14 +23,14 @@ void ofxAnimatableOfPoint::update(float dt){
 
 
 void ofxAnimatableOfPoint::draw(){
-
-#ifndef GL_ES
-	glBegin(GL_POINTS);
+	
+	ofPushMatrix();
 		ofPoint p = getCurrentPosition();
-		glVertex3f(p.x, p.y, p.z);
-	glEnd();
-#endif
-
+		ofTranslate(p.x, p.y, p.z);
+		float s = 10.0f;
+		ofRect( -s * 0.5f, -s * 0.5f, s, s );
+	ofPopMatrix();
+	
 }
 
 

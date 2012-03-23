@@ -22,7 +22,7 @@ class ofxAnimatableOfColor : public ofxAnimatable {
 		~ofxAnimatableOfColor(){};
 		
 		void update(float dt);	
-		void setColor();
+		void applyCurrentColor(); //apply current color
 	
 		// apply for immediate effect ////////////////////////////////////////////////////////////////////
 	
@@ -43,6 +43,7 @@ class ofxAnimatableOfColor : public ofxAnimatable {
 	
 		//gets
 		ofColor getCurrentColor();
+	
 	
 
 		  

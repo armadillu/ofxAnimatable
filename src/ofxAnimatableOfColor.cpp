@@ -23,8 +23,8 @@ void ofxAnimatableOfColor::update(float dt){
 }
 
 
-void ofxAnimatableOfColor::setColor(){
-	ofSetColor(getCurrentColor());
+void ofxAnimatableOfColor::applyCurrentColor(){
+	ofSetColor( getCurrentColor() );
 }
 
 
@@ -136,3 +136,5 @@ void ofxAnimatableOfColor::swapOriginDestination(){
 void ofxAnimatableOfColor::startAfterWait(){
 	animateTo(targetTempColor_);
 }
+
+
