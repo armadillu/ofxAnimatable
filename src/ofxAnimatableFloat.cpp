@@ -83,12 +83,6 @@ void ofxAnimatableFloat::reset(){
 	targetVal_ = originalVal_;
 }
 
-void ofxAnimatableFloat::swapOriginDestination(){
-	float tempVal = originalVal_;
-	originalVal_ = targetVal_;
-	targetVal_ = tempVal;
-}
-
 void ofxAnimatableFloat::startAfterWait(){
 	animateTo(targetTempVal_);
 }

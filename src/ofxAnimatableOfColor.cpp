@@ -104,13 +104,14 @@ void ofxAnimatableOfColor::animateToAlpha( float a ){
 }
 
 
-void ofxAnimatableOfColor::startBlinking(){
+void ofxAnimatableOfColor::startBlinking( float blinkDuration){
 
 	setRepeatType(LOOP_BACK_AND_FORTH);
 	setCurve(EASE_IN_EASE_OUT);
 	setAlphaOnly(0.0f);
+	setDuration( blinkDuration );
 	ofColor c = getCurrentColor();
-	c.a = 1.0f;
+	c.a = 255;
 	animateTo( c );
 }
 
@@ -118,19 +119,13 @@ void ofxAnimatableOfColor::startBlinking(){
 ofColor ofxAnimatableOfColor::getCurrentColor(){
 
 	float mappedDistribution = calcCurveAt(percentDone_);	///percentDone_ is [0..1] & tells me where we are between orig and target
-	int newC[4];
+	float newC[4];
+	ofColor r;
 	for (int i = 0; i < 4; i++){
-		newC[i] = ( (int)targetColor_.r - (int)originalColor_.r) * mappedDistribution;
+		newC[i] = ( (int)targetColor_[i] - (int)originalColor_[i]) * mappedDistribution;
+		r[i] = originalColor_[i] + newC[i];
 	}
-	return originalColor_ + ofColor( newC[0], newC[1], newC[2], newC[3] );
-}
-
-
-void ofxAnimatableOfColor::swapOriginDestination(){
-	
-	ofColor tempVal = originalColor_;
-	originalColor_ = targetColor_;
-	targetColor_ = tempVal;
+	return r;
 }
 
 void ofxAnimatableOfColor::startAfterWait(){

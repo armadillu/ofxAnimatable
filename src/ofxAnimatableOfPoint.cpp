@@ -109,14 +109,6 @@ ofPoint ofxAnimatableOfPoint::getCurrentPosition(){
 }
 
 
-void ofxAnimatableOfPoint::swapOriginDestination(){
-
-	ofPoint tempVal = originalPoint_;
-	originalPoint_ = targetPoint_;
-	targetPoint_ = tempVal;
-}
-
-
 void ofxAnimatableOfPoint::startAfterWait(){
 	animateTo(targetTempPoint_);
 }

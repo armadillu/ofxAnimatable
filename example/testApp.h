@@ -7,8 +7,6 @@
 #include "ofxAnimatableOfPoint.h"
 #include "ofxAnimatableOfColor.h"
 
-#define NUM_CURVES 7
-
 
 class testApp : public ofBaseApp{
 
@@ -25,13 +23,13 @@ class testApp : public ofBaseApp{
 		void mouseReleased(int x, int y, int button);
 		void windowResized(int w, int h);
 
-		void drawPlot(int x, int y, int size, ofxAnimatable::animCurve curve, string title);
+		void drawPlot(int x, int y, int size, AnimCurve curve, string title);
 	
 	
 		float position;
 	
-		ofxAnimatableFloat pos[NUM_CURVES];
-		string curveNames[NUM_CURVES];
+		ofxAnimatableFloat pos[NUM_ANIM_CURVES];
+		string curveNames[NUM_ANIM_CURVES];
 	
 		ofxAnimatableFloat ball;
 	

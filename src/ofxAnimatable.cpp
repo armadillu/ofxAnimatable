@@ -10,13 +10,36 @@
 #include "ofxAnimatable.h"
 #include <Math.h>
 
-void ofxAnimatable::setup(){
+std::string ofxAnimatable::getCurveName(AnimCurve c){
+	
+	switch (c) {
+		case EASE_IN_EASE_OUT: return "EASE_IN_EASE_OUT";
+		case EASE_IN: return "EASE_IN";
+		case EASE_OUT: return "EASE_OUT";
+		case LINEAR: return "LINEAR";
+		case BOUNCY: return "BOUNCY";
+		case TANH: return "TANH";
+		case SINH: return "SINH";
+		case SQUARE: return "SQUARE";
+		case LATE_SQUARE: return "LATE_SQUARE";
+		case EARLY_SQUARE: return "EARLY_SQUARE";
+		case LATE_LINEAR: return "LATE_LINEAR";
+		case LATE_EASE_IN_EASE_OUT: return "LATE_EASE_IN_EASE_OUT";
+		case VERY_LATE_LINEAR: return "VERY_LATE_LINEAR";
+		case VERY_LATE_EASE_IN_EASE_OUT: return "VERY_LATE_EASE_IN_EASE_OUT";		
+		case QUADRATIC_EASE_IN: return "QUADRATIC_EASE_IN";
+		case QUADRATIC_EASE_OUT: return "QUADRATIC_EASE_OUT";
+	}
+	return "error";
+}
 
+void ofxAnimatable::setup(){
 
 	transitionSpeed_ = 1.0f / DEFAULT_ANIMATION_DURATION;
 	percentDone_ = 0.0f;
 	animating_ = false;
 	paused_ = false;
+	direction_ = 1;
 	playcount_ = 0;
 	repeat_ = PLAY_ONCE;
 	curveStyle_ = EASE_IN_EASE_OUT;
@@ -40,19 +63,45 @@ float ofxAnimatable::calcCurveAt( float percent ){
 
 		case LINEAR:
 			break;
-			
+
+		case LATE_LINEAR:
+			r = ( percent < 0.5 ) ? 0.0f : 2.0f * percent - 1; break;
+
+		case VERY_LATE_LINEAR:
+			r = ( percent < 0.75 ) ? 0.0f : 4.0f * percent - 3; break;
+
 		case TANH:
-			r = + 0.5f + 0.5f * tanh( 2.0f * M_PI * percent - M_PI ) * 1.0037417f; break;
+			r = 0.5f + 0.5f * tanh( 2.0f * M_PI * percent - M_PI ) * 1.00374187319732; break;
 
 		case SINH:
 			r = 0.5f + 0.23482f * sinh( 3.0f * percent - 1.5f ); break;
 
+		case SQUARE:
+			r = (percent < 0.5f) ? 0.0f : 1.0f; break;
+			
+		case LATE_SQUARE:
+			r = (percent < 0.75f) ? 0.0f : 1.0f; break;
+
+		case EARLY_SQUARE:
+			r = (percent < 0.25f) ? 0.0f : 1.0f; break;
+
+		case LATE_EASE_IN_EASE_OUT:
+			r = (percent < 0.5f) ? 0.0f : 0.5f + 0.5f * cosf( 2.0f * M_PI * percent); break;
+
+		case VERY_LATE_EASE_IN_EASE_OUT:
+			r = (percent < 0.75f) ? 0.0f : 0.5f + 0.5f * cosf( 4.0f * M_PI * percent); break;
+			
+		case QUADRATIC_EASE_IN:
+			r = percent * percent; break;
+
+		case QUADRATIC_EASE_OUT:
+			r = 1.0f - (percent - 1.0f) * (percent - 1.0f); break;
+
 		case BOUNCY:{
 			float k = 0.5;
-			r = 0.5f - 0.51f * cosf( M_PI * percent + k*percent - k * 0.5f ); break;
+			r = 0.5f - 0.51f * cosf( M_PI * percent + k * percent - k * 0.5f ); break;
 		}
 	}
-	
 	return r;
 }
 
@@ -68,47 +117,37 @@ void ofxAnimatable::update(float dt){
 
 	if (animating_ == true && paused_ == false){
 		
-		percentDone_ += transitionSpeed_ * dt;
+		percentDone_ += direction_ * transitionSpeed_ * dt;
 		
-		if (percentDone_ >= 1.0f){
+		if ( percentDone_ >= 1.0f || percentDone_ <= 0.0f ){
 
 			animating_ = false;
-			percentDone_ = 1.0f;
+			
+			if (percentDone_ >= 1.0f) percentDone_ = 1.0f;
+			else percentDone_ = 0.0f;
 						
 			switch (repeat_) {
 
 				case PLAY_ONCE:	
 					break;	//nothing to do;
-
-				case LOOP_BACK_AND_FORTH_SWAP_CURVE:
-					if ( curveStyle_ == EASE_IN)
-						curveStyle_ = EASE_OUT;
-					else if ( curveStyle_ == EASE_OUT)
-							curveStyle_ = EASE_IN;					
 					
 				case LOOP_BACK_AND_FORTH:
-					swapOriginDestination();	//this will tell our subclass to swap values so we can loop back
+					direction_ = -direction_;
+					animating_ = true;
+					break;
 					
 				case LOOP:	
 					animating_ = true;
-					percentDone_ = 0.0f;							
+					percentDone_ = 0.0f;
 					break;
-
-				
-				case LOOP_BACK_AND_FORTH_ONCE_SWAP_CURVE:
-					if ( curveStyle_ == EASE_IN)
-						curveStyle_ = EASE_OUT;
-					else if ( curveStyle_ == EASE_OUT)
-							curveStyle_ = EASE_IN;					
 
 				case LOOP_BACK_AND_FORTH_ONCE:
 					if (playcount_ >= 1){	//time to stop
 						//we are done
 					}else{	
-						animating_ = true;
-						percentDone_ = 0.0f;
+						direction_ = -direction_;
+						animating_ = true;						
 						playcount_++;
-						swapOriginDestination();	//this will tell our subclass to swap values so we can loop back
 					}
 					break;
 			}
@@ -118,6 +157,7 @@ void ofxAnimatable::update(float dt){
 
 
 void ofxAnimatable::startAnimation(){
+	direction_ = 1;
 	percentDone_ = 0.0f;
 	delay_ = 0.0f;
 	animating_ = true;
@@ -126,6 +166,7 @@ void ofxAnimatable::startAnimation(){
 }
 
 void ofxAnimatable::startAnimationAfterDelay(float delay){
+	direction_ = 1;
 	delay_ = delay;
 	//animating_ = false;
 }
@@ -145,12 +186,12 @@ void ofxAnimatable::setDuration( float seconds ){
 }
 
 
-void ofxAnimatable::setRepeatType( animRepeat repeat ){
+void ofxAnimatable::setRepeatType( AnimRepeat repeat ){
 	repeat_ = repeat;
 }
 
 
-void ofxAnimatable::setCurve( animCurve curveStyle){
+void ofxAnimatable::setCurve( AnimCurve curveStyle){
 	curveStyle_ = curveStyle;
 }
 

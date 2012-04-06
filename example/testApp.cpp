@@ -8,52 +8,36 @@ void testApp::setup(){
 	ofEnableSmoothing();
 	ofEnableAlphaBlending();
 	ofSetVerticalSync(true);
-		
+	
 	width = 10;	
 
-	pos[0].animateFromTo( 300, 500 );
-	pos[0].setDuration(2);	
-	pos[0].setRepeatType( ofxAnimatable::LOOP_BACK_AND_FORTH );
-	for ( int i = 1; i < NUM_CURVES; i++ )
-		pos[i] = pos[0];
+	ofxAnimatableFloat f;
+	f.animateFromTo( 300, 500 );
+	f.setDuration(2);	
+	f.setRepeatType( LOOP_BACK_AND_FORTH );
 	
-	pos[0].setCurve(ofxAnimatable::LINEAR);
-	curveNames[0] = "LINEAR";
-
-	pos[1].setCurve(ofxAnimatable::EASE_IN);
-	curveNames[1] = "EASE_IN";
-	
-	pos[2].setCurve(ofxAnimatable::EASE_OUT);
-	curveNames[2] = "EASE_OUT";
-	
-	pos[3].setCurve(ofxAnimatable::EASE_IN_EASE_OUT);
-	curveNames[3] = "EASE_IN_EASE_OUT";
-
-	pos[4].setCurve(ofxAnimatable::TANH);
-	curveNames[4] = "TANH";
-
-	pos[5].setCurve(ofxAnimatable::SINH);
-	curveNames[5] = "SINH";
-
-	pos[6].setCurve(ofxAnimatable::BOUNCY);	
-	curveNames[6] = "BOUNCY";
-
+	for ( int i = 0; i < NUM_ANIM_CURVES; i++ ){
+		pos[i] = f;
+		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i );
+		pos[i].setCurve( curve );
+		curveNames[i] = ofxAnimatable::getCurveName( curve );
+	}
 	
 	ball.reset(300);
-	ball.setCurve(ofxAnimatable::EASE_IN);
-	ball.setRepeatType(ofxAnimatable::LOOP_BACK_AND_FORTH_SWAP_CURVE);
+	ball.setCurve(EASE_IN);
+	ball.setRepeatType(LOOP_BACK_AND_FORTH);
 	ball.setDuration(0.55);
 	ball.animateTo( 400 );
 	
 	colorAnim.setColor( ofColor::black );
 	colorAnim.setDuration( 0.5f );
-	colorAnim.setRepeatType(ofxAnimatable::LOOP_BACK_AND_FORTH);
-	colorAnim.setCurve(ofxAnimatable::LINEAR);
+	colorAnim.setRepeatType(LOOP_BACK_AND_FORTH);
+	colorAnim.setCurve(LINEAR);
 	colorAnim.animateTo( ofColor::white );
 	
 	pointAnim.setPosition( ofPoint(100,100) );
-	pointAnim.setRepeatType(ofxAnimatable::PLAY_ONCE);
-	pointAnim.setCurve(ofxAnimatable::EASE_IN_EASE_OUT);
+	pointAnim.setRepeatType(PLAY_ONCE);
+	pointAnim.setCurve(EASE_IN_EASE_OUT);
 	
 }
 
@@ -63,7 +47,7 @@ void testApp::update(){
 	//app timebase, to send to all animatable objets
 	float dt = 1.0f / ofGetFrameRate();
 	
-	for ( int i = 0; i < NUM_CURVES; i++ )
+	for ( int i = 0; i < NUM_ANIM_CURVES; i++ )
 		pos[i].update( dt );
 	
 	ball.update( dt );
@@ -80,9 +64,10 @@ void testApp::update(){
 void testApp::draw(){
 
 	glColor3ub(255,255,255);
-	for ( int i = 0 ; i < NUM_CURVES; i++ ){
-		ofRect( pos[i].val(), 100 + i * 2.5 * width, width, width);
-		ofDrawBitmapString(  curveNames[i], 515, 100 + i * 2.5 * width + 10);
+	int vOff = 10;
+	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
+		ofRect( pos[i].val(), vOff + i * 2.5 * width, width, width);
+		ofDrawBitmapString(  curveNames[i], 515, vOff + i * 2.5 * width + 10);
 	}
 
 	//ball and floor
@@ -104,21 +89,25 @@ void testApp::draw(){
 	ofDrawBitmapString( ofToString( ofGetFrameRate()),  10, 10);
 	
 	int c = 0;
-	int size = 100;
-	int yy = 550;
+	int size = 130;
+	int yy = 450;
+	int rowHeight = 180;
 	int xx = 50;
-	int off = size/2;
-	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::LINEAR, "LINEAR"); c++;
-	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::EASE_IN, "EASE_IN"); c++;
-	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::EASE_OUT, "EASE_OUT"); c++;
-	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::EASE_IN_EASE_OUT, "EASE_IN_EASE_OUT"); c++;
-	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::TANH, "TANH"); c++;
-	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::SINH, "SINH"); c++;
-	drawPlot(xx + c * (size + off), yy, size, ofxAnimatable::BOUNCY, "BOUNCY"); c++;
-
+	int off = size/2.5;
+	int x = 0;
+	int row = 0;
+	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
+		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i);		
+		drawPlot( xx + x, yy + row * rowHeight, size, curve, ofxAnimatable::getCurveName(curve) );		
+		x += (size + off);
+		if (  x > ofGetWidth() - 2 * size){
+			row++;
+			x = 0;
+		}
+	}
 }
 
-void testApp::drawPlot(int x, int y, int size, ofxAnimatable::animCurve curve, string title){
+void testApp::drawPlot(int x, int y, int size, AnimCurve curve, string title){
 
 	int xx = x;
 	int yy = y;
@@ -130,16 +119,19 @@ void testApp::drawPlot(int x, int y, int size, ofxAnimatable::animCurve curve, s
 	a.reset(0);
 	a.animateTo(1);
 	glPointSize(1);
-	glColor4ub(255,255,255, 128);
+	glColor4ub(255,255,255, 64);
 	ofLine(xx,yy + s, xx + s, yy + s);
 	ofLine(xx,yy, xx, yy + s);
+	glColor4ub(255,255,255, 32);
+	ofLine(xx,yy + s, xx + s, yy );
 	glColor4ub(255,255,255, 255);
 	glBegin(GL_POINTS);
-	for (float i = 0 ; i< 1; i+= 1./100){
+	for (float i = 0 ; i< 1; i+= 1./steps){
 		a.update(1./steps);
 		glVertex2f( xx + s * i, yy + s - s * a.val() );
 	}
 	glEnd();
+	glColor4ub(255,255,255, 255);
 	ofDrawBitmapString(title, x, y + s + 15);
 
 }

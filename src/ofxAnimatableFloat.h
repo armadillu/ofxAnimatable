@@ -93,8 +93,6 @@ class ofxAnimatableFloat : public ofxAnimatable{
 
 		// ## MUST IMPLEMENT ##
 		void startAfterWait();
-		void swapOriginDestination() ;				//must be implemented, superclass will call when loop_back_and_forth
-													//must swap values [ originalVal_  <->  target_val ]
 		float		originalVal_;
 		float		targetVal_;
 		float		targetTempVal_;

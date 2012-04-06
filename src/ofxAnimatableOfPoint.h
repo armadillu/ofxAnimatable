@@ -48,8 +48,6 @@ class ofxAnimatableOfPoint : public ofxAnimatable{
 
 	private:
 
-		//must be implemented, superclass will call !
-		void swapOriginDestination();	//must swap values [ originalVal_  <->  target_val ]
 		void startAfterWait();
 
 		ofPoint 		originalPoint_;
