@@ -63,7 +63,7 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
 
-	glColor3ub(255,255,255);
+	glColor4ub(255,255,255,255);
 	int vOff = 10;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
 		ofRect( pos[i].val(), vOff + i * 2.5 * width, width, width);
@@ -74,18 +74,18 @@ void testApp::draw(){
 	colorAnim.applyCurrentColor();
 	ofCircle( ( 2 * ofGetFrameNum() )%ofGetWidth(), ball.val(), width);
 	
-	glColor3ub(255,255,255);
+	glColor4ub(255,255,255,255);
 	ofRect(0, 400 + width, ofGetWidth(), 1);
 
 	//vertical lines
 	ofRect(300, 0, 1, 400 + width);
 	ofRect(500+width, 0, 1, 400 + width);
 	
-	glColor3f( pointAnim.getPercentDone(), 1 - pointAnim.getPercentDone() , 0);
+	glColor4f( pointAnim.getPercentDone(), 1 - pointAnim.getPercentDone() , 0, 1);
 	glPointSize(10);
 	pointAnim.draw();
 
-	glColor3ub(255,255,255);
+	glColor4ub(255,255,255,255);
 	ofDrawBitmapString( ofToString( ofGetFrameRate()),  10, 10);
 	
 	int c = 0;

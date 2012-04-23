@@ -44,6 +44,7 @@ class ofxAnimatableOfPoint : public ofxAnimatable{
 	
 		//gets
 		ofPoint getCurrentPosition();
+		ofPoint getTargetPosition();
 		
 
 	private:
