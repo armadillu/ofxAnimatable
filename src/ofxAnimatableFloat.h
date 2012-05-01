@@ -5,61 +5,9 @@
 *
 *  Created by Oriol Ferrer Mesia on 24/09/08.
 *
-*
-
-  ###### WHAT IS IT ######
-
-			   val
-				|
-				|				   ****
-				|			    ***
-				|			  **
-				|		 	 *
-				|		    *
-				|		   *
-				|   	 ** 
-				|	  ***
-				| **** 
-				+------------------------------> time
-
-	This is meant to be used as a float replacement. It allows you to make a float evolve over time
-	from its original value to a newly imposed value. But instead of using a linear curve over time, it
-	will use a nice slow-start slow-end curve that's more suitable for certain animations/movements.
-
-
-  ###### HOW TO USE ######
-
-	//Learn by example: 
-	//lets say we want an alpha value to grow from 0 to 1 nicely
-	//we would do:
-
-		:::::::::::::::::::::::::::::::::::::::::::::::::
-
-		ofxAnimatableFloat myAlpha;
-		  
-		void init(){
-			
-			myAlpha.reset( 0 );			//set the starting value
-			myAlpha.setDuration( 1 );	//set the animation duration (in seconds)
-			myAlpha.animateTo( 1.0 );	//trigger the animation, giving it a destiation value (1.0)
-		}
-
-		void update(double dt){
-			
-			myAlpha.update( dt );			//update the ofxAnimatableFloat
-		}
-
-		void draw(){
-			
-			glColor4f(1 .0f, 1.0f, 1.0f, myAlpha.val() );	//retrieve the current value for myAlpha by calling "val()"
-			drawMyColoredStuff();
-		}
-
 */
 
-#ifndef ofxAnimatableFloat_h__
-#define ofxAnimatableFloat_h__
-
+#pragma once
 #include "ofxAnimatable.h"
 
 class ofxAnimatableFloat : public ofxAnimatable{
@@ -99,4 +47,3 @@ class ofxAnimatableFloat : public ofxAnimatable{
 
 };
 
-#endif // ofxAnimatableFloat_h__
