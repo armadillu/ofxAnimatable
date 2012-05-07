@@ -10,13 +10,13 @@ Let's see how to make an ofPoint animate indefinitely between two positions, wit
 		pointAnim.setPosition( ofPoint(0.0f,0.0f) );
 
 		//set repeating style
- 		pointAnim.setRepeatType(ofxAnimatable::LOOP_BACK_AND_FORTH);
+ 		pointAnim.setRepeatType(LOOP_BACK_AND_FORTH);
 
 		//set animation curve
-		pointAnim.setCurve(ofxAnimatable::EASE_IN_EASE_OUT);
+		pointAnim.setCurve(EASE_IN_EASE_OUT);
 
 		//start the animation, go from current pos to the specified point
-		pointAnim.animateTo( ofPoint(100.0f,100.0f) );
+		pointAnim.animateTo( ofPoint(100.0f, 100.0f) );
 
 	}
 
