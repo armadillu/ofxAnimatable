@@ -67,7 +67,9 @@ void testApp::draw(){
 	int vOff = 10;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
 		ofRect( pos[i].val(), vOff + i * 2.5 * width, width, width);
-		ofDrawBitmapString(  curveNames[i], 515, vOff + i * 2.5 * width + 10);
+		ofDrawBitmapString(  curveNames[i] + "  vel: " + ofToString( pos[i].getCurrentSpeed(), 2), 515, vOff + i * 2.5 * width + 10);
+		
+		
 	}
 
 	//ball and floor

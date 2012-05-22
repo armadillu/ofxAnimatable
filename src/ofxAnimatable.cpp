@@ -43,6 +43,8 @@ void ofxAnimatable::setup(){
 	playcount_ = 0;
 	repeat_ = PLAY_ONCE;
 	curveStyle_ = EASE_IN_EASE_OUT;
+	currentSpeed_ = 0;
+	lastDT_ = 1;
 }
 
 
@@ -102,12 +104,15 @@ float ofxAnimatable::calcCurveAt( float percent ){
 			r = 0.5f - 0.51f * cosf( M_PI * percent + k * percent - k * 0.5f ); break;
 		}
 	}
+	
+	currentSpeed_ =  r - prevSpeed_;
+	prevSpeed_ = r;
 	return r;
 }
 
 
 void ofxAnimatable::update(float dt){
-
+	
 	if (delay_ > 0.0f ){
 		delay_ -= dt;
 		if (delay_ < 0.0f){
@@ -153,6 +158,7 @@ void ofxAnimatable::update(float dt){
 			}
 		}
 	}
+	lastDT_ = dt;
 }
 
 
@@ -163,11 +169,14 @@ void ofxAnimatable::startAnimation(){
 	animating_ = true;
 	playcount_ = 0;
 	paused_ = false;
+	currentSpeed_ = 0.0f;
+	prevSpeed_ = 0.0f;
+
 }
 
 void ofxAnimatable::startAnimationAfterDelay(float delay){
 	direction_ = 1;
-	delay_ = delay;
+	delay_ = delay;	
 	//animating_ = false;
 }
 
@@ -178,6 +187,8 @@ void ofxAnimatable::reset(){
 	animating_ = false;
 	playcount_ = 0;
 	paused_ = false;
+	currentSpeed_ = 0.0f;
+	prevSpeed_ = 0.0f;
 }
 
 

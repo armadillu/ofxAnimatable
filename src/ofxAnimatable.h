@@ -64,8 +64,9 @@ class ofxAnimatable{
 		bool hasFinishedAnimating();	///has the animation finished?
 		bool isWaitingForAnimationToStart();	///an animation has been scheduled with "animateToAfterDelay"
 		bool isOrWillBeAnimating();		/// object is either animating now or it's waiting to be launch animation after a delay
-
-	static std::string getCurveName(AnimCurve c);
+		float getCurrentSpeed(){ return fabsf( direction_ * currentSpeed_ / (lastDT_ * transitionSpeed_)) ;} ///as a percentage of linear speed
+	
+		static std::string getCurveName(AnimCurve c);
 
 		virtual ~ofxAnimatable(void) {}
 		ofxAnimatable() {}
@@ -80,6 +81,7 @@ class ofxAnimatable{
 	
 		float		transitionSpeed_;	///this is 1/N (N == # of updates) it will take for the transition to end
 		float		percentDone_;		/// [0..1]
+			
 	
 		float		delay_;
 		AnimRepeat 	repeat_;
@@ -96,7 +98,8 @@ class ofxAnimatable{
 	private:
 	
 		virtual void startAfterWait() = 0;
-	
-	
+		float currentSpeed_;
+		float prevSpeed_;
+		float lastDT_;
 };
 
