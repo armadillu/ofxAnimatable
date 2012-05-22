@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <math.h>
 
 #define DEFAULT_ANIMATION_DURATION	1.0f
 
