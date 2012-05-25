@@ -40,12 +40,12 @@ class ofxAnimatableOfPoint : public ofxAnimatable{
 		void animateToAfterDelay( ofPoint where, float delay );
 
 		void animateToIfFinished( ofPoint where );
-	
-	
+		
 		//gets
 		ofPoint getCurrentPosition();
-		ofPoint getTargetPosition();
-		
+		ofPoint getTargetPosition(){ return targetPoint_;}
+		ofPoint getOriginalPosition(){ return originalPoint_;}
+	
 
 	private:
 

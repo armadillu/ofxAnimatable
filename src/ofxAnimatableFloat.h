@@ -24,7 +24,13 @@ class ofxAnimatableFloat : public ofxAnimatable{
 		void animateToIfFinished( float newVal );	///starts new animation to newVal only if there isnt an anim going on
 		void animateFromTo( float originalValue, float destinationValue );
 
+
+		//gets
 		float val();								///gives you the current value.
+		float getCurrentValue(){ return val(); }
+		float getTargetValue(){ return targetVal_;}
+		float getOriginalValue(){ return originalVal_;}
+
 		void reset(float newVal);					///sets an original value, and stops animation
 		void reset();								///goes back to the original value
 

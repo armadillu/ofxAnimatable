@@ -171,7 +171,6 @@ void ofxAnimatable::startAnimation(){
 	paused_ = false;
 	currentSpeed_ = 0.0f;
 	prevSpeed_ = 0.0f;
-
 }
 
 void ofxAnimatable::startAnimationAfterDelay(float delay){

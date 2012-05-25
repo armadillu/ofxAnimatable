@@ -43,7 +43,8 @@ class ofxAnimatableOfColor : public ofxAnimatable {
 	
 		//gets
 		ofColor getCurrentColor();
-		ofColor getTargetColor(){ return targetColor_;};
+		ofColor getTargetColor(){ return targetColor_;}
+		ofColor getOriginalColor(){ return originalColor_;}
 	
 
 		  

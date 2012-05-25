@@ -108,9 +108,6 @@ ofPoint ofxAnimatableOfPoint::getCurrentPosition(){
 	return originalPoint_ + ( targetPoint_ - originalPoint_) * mappedDistribution ;
 }
 
-ofPoint ofxAnimatableOfPoint::getTargetPosition(){
-	return targetPoint_;
-}
 
 void ofxAnimatableOfPoint::startAfterWait(){
 	animateTo(targetTempPoint_);
