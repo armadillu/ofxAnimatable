@@ -29,6 +29,7 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case VERY_LATE_EASE_IN_EASE_OUT: return "VERY_LATE_EASE_IN_EASE_OUT";		
 		case QUADRATIC_EASE_IN: return "QUADRATIC_EASE_IN";
 		case QUADRATIC_EASE_OUT: return "QUADRATIC_EASE_OUT";
+		default: return "UNKNOWN_CURVE!";
 	}
 	return "error";
 }
@@ -49,7 +50,7 @@ void ofxAnimatable::setup(){
 
 
 float ofxAnimatable::calcCurveAt( float percent ){
-
+	
 	float r = percent;
 	
 	switch ( curveStyle_ ) {
@@ -103,6 +104,8 @@ float ofxAnimatable::calcCurveAt( float percent ){
 			float k = 0.5;
 			r = 0.5f - 0.51f * cosf( M_PI * percent + k * percent - k * 0.5f ); break;
 		}
+			
+		default: ;
 	}
 	
 	currentSpeed_ =  r - prevSpeed_;
