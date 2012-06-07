@@ -127,7 +127,7 @@ void testApp::drawPlot(int x, int y, int size, AnimCurve curve, string title){
 	glColor4ub(255,255,255, 32);
 	ofLine(xx,yy + s, xx + s, yy );
 	glColor4ub(255,255,255, 255);
-	glBegin(GL_POINTS);
+	glBegin(GL_LINE_STRIP);
 	for (float i = 0 ; i< 1; i+= 1./steps){
 		a.update(1./steps);
 		glVertex2f( xx + s * i, yy + s - s * a.val() );
