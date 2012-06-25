@@ -52,8 +52,8 @@ void testApp::update(){
 	
 	ball.update( dt );
 	
-	colorAnim.update( dt);
-	pointAnim.update( dt);
+	colorAnim.update( dt );
+	pointAnim.update( dt );
 
 	if ( !pointAnim.isOrWillBeAnimating() ){
 		pointAnim.animateToAfterDelay( ofPoint( ofRandom(0, ofGetWidth()), ofRandom(0, ofGetHeight())), 0.5);
@@ -68,8 +68,6 @@ void testApp::draw(){
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
 		ofRect( pos[i].val(), vOff + i * 2.5 * width, width, width);
 		ofDrawBitmapString(  curveNames[i] + "  vel: " + ofToString( pos[i].getCurrentSpeed(), 2), 515, vOff + i * 2.5 * width + 10);
-		
-		
 	}
 
 	//ball and floor
@@ -160,7 +158,6 @@ void testApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
-
 	pointAnim.animateTo( ofPoint(x, y) );
 }
 
