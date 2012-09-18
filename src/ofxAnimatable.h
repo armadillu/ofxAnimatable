@@ -30,7 +30,7 @@ enum AnimCurve{
 	LINEAR,	
 	LATE_LINEAR, 
 	VERY_LATE_LINEAR, 
-	BOUNCY,	//this needs work
+	BOUNCY,	//this needs work TODO
 	TANH, 
 	SINH, 	
 	EARLY_SQUARE, 
@@ -66,6 +66,8 @@ class ofxAnimatable{
 		bool isWaitingForAnimationToStart();	///an animation has been scheduled with "animateToAfterDelay"
 		bool isOrWillBeAnimating();		/// object is either animating now or it's waiting to be launch animation after a delay
 		float getCurrentSpeed(){ return fabs( direction_ * currentSpeed_ / (lastDT_ * transitionSpeed_)) ;} ///as a percentage of linear speed
+		float timeLeftForAnimationToStart(){ return delay_; }
+		float waitTimeLeftPercent(){ return 1.0f - delay_ / waitTime_; }
 	
 		static std::string getCurveName(AnimCurve c);
 
@@ -84,7 +86,8 @@ class ofxAnimatable{
 		float		percentDone_;		/// [0..1]
 			
 	
-		float		delay_;
+		float		delay_;		//countdown timer that stores delay when startAnimationAfterDelay() is used
+		float		waitTime_;	//original wait delay_
 		AnimRepeat 	repeat_;
 		AnimCurve	curveStyle_;
 	

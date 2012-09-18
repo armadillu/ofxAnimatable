@@ -44,8 +44,10 @@ void ofxAnimatable::setup(){
 	playcount_ = 0;
 	repeat_ = PLAY_ONCE;
 	curveStyle_ = EASE_IN_EASE_OUT;
-	currentSpeed_ = 0;
+	currentSpeed_ = 0.0f;
 	lastDT_ = 1;
+	waitTime_ = 0.0f;
+	delay_ = 0.0f;
 }
 
 
@@ -68,10 +70,10 @@ float ofxAnimatable::calcCurveAt( float percent ){
 			break;
 
 		case LATE_LINEAR:
-			r = ( percent < 0.5 ) ? 0.0f : 2.0f * percent - 1; break;
+			r = ( percent < 0.5f ) ? 0.0f : 2.0f * percent - 1.0f; break;
 
 		case VERY_LATE_LINEAR:
-			r = ( percent < 0.75 ) ? 0.0f : 4.0f * percent - 3; break;
+			r = ( percent < 0.75f ) ? 0.0f : 4.0f * percent - 3.0f; break;
 
 		case TANH:
 			r = 0.5f + 0.5f * tanh( 2.0f * M_PI * percent - M_PI ) * 1.00374187319732; break;
@@ -101,7 +103,7 @@ float ofxAnimatable::calcCurveAt( float percent ){
 			r = 1.0f - (percent - 1.0f) * (percent - 1.0f); break;
 
 		case BOUNCY:{
-			float k = 0.5;
+			float k = 0.5f;
 			r = 0.5f - 0.51f * cosf( M_PI * percent + k * percent - k * 0.5f ); break;
 		}
 			
@@ -178,7 +180,8 @@ void ofxAnimatable::startAnimation(){
 
 void ofxAnimatable::startAnimationAfterDelay(float delay){
 	direction_ = 1;
-	delay_ = delay;	
+	delay_ = delay;
+	waitTime_ = delay_;
 	//animating_ = false;
 }
 
@@ -224,7 +227,7 @@ bool ofxAnimatable::hasFinishedAnimating(){
 }
 
 bool ofxAnimatable::isWaitingForAnimationToStart(){ 
-	return ( delay_ > 0 );
+	return ( delay_ > 0.0f );
 }
 
 bool ofxAnimatable::isOrWillBeAnimating(){ 
