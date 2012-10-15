@@ -1,0 +1,35 @@
+<install>
+	<name>ofxAnimatable</name>
+    <version>1.0</version>
+    <author><[CDATA[Oriol Ferrer <oriol@uri.cat> ]]></author>
+   
+    <code_url>https://github.com/armadillu/ofxAnimatable</code_url>
+    <site_url>http://www.uri.cat</site_url>
+    <download_url>https://github.com/armadillu/ofxAnimatable</download_url>
+   
+    <description><![CDATA[
+          Set of classes that to set up very simple animations, with curves, repeat modes and scheduling. As if now, you can animate ofPoints, ofColors and floats.
+    ]]></description>
+    
+	<add>
+		
+		<!-- 	=====================================================================	-->
+		<!--	========================== add per project using this addon =========	-->
+		<!-- 	=====================================================================	-->
+	
+		<src>
+			<folder name="addons/ofxAnimatable/src">
+				<file>../../../addons/ofxAnimatable/src/ofxAnimatable.cpp</file>
+				<file>../../../addons/ofxAnimatable/src/ofxAnimatable.h</file>
+				<file>../../../addons/ofxAnimatable/src/ofxAnimatableFloat.cpp</file>
+				<file>../../../addons/ofxAnimatable/src/ofxAnimatableFloat.h</file>
+				<file>../../../addons/ofxAnimatable/src/ofxAnimatableOfColor.cpp</file>
+				<file>../../../addons/ofxAnimatable/src/ofxAnimatableOfColor.h</file>
+				<file>../../../addons/ofxAnimatable/src/ofxAnimatableOfPoint.cpp</file>
+				<file>../../../addons/ofxAnimatable/src/ofxAnimatableOfPoint.h</file>
+			</folder>
+		</src>
+		
+	</add>    
+    
+</install>
