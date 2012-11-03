@@ -6,14 +6,15 @@
  *
  */
 
-#pragma once
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
-#include <math.h>
 
 #define DEFAULT_ANIMATION_DURATION	1.0f
+
+
+#include <iostream>
+#include <Math.h>
+using namespace std;
+
+#pragma once
 
 
 enum AnimRepeat{
@@ -69,7 +70,7 @@ class ofxAnimatable{
 		float timeLeftForAnimationToStart(){ return delay_; }
 		float waitTimeLeftPercent(){ return 1.0f - delay_ / waitTime_; }
 	
-		static std::string getCurveName(AnimCurve c);
+		static string getCurveName(AnimCurve c);
 
 		virtual ~ofxAnimatable(void) {}
 		ofxAnimatable() {}

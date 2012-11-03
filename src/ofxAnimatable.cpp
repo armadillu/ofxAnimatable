@@ -8,7 +8,6 @@
  */
 
 #include "ofxAnimatable.h"
-#include <Math.h>
 
 std::string ofxAnimatable::getCurveName(AnimCurve c){
 	
