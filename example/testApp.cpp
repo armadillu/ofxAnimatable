@@ -22,7 +22,7 @@ void testApp::setup(){
 		pos[i].setCurve( curve );
 		curveNames[i] = ofxAnimatable::getCurveName( curve );
 	}
-	
+
 	ball.reset(300);
 	ball.setCurve(EASE_IN);
 	ball.setRepeatType(LOOP_BACK_AND_FORTH);
@@ -58,6 +58,15 @@ void testApp::update(){
 	if ( !pointAnim.isOrWillBeAnimating() ){
 		pointAnim.animateToAfterDelay( ofPoint( ofRandom(0, ofGetWidth()), ofRandom(0, ofGetHeight())), 0.5);
 	}
+
+	//animate our parametric curves
+	float a = 0.5 + 0.5 * sin( 0.1 * ofGetFrameNum());
+	float b = 0.5 + 0.5 * sin( 0.1 * ofGetFrameNum() + 400);
+	pos[QUADRATIC_BEZIER_PARAM].setQuadraticBezierParams( a, b);
+
+	float steep = 0.5 + 0.5 * sin( 0.1 * ofGetFrameNum());
+	pos[EXPONENTIAL_SIGMOID_PARAM].setDoubleExpSigmoidParam( steep );
+
 }
 
 //--------------------------------------------------------------
@@ -118,7 +127,7 @@ void testApp::drawPlot(int x, int y, int size, AnimCurve curve, string title){
 	int yy = y;
 	float s = size;
 	float steps = size;
-	ofxAnimatableFloat a;
+	ofxAnimatableFloat a = pos[curve];
 	a.setCurve(curve);
 	a.setDuration(1);
 	a.reset(0);

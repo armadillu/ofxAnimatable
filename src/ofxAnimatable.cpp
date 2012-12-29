@@ -11,38 +11,62 @@
 
 //from http://www.flong.com/texts/code/shapers_exp/
 
-float doubleExponentialSeat (float x, float a){
+float doublePolynomialSigmoid(float x, int n){
 
-	float epsilon = 0.00001;
-	float min_param_a = 0.0 + epsilon;
-	float max_param_a = 1.0 - epsilon;
-	a = min(max_param_a, max(min_param_a, a));
+	float y = 0.0f;
+	if (n%2 == 0){
+		// even polynomial
+		if (x<=0.5f){
+			y = pow(2.0f*x, n)/2.0f;
+		} else {
+			y = 1.0f - pow(2.0f*(x-1.0f), n)/2.0f;
+		}
+	}
 
-	float y = 0;
-	if (x<=0.5){
-		y = (pow(2.0*x, 1-a))/2.0;
-	} else {
-		y = 1.0 - (pow(2.0*(1.0-x), 1-a))/2.0;
+	else {
+		// odd polynomial
+		if (x <= 0.5f){
+			y = pow( 2.0f * x, n) / 2.0f;
+		} else {
+			y = 1.0 + pow( 2.0f * (x-1.0f), n) / 2.0;
+		}
 	}
 	return y;
 }
 
 float doubleExponentialSigmoid (float x, float a){
 
-	float epsilon = 0.00001;
-	float min_param_a = 0.0 + epsilon;
-	float max_param_a = 1.0 - epsilon;
+	float epsilon = 0.00001f;
+	float min_param_a = 0.0f + epsilon;
+	float max_param_a = 1.0f - epsilon;
 	a = min(max_param_a, max(min_param_a, a));
-	a = 1.0-a; // for sensible results
+	a = 1.0f - a; // for sensible results
 
-	float y = 0;
-	if (x<=0.5){
-		y = (pow(2.0*x, 1.0/a))/2.0;
+	float y = 0.0f;
+	if ( x <= 0.5f ){
+		y = ( pow( 2.0f * x, 1.0f/a) ) / 2.0f;
 	} else {
-		y = 1.0 - (pow(2.0*(1.0-x), 1.0/a))/2.0;
+		y = 1.0 - ( pow( 2.0f * (1.0f-x), 1.0f / a) ) / 2.0f;
 	}
 	return y;
 }
+
+float doubleExponentialSeat (float x, float a){
+
+	float epsilon = 0.00001f;
+	float min_param_a = 0.0f + epsilon;
+	float max_param_a = 1.0f - epsilon;
+	a = min(max_param_a, max(min_param_a, a));
+
+	float y = 0.0f;
+	if (x <= 0.5f){
+		y = (pow(2.0 * x, 1.0f - a) ) / 2.0f;
+	} else {
+		y = 1.0f - ( pow(2.0f * ( 1.0f - x ), 1.0f-a) ) / 2.0f;
+	}
+	return y;
+}
+
 
 float exponentialEasing (float x, float a){
 
@@ -104,7 +128,8 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case VERY_LATE_EASE_IN_EASE_OUT: return "VERY_LATE_EASE_IN_EASE_OUT";		
 		case QUADRATIC_EASE_IN: return "QUADRATIC_EASE_IN";
 		case QUADRATIC_EASE_OUT: return "QUADRATIC_EASE_OUT";
-		case DOUBLE_EXPONENTIAL_SEAT: return "DOUBLE_EXPONENTIAL_SEAT";
+		case QUADRATIC_BEZIER_PARAM: return "QUADRATIC_BEZIER_PARAM";
+		case EXPONENTIAL_SIGMOID_PARAM: return "EXPONENTIAL_SIGMOID_PARAM";
 		default: return "UNKNOWN_CURVE!";
 	}
 	return "error";
@@ -112,6 +137,9 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 
 void ofxAnimatable::setup(){
 
+	doubleExpSigmoidParam = 0.5;
+	quadraticBezierParamA = 0.25;
+	quadraticBezierParamB = 0.75;
 	transitionSpeed_ = 1.0f / DEFAULT_ANIMATION_DURATION;
 	percentDone_ = 0.0f;
 	animating_ = false;
@@ -183,8 +211,12 @@ float ofxAnimatable::calcCurveAt( float percent ){
 			r = 0.5f - 0.51f * cosf( M_PI * percent + k * percent - k * 0.5f ); break;
 		}
 
-		case DOUBLE_EXPONENTIAL_SEAT:{
-			r = quadraticBezier(percent, 0.7, 0.99); //TODO PARAM!
+		case QUADRATIC_BEZIER_PARAM:{
+			r = quadraticBezier(percent, quadraticBezierParamA, quadraticBezierParamB); break; //TODO PARAM!
+		}
+
+		case EXPONENTIAL_SIGMOID_PARAM:{
+			r = doubleExponentialSigmoid(percent, doubleExpSigmoidParam); break;
 		}
 			
 		default: ;

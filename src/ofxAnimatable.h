@@ -42,7 +42,8 @@ enum AnimCurve{
 	VERY_LATE_EASE_IN_EASE_OUT,
 	QUADRATIC_EASE_IN,
 	QUADRATIC_EASE_OUT,
-	DOUBLE_EXPONENTIAL_SEAT, //http://www.flong.com/texts/code/shapers_exp/
+	QUADRATIC_BEZIER_PARAM, //http://www.flong.com/texts/code/shapers_exp/
+	EXPONENTIAL_SIGMOID_PARAM,
 	NUM_ANIM_CURVES //leave that on the last to see how many we have
 };
 
@@ -60,7 +61,9 @@ class ofxAnimatable{
 		void setCurve( AnimCurve curveStyle_ );
 		void setRepeatType( AnimRepeat repeat );
 		void setDuration( float seconds );
-	
+
+		void setDoubleExpSigmoidParam(float param){doubleExpSigmoidParam = param;} //only for QUADRATIC_BEZIER_PARAM curve
+		void setQuadraticBezierParams(float a, float b){quadraticBezierParamA = a; quadraticBezierParamB = b; } //only for EXPONENTIAL_SIGMOID_PARAM curve
 		float getDuration(){ return 1.0f/transitionSpeed_; }
 
 		float getPercentDone();			///get how much of the animation has been "walked"
@@ -108,5 +111,9 @@ class ofxAnimatable{
 		float currentSpeed_;
 		float prevSpeed_;
 		float lastDT_;
+
+		//for some of the curves
+		float doubleExpSigmoidParam;
+		float quadraticBezierParamA, quadraticBezierParamB;
 };
 
