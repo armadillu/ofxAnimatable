@@ -9,6 +9,82 @@
 
 #include "ofxAnimatable.h"
 
+//from http://www.flong.com/texts/code/shapers_exp/
+
+float doubleExponentialSeat (float x, float a){
+
+	float epsilon = 0.00001;
+	float min_param_a = 0.0 + epsilon;
+	float max_param_a = 1.0 - epsilon;
+	a = min(max_param_a, max(min_param_a, a));
+
+	float y = 0;
+	if (x<=0.5){
+		y = (pow(2.0*x, 1-a))/2.0;
+	} else {
+		y = 1.0 - (pow(2.0*(1.0-x), 1-a))/2.0;
+	}
+	return y;
+}
+
+float doubleExponentialSigmoid (float x, float a){
+
+	float epsilon = 0.00001;
+	float min_param_a = 0.0 + epsilon;
+	float max_param_a = 1.0 - epsilon;
+	a = min(max_param_a, max(min_param_a, a));
+	a = 1.0-a; // for sensible results
+
+	float y = 0;
+	if (x<=0.5){
+		y = (pow(2.0*x, 1.0/a))/2.0;
+	} else {
+		y = 1.0 - (pow(2.0*(1.0-x), 1.0/a))/2.0;
+	}
+	return y;
+}
+
+float exponentialEasing (float x, float a){
+
+	float epsilon = 0.00001;
+	float min_param_a = 0.0f + epsilon;
+	float max_param_a = 1.0f - epsilon;
+	a = max(min_param_a, min(max_param_a, a));
+
+	if (a < 0.5f){
+		// emphasis
+		a = 2.0f*(a);
+		float y = pow(x, a);
+		return y;
+	} else {
+		// de-emphasis
+		a = 2.0f*(a-0.5f);
+		float y = pow(x, 1.0/(1-a));
+		return y;
+	}
+}
+
+
+float quadraticBezier (float x, float a, float b){
+	// adapted from BEZMATH.PS (1993)
+	// by Don Lancaster, SYNERGETICS Inc.
+	// http://www.tinaja.com/text/bezmath.html
+
+	float epsilon = 0.00001;
+	a = max(0.0f, min(1.0f, a));
+	b = max(0.0f, min(1.0f, b));
+	if (a == 0.5f){
+		a += epsilon;
+	}
+
+	// solve t from x (an inverse operation)
+	float om2a = 1 - 2*a;
+	float t = (sqrt(a*a + om2a*x) - a)/om2a;
+	float y = (1-2*b)*(t*t) + (2*b)*t;
+	return y;
+}
+
+
 std::string ofxAnimatable::getCurveName(AnimCurve c){
 	
 	switch (c) {
@@ -28,6 +104,7 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case VERY_LATE_EASE_IN_EASE_OUT: return "VERY_LATE_EASE_IN_EASE_OUT";		
 		case QUADRATIC_EASE_IN: return "QUADRATIC_EASE_IN";
 		case QUADRATIC_EASE_OUT: return "QUADRATIC_EASE_OUT";
+		case DOUBLE_EXPONENTIAL_SEAT: return "DOUBLE_EXPONENTIAL_SEAT";
 		default: return "UNKNOWN_CURVE!";
 	}
 	return "error";
@@ -104,6 +181,10 @@ float ofxAnimatable::calcCurveAt( float percent ){
 		case BOUNCY:{
 			float k = 0.5f;
 			r = 0.5f - 0.51f * cosf( M_PI * percent + k * percent - k * 0.5f ); break;
+		}
+
+		case DOUBLE_EXPONENTIAL_SEAT:{
+			r = quadraticBezier(percent, 0.7, 0.99); //TODO PARAM!
 		}
 			
 		default: ;

@@ -17,6 +17,7 @@ using namespace std;
 #pragma once
 
 
+
 enum AnimRepeat{
 	PLAY_ONCE = 0,
 	LOOP, 
@@ -41,6 +42,7 @@ enum AnimCurve{
 	VERY_LATE_EASE_IN_EASE_OUT,
 	QUADRATIC_EASE_IN,
 	QUADRATIC_EASE_OUT,
+	DOUBLE_EXPONENTIAL_SEAT, //http://www.flong.com/texts/code/shapers_exp/
 	NUM_ANIM_CURVES //leave that on the last to see how many we have
 };
 

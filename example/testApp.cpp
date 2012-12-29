@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void testApp::setup(){
 
-	ofBackground(128, 128, 128);
+	ofBackground(99);
 	ofSetFrameRate(60);
 	ofEnableSmoothing();
 	ofEnableAlphaBlending();
@@ -63,11 +63,16 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
 
-	glColor4ub(255,255,255,255);
+
 	int vOff = 10;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
-		ofRect( pos[i].val(), vOff + i * 2.5 * width, width, width);
-		ofDrawBitmapString(  curveNames[i] + "  vel: " + ofToString( pos[i].getCurrentSpeed(), 2), 515, vOff + i * 2.5 * width + 10);
+		float lineHeight = 2.0;
+		float yy = vOff + i * lineHeight * width;
+		glColor4ub(255,255,255,64);
+		ofLine(300, yy + width * 0.5, 500 + width, yy + width * 0.5);
+		glColor4ub(255,255,255,255);
+		ofRect( pos[i].val(), yy, width, width);
+		ofDrawBitmapString(  curveNames[i] + "  vel: " + ofToString( pos[i].getCurrentSpeed(), 2), 515, yy + 10);
 	}
 
 	//ball and floor

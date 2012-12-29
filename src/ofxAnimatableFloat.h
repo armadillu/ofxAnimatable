@@ -46,7 +46,7 @@ class ofxAnimatableFloat : public ofxAnimatable{
 	private:
 
 		// ## MUST IMPLEMENT ##
-		void startAfterWait();
+		void		startAfterWait();
 		float		originalVal_;
 		float		targetVal_;
 		float		targetTempVal_;

@@ -6,15 +6,11 @@
 *
 */
 
-
 #include "ofxAnimatableFloat.h"
-
-
 
 ofxAnimatableFloat::ofxAnimatableFloat(){
 
 	ofxAnimatable::setup();
-	
 	originalVal_ = targetVal_= 0.0f;
 }
 
@@ -22,7 +18,6 @@ ofxAnimatableFloat::ofxAnimatableFloat(){
 void ofxAnimatableFloat::update( float dt ){
 	
 	ofxAnimatable::update( dt );
-	
 }
 
 
@@ -83,6 +78,8 @@ void ofxAnimatableFloat::reset(){
 	targetVal_ = originalVal_;
 }
 
+
 void ofxAnimatableFloat::startAfterWait(){
 	animateTo(targetTempVal_);
 }
+
