@@ -67,11 +67,12 @@ class ofxAnimatable{
 		float getDuration(){ return 1.0f/transitionSpeed_; }
 
 		float getPercentDone();			///get how much of the animation has been "walked"
+		void setPercentDone(float p);			//Will allow to skip to any point of animation. use carefully
 		bool isAnimating();				///is the animation still going on?
 		bool hasFinishedAnimating();	///has the animation finished?
 		bool isWaitingForAnimationToStart();	///an animation has been scheduled with "animateToAfterDelay"
 		bool isOrWillBeAnimating();		/// object is either animating now or it's waiting to be launch animation after a delay
-		float getCurrentSpeed(){ return fabs( direction_ * currentSpeed_ / (lastDT_ * transitionSpeed_)) ;} ///as a percentage of linear speed
+		float getCurrentSpeed(); ///as a percentage of linear speed
 		float timeLeftForAnimationToStart(){ return delay_; }
 		float waitTimeLeftPercent(){ return 1.0f - delay_ / waitTime_; }
 	

@@ -328,6 +328,10 @@ float ofxAnimatable::getPercentDone(){
 	return percentDone_; 
 }		
 
+void ofxAnimatable::setPercentDone(float p){
+	if( p < 0.0f ) p = 0.0f;
+	percentDone_ = p;
+}
 
 bool ofxAnimatable::isAnimating(){ 
 	return animating_;
@@ -340,6 +344,11 @@ bool ofxAnimatable::hasFinishedAnimating(){
 
 bool ofxAnimatable::isWaitingForAnimationToStart(){ 
 	return ( delay_ > 0.0f );
+}
+
+float ofxAnimatable::getCurrentSpeed(){
+	float r = fabs( direction_ * currentSpeed_ / (lastDT_ * transitionSpeed_));
+	return r;
 }
 
 bool ofxAnimatable::isOrWillBeAnimating(){ 
