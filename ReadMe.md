@@ -33,5 +33,5 @@ Let's see how to make an ofPoint animate indefinitely between two positions, wit
 
 
 
-![ofxAnimatable screenshot](http://farm8.staticflickr.com/7214/6863126704_4ce47b2f56_z.jpg)
+![ofxAnimatable screenshot](http://farm9.staticflickr.com/8083/8329975610_ab506dddcb_z.jpg)
 
