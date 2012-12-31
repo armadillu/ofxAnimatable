@@ -77,6 +77,7 @@ class ofxAnimatable{
 		float waitTimeLeftPercent(){ return 1.0f - delay_ / waitTime_; }
 	
 		static string getCurveName(AnimCurve c);
+		static float calcCurveAt(float percent, AnimCurve type, float param1 = 0.5, float param2 = 0.5, float param3 = 0.5); //exposing this to get direct access to simple curve values
 
 		virtual ~ofxAnimatable(void) {}
 		ofxAnimatable() {}
@@ -118,3 +119,4 @@ class ofxAnimatable{
 		float quadraticBezierParamA, quadraticBezierParamB;
 };
 
+	

@@ -156,18 +156,41 @@ void ofxAnimatable::setup(){
 
 
 float ofxAnimatable::calcCurveAt( float percent ){
+
+	float p1, p2, p3;
+
+	switch (curveStyle_) { //in case our curve has extra params, fill them in
+		case QUADRATIC_BEZIER_PARAM:
+			p1 = quadraticBezierParamA;
+			p2 = quadraticBezierParamB;
+			break;
+		case EXPONENTIAL_SIGMOID_PARAM:
+			p1 = doubleExpSigmoidParam;
+			break;
+
+		default:
+			break;
+	}
+
+	float r = calcCurveAt(percent, curveStyle_, p1, p2, p3);
 	
+	currentSpeed_ =  r - prevSpeed_; //this is very ghetto and should be done properly! TODO
+	prevSpeed_ = r;
+	return r;
+}
+
+float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float param1, float param2, float param3){
+
 	float r = percent;
-	
-	switch ( curveStyle_ ) {
-			
+	switch ( type ) {
+
 		case EASE_IN_EASE_OUT:
 			r = 0.5f - 0.5f * cosf( M_PI * percent ); break;
-		
+
 		case EASE_IN:
 			r = 1.0f + sinf( M_PI_2 * percent - M_PI_2); break;
 
-		case EASE_OUT:	
+		case EASE_OUT:
 			r = sinf( M_PI_2 * percent ); break;
 
 		case LINEAR:
@@ -187,7 +210,7 @@ float ofxAnimatable::calcCurveAt( float percent ){
 
 		case SQUARE:
 			r = (percent < 0.5f) ? 0.0f : 1.0f; break;
-			
+
 		case LATE_SQUARE:
 			r = (percent < 0.75f) ? 0.0f : 1.0f; break;
 
@@ -199,7 +222,7 @@ float ofxAnimatable::calcCurveAt( float percent ){
 
 		case VERY_LATE_EASE_IN_EASE_OUT:
 			r = (percent < 0.75f) ? 0.0f : 0.5f + 0.5f * cosf( 4.0f * M_PI * percent); break;
-			
+
 		case QUADRATIC_EASE_IN:
 			r = percent * percent; break;
 
@@ -212,18 +235,15 @@ float ofxAnimatable::calcCurveAt( float percent ){
 		}
 
 		case QUADRATIC_BEZIER_PARAM:{
-			r = quadraticBezier(percent, quadraticBezierParamA, quadraticBezierParamB); break; //TODO PARAM!
+			r = quadraticBezier(percent, param1, param2); break; 
 		}
 
 		case EXPONENTIAL_SIGMOID_PARAM:{
-			r = doubleExponentialSigmoid(percent, doubleExpSigmoidParam); break;
+			r = doubleExponentialSigmoid(percent, param1); break;
 		}
 			
 		default: ;
 	}
-	
-	currentSpeed_ =  r - prevSpeed_;
-	prevSpeed_ = r;
 	return r;
 }
 
