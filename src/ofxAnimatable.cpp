@@ -60,7 +60,7 @@ float doubleExponentialSeat (float x, float a){
 
 	float y = 0.0f;
 	if (x <= 0.5f){
-		y = (pow(2.0 * x, 1.0f - a) ) / 2.0f;
+		y = (powf(2.0 * x, 1.0f - a) ) / 2.0f;
 	} else {
 		y = 1.0f - ( pow(2.0f * ( 1.0f - x ), 1.0f-a) ) / 2.0f;
 	}
@@ -83,7 +83,7 @@ float exponentialEasing (float x, float a){
 	} else {
 		// de-emphasis
 		a = 2.0f*(a-0.5f);
-		float y = pow(x, 1.0/(1-a));
+		float y = powf(x, 1.0/(1-a));
 		return y;
 	}
 }
@@ -154,10 +154,38 @@ void ofxAnimatable::setup(){
 	delay_ = 0.0f;
 }
 
+void ofxAnimatable::drawCurve(int x, int y, int size){
 
-float ofxAnimatable::calcCurveAt( float percent ){
-
+#if (OF_AVAILABLE)
+	int xx = x;
+	int yy = y;
+	float s = size;
+	float steps = size * 0.5;
+	string name = ofxAnimatable::getCurveName(curveStyle_);
+	glPointSize(1);
+	glColor4ub(255,255,255, 64);
+	ofLine(xx,yy + s, xx + s, yy + s);
+	ofLine(xx,yy, xx, yy + s);
+	glColor4ub(255,255,255, 32);
+	ofLine(xx,yy + s, xx + s, yy );
+	glColor4ub(255,255,255, 255);
+	ofMesh m;
+	m.setMode(OF_PRIMITIVE_LINE_STRIP);
+	float step = 1./steps;
 	float p1, p2, p3;
+	fillInParams(p1,p2,p3);
+	for (float i = 0.0f ; i< 1.0f; i+= step){
+		float val = calcCurveAt(i, curveStyle_, p1, p2, p3);
+		m.addVertex( ofVec3f(xx + s * i, yy + s - s * val) );
+	}
+	m.draw();
+	glColor4ub(255,255,255, 255);
+	ofDrawBitmapString(name, x, y + s + 15);
+#endif
+}
+
+
+void ofxAnimatable::fillInParams(float&p1, float &p2, float &p3){
 
 	switch (curveStyle_) { //in case our curve has extra params, fill them in
 		case QUADRATIC_BEZIER_PARAM:
@@ -171,7 +199,12 @@ float ofxAnimatable::calcCurveAt( float percent ){
 		default:
 			break;
 	}
+}
 
+float ofxAnimatable::calcCurveAt( float percent ){
+
+	float p1, p2, p3;
+	fillInParams(p1,p2,p3);
 	float r = calcCurveAt(percent, curveStyle_, p1, p2, p3);
 	
 	currentSpeed_ =  r - prevSpeed_; //this is very ghetto and should be done properly! TODO

@@ -16,6 +16,12 @@ using namespace std;
 
 #pragma once
 
+#define OF_AVAILABLE true
+
+#if (OF_AVAILABLE)
+#include "ofMain.h"
+#endif
+
 
 
 enum AnimRepeat{
@@ -78,6 +84,7 @@ class ofxAnimatable{
 	
 		static string getCurveName(AnimCurve c);
 		static float calcCurveAt(float percent, AnimCurve type, float param1 = 0.5, float param2 = 0.5, float param3 = 0.5); //exposing this to get direct access to simple curve values
+		void drawCurve(int x, int y, int size);
 
 		virtual ~ofxAnimatable(void) {}
 		ofxAnimatable() {}
@@ -106,6 +113,7 @@ class ofxAnimatable{
 		void startAnimation();			///Used by subclasses to indicate we are starting an anim
 		void startAnimationAfterDelay(float delay);
 		void reset();					///Used by subclasses to indicate a reset of an animation
+		void fillInParams(float&p1, float &p2, float &p3);
 
 	private:
 	

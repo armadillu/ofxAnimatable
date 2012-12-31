@@ -3,6 +3,7 @@
 //--------------------------------------------------------------
 void testApp::setup(){
 
+	
 	ofBackground(99);
 	ofSetFrameRate(60);
 	ofEnableSmoothing();
@@ -132,56 +133,13 @@ void testApp::drawPlot(int x, int y, int size, AnimCurve curve, string title){
 	a.setDuration(1);
 	a.reset(0);
 	a.animateTo(1);
-	glPointSize(1);
-	glColor4ub(255,255,255, 64);
-	ofLine(xx,yy + s, xx + s, yy + s);
-	ofLine(xx,yy, xx, yy + s);
-	glColor4ub(255,255,255, 32);
-	ofLine(xx,yy + s, xx + s, yy );
-	glColor4ub(255,255,255, 255);
-	glBegin(GL_LINE_STRIP);
-	for (float i = 0 ; i< 1; i+= 1./steps){
-		a.update(1./steps);
-		glVertex2f( xx + s * i, yy + s - s * a.val() );
-	}
-	glEnd();
-	glColor4ub(255,255,255, 255);
-	ofDrawBitmapString(title, x, y + s + 15);
-
+	a.drawCurve(x, y, size);
 }
 
-//--------------------------------------------------------------
-void testApp::keyPressed(int key){
 
-}
-
-//--------------------------------------------------------------
-void testApp::keyReleased(int key){
-
-}
-
-//--------------------------------------------------------------
-void testApp::mouseMoved(int x, int y ){
-	
-}
-
-//--------------------------------------------------------------
-void testApp::mouseDragged(int x, int y, int button){
-
-}
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button){
 	pointAnim.animateTo( ofPoint(x, y) );
-}
-
-//--------------------------------------------------------------
-void testApp::mouseReleased(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void testApp::windowResized(int w, int h){
-
 }
 
