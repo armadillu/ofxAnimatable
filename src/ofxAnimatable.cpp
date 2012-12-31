@@ -160,7 +160,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size){
 	int xx = x;
 	int yy = y;
 	float s = size;
-	float steps = size * 0.5;
+	float steps = size;
 	string name = ofxAnimatable::getCurveName(curveStyle_);
 	glPointSize(1);
 	glColor4ub(255,255,255, 64);
