@@ -1,5 +1,8 @@
 #include "testApp.h"
 
+int floorLine = 500;
+
+
 //--------------------------------------------------------------
 void testApp::setup(){
 
@@ -28,7 +31,7 @@ void testApp::setup(){
 	ball.setCurve(EASE_IN);
 	ball.setRepeatType(LOOP_BACK_AND_FORTH);
 	ball.setDuration(0.55);
-	ball.animateTo( 400 );
+	ball.animateTo( floorLine );
 	
 	colorAnim.setColor( ofColor::black );
 	colorAnim.setDuration( 0.5f );
@@ -90,11 +93,11 @@ void testApp::draw(){
 	ofCircle( ( 2 * ofGetFrameNum() )%ofGetWidth(), ball.val(), width);
 	
 	glColor4ub(255,255,255,255);
-	ofRect(0, 400 + width, ofGetWidth(), 1);
+	ofRect(0, floorLine + width, ofGetWidth(), 1);
 
 	//vertical lines
-	ofRect(300, 0, 1, 400 + width);
-	ofRect(500+width, 0, 1, 400 + width);
+	ofRect(300, 0, 1, floorLine + width);
+	ofRect(500 + width, 0, 1, floorLine + width);
 	
 	glColor4f( pointAnim.getPercentDone(), 1 - pointAnim.getPercentDone() , 0, 1);
 	glPointSize(10);
@@ -104,8 +107,8 @@ void testApp::draw(){
 	ofDrawBitmapString( ofToString( ofGetFrameRate()),  10, 10);
 	
 	int c = 0;
-	int size = 150;
-	int yy = 450;
+	int size = 80;
+	int yy = floorLine + 50;
 	int rowHeight = size + 30;
 	int xx = 50;
 	int off = size/2.5;
@@ -115,7 +118,7 @@ void testApp::draw(){
 		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i);		
 		drawPlot( xx + x, yy + row * rowHeight, size, curve, ofxAnimatable::getCurveName(curve) );
 		x += (size + off);
-		if (  x > ofGetWidth() -  size){
+		if (  x > ofGetWidth() -  2 * size){
 			row++;
 			x = 0;
 		}

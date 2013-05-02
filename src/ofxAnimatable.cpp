@@ -125,6 +125,9 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case BLINK_5: return "BLINK_5";
 		case BLINK_3: return "BLINK_3";
 		case BLINK_2: return "BLINK_2";
+		case BLINK_AND_FADE_1: return "BLINK_AND_FADE_1";
+		case BLINK_AND_FADE_2: return "BLINK_AND_FADE_2";
+		case BLINK_AND_FADE_3: return "BLINK_AND_FADE_3";
 		case LATE_LINEAR: return "LATE_LINEAR";
 		case LATE_EASE_IN_EASE_OUT: return "LATE_EASE_IN_EASE_OUT";
 		case VERY_LATE_LINEAR: return "VERY_LATE_LINEAR";
@@ -255,19 +258,38 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float param1, fl
 			r = (percent < 0.5f) ? 0.0f : 1.0f; break;
 
 		case BLINK_5:{
-			float v = percent * 5;
+			float v = percent * 5.0f;
 			r = (fmod(v, 1.01f) < 0.5f ? 0.0f : 1.0f);
 			}break;
 
 		case BLINK_3:{
-			float v = percent * 3;
+			float v = percent * 3.0f;
 			r = (fmod(v, 1.01f) < 0.5f ? 0.0f : 1.0f);
 			}break;
 
 		case BLINK_2:{
-			float v = percent * 2;
+			float v = percent * 2.0f;
 			r = (fmod(v, 1.01f) < 0.5f ? 0.0f : 1.0f);
 			}break;
+
+		case BLINK_AND_FADE_1:{
+			float v = percent * 2.0f;
+			r = (fmod(v, 1.01f) < 0.5f ? 0.0f : 1.0f);
+			if (percent >= 0.75) r = 4 * percent - 4 * 0.75f ;
+		}break;
+
+		case BLINK_AND_FADE_2:{
+			float v = percent * 3.0f;
+			r = (fmod(v, 1.01f) < 0.5f ? 0.0f : 1.0f);
+			if (percent >= 0.833333f) r = 6 * percent - 6 * 0.833333f ;
+		}break;
+
+		case BLINK_AND_FADE_3:{
+			float v = percent * 4.0f;
+			r = (fmod(v, 1.01f) < 0.5f ? 0.0f : 1.0f);
+			if (percent >= 0.875f) r = 8 * percent - 8 * 0.875f ;
+		}break;
+
 
 		case LATE_SQUARE:
 			r = (percent < 0.75f) ? 0.0f : 1.0f; break;
