@@ -122,6 +122,9 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case SQUARE: return "SQUARE";
 		case LATE_SQUARE: return "LATE_SQUARE";
 		case EARLY_SQUARE: return "EARLY_SQUARE";
+		case BLINK_5: return "BLINK_5";
+		case BLINK_3: return "BLINK_3";
+		case BLINK_2: return "BLINK_2";
 		case LATE_LINEAR: return "LATE_LINEAR";
 		case LATE_EASE_IN_EASE_OUT: return "LATE_EASE_IN_EASE_OUT";
 		case VERY_LATE_LINEAR: return "VERY_LATE_LINEAR";
@@ -251,6 +254,21 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float param1, fl
 		case SQUARE:
 			r = (percent < 0.5f) ? 0.0f : 1.0f; break;
 
+		case BLINK_5:{
+			float v = percent * 5;
+			r = (fmod(v, 1.01f) < 0.5f ? 0.0f : 1.0f);
+			}break;
+
+		case BLINK_3:{
+			float v = percent * 3;
+			r = (fmod(v, 1.01f) < 0.5f ? 0.0f : 1.0f);
+			}break;
+
+		case BLINK_2:{
+			float v = percent * 2;
+			r = (fmod(v, 1.01f) < 0.5f ? 0.0f : 1.0f);
+			}break;
+
 		case LATE_SQUARE:
 			r = (percent < 0.75f) ? 0.0f : 1.0f; break;
 
@@ -271,8 +289,8 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float param1, fl
 
 		case BOUNCY:{
 			float k = 0.5f;
-			r = 0.5f - 0.51f * cosf( M_PI * percent + k * percent - k * 0.5f ); break;
-		}
+			r = 0.5f - 0.51f * cosf( M_PI * percent + k * percent - k * 0.5f );
+			}break;
 
 		case QUADRATIC_BEZIER_PARAM:{
 			r = quadraticBezier(percent, param1, param2); break; 
