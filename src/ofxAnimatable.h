@@ -39,6 +39,7 @@ enum AnimCurve{
 	LATE_LINEAR, 
 	VERY_LATE_LINEAR, 
 	BOUNCY,	//this needs work TODO
+	OBJECT_DROP,
 	TANH, 
 	SINH, 	
 	EARLY_SQUARE, 
@@ -70,6 +71,8 @@ class ofxAnimatable{
 
 		void setDoubleExpSigmoidParam(float param){doubleExpSigmoidParam = param;} //only for QUADRATIC_BEZIER_PARAM curve
 		void setQuadraticBezierParams(float a, float b){quadraticBezierParamA = a; quadraticBezierParamB = b; } //only for EXPONENTIAL_SIGMOID_PARAM curve
+		void setDropObjectParams(float bounceHeightPercent){bounceAmp = bounceHeightPercent;} //only for DROP_OBJECT curve
+
 		float getDuration(){ return 1.0f/transitionSpeed_; }
 
 		float getPercentDone();			///get how much of the animation has been "walked"
@@ -125,6 +128,7 @@ class ofxAnimatable{
 		//for some of the curves
 		float doubleExpSigmoidParam;
 		float quadraticBezierParamA, quadraticBezierParamB;
+		float bounceAmp;
 };
 
 	

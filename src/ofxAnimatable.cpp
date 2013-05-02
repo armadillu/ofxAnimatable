@@ -130,6 +130,8 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case QUADRATIC_EASE_OUT: return "QUADRATIC_EASE_OUT";
 		case QUADRATIC_BEZIER_PARAM: return "QUADRATIC_BEZIER_PARAM";
 		case EXPONENTIAL_SIGMOID_PARAM: return "EXPONENTIAL_SIGMOID_PARAM";
+		case OBJECT_DROP: return "OBJECT_DROP";
+
 		default: return "UNKNOWN_CURVE!";
 	}
 	return "error";
@@ -140,6 +142,7 @@ void ofxAnimatable::setup(){
 	doubleExpSigmoidParam = 0.5;
 	quadraticBezierParamA = 0.25;
 	quadraticBezierParamB = 0.75;
+	bounceAmp = 0.05;
 	transitionSpeed_ = 1.0f / DEFAULT_ANIMATION_DURATION;
 	percentDone_ = 0.0f;
 	animating_ = false;
@@ -185,7 +188,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size){
 }
 
 
-void ofxAnimatable::fillInParams(float&p1, float &p2, float &p3){
+void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3){
 
 	switch (curveStyle_) { //in case our curve has extra params, fill them in
 		case QUADRATIC_BEZIER_PARAM:
@@ -194,6 +197,10 @@ void ofxAnimatable::fillInParams(float&p1, float &p2, float &p3){
 			break;
 		case EXPONENTIAL_SIGMOID_PARAM:
 			p1 = doubleExpSigmoidParam;
+			break;
+
+		case OBJECT_DROP:
+			p1 = bounceAmp;
 			break;
 
 		default:
@@ -274,7 +281,51 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float param1, fl
 		case EXPONENTIAL_SIGMOID_PARAM:{
 			r = doubleExponentialSigmoid(percent, param1); break;
 		}
-			
+
+		case OBJECT_DROP:{
+			if ( percent < 0.75f ){
+				r = cosf( (2.0f * M_PI / 3.0f) * percent );
+			}else{
+				float range = 0.125f;
+				float diffRange = 0.125;
+				float amp = param1;
+				float freq = 8;
+
+				if ( percent < 0.75f + range ){
+					r = amp * sinf( freq * M_PI * percent );
+				}else{
+					diffRange *= 0.5; range += diffRange; amp *= 0.5f; freq *= 2.0f;
+					if ( percent < 0.75f + range ){
+						r = amp * sinf( freq * M_PI * percent );
+					}else{
+						diffRange *= 0.5; range += diffRange; amp *= 0.5f; freq *= 2.0f;
+						if ( percent < 0.75f + range ){
+							r = amp * sinf( freq * M_PI * percent );
+						}else{
+							diffRange *= 0.5; range += diffRange; amp *= 0.5f; freq *= 2.0f;
+							if ( percent < 0.75f + range ){
+								r = amp * sinf( freq * M_PI * percent );
+							}else{
+								diffRange *= 0.5; range += diffRange; amp *= 0.5f; freq *= 2.0f;
+								if ( percent < 0.75f + range ){
+									r = amp * sinf( freq * M_PI * percent );
+								}else{
+									diffRange *= 0.5; range += diffRange; amp *= 0.5f; freq *= 2.0f;
+									if ( percent < 0.75f + range ){
+										r = amp * sinf( freq * M_PI * percent );
+									}else{
+										r = 0;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			r = 1.0f-r;
+			break;
+		}
+
 		default: ;
 	}
 	return r;

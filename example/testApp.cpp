@@ -104,18 +104,18 @@ void testApp::draw(){
 	ofDrawBitmapString( ofToString( ofGetFrameRate()),  10, 10);
 	
 	int c = 0;
-	int size = 130;
+	int size = 200;
 	int yy = 450;
-	int rowHeight = 180;
+	int rowHeight = size + 30;
 	int xx = 50;
 	int off = size/2.5;
 	int x = 0;
 	int row = 0;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
 		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i);		
-		drawPlot( xx + x, yy + row * rowHeight, size, curve, ofxAnimatable::getCurveName(curve) );		
+		drawPlot( xx + x, yy + row * rowHeight, size, curve, ofxAnimatable::getCurveName(curve) );
 		x += (size + off);
-		if (  x > ofGetWidth() - 2 * size){
+		if (  x > ofGetWidth() -  size){
 			row++;
 			x = 0;
 		}
