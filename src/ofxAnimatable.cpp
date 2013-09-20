@@ -130,10 +130,12 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case BLINK_AND_FADE_3: return "BLINK_AND_FADE_3";
 		case LATE_LINEAR: return "LATE_LINEAR";
 		case LATE_EASE_IN_EASE_OUT: return "LATE_EASE_IN_EASE_OUT";
+		case EARLY_LINEAR: return "EARLY_LINEAR";
 		case VERY_LATE_LINEAR: return "VERY_LATE_LINEAR";
 		case VERY_LATE_EASE_IN_EASE_OUT: return "VERY_LATE_EASE_IN_EASE_OUT";		
 		case QUADRATIC_EASE_IN: return "QUADRATIC_EASE_IN";
 		case QUADRATIC_EASE_OUT: return "QUADRATIC_EASE_OUT";
+		case EARLY_QUADRATIC_EASE_OUT: return "EARLY_QUADRATIC_EASE_OUT";
 		case QUADRATIC_BEZIER_PARAM: return "QUADRATIC_BEZIER_PARAM";
 		case EXPONENTIAL_SIGMOID_PARAM: return "EXPONENTIAL_SIGMOID_PARAM";
 		case OBJECT_DROP: return "OBJECT_DROP";
@@ -163,12 +165,16 @@ void ofxAnimatable::setup(){
 	delay_ = 0.0f;
 }
 
-void ofxAnimatable::drawCurve(int x, int y, int size){
+void ofxAnimatable::drawCurve(int x, int y, int size, bool bg){
 
 #if (OF_AVAILABLE)
 	int xx = x;
 	int yy = y;
 	float s = size;
+	if(bg){
+		ofSetColor(22);
+		ofRect(x, y, size, size);
+	}
 	float steps = size;
 	string name = ofxAnimatable::getCurveName(curveStyle_);
 	glPointSize(1);
@@ -242,6 +248,9 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float param1, fl
 		case LINEAR:
 			break;
 
+		case EARLY_LINEAR:
+			r = ( percent < 0.25f ) ? 0.0f : 1.33333333f * (percent - 0.25f); break;
+
 		case LATE_LINEAR:
 			r = ( percent < 0.5f ) ? 0.0f : 2.0f * percent - 1.0f; break;
 
@@ -308,6 +317,12 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float param1, fl
 
 		case QUADRATIC_EASE_OUT:
 			r = 1.0f - (percent - 1.0f) * (percent - 1.0f); break;
+
+		case EARLY_QUADRATIC_EASE_OUT:{
+			float p = 1.333333333f;
+			float x = (percent - 0.25) * p;
+			r = (percent < 0.25f) ? 0.0f :  1.0f - ( x - 1.0f) * ( x - 1.0f);
+		}break;
 
 		case BOUNCY:{
 			float k = 0.5f;

@@ -1,6 +1,6 @@
 #include "testApp.h"
 
-int floorLine = 500;
+int floorLine = 400;
 
 
 //--------------------------------------------------------------
@@ -79,7 +79,7 @@ void testApp::draw(){
 
 	int vOff = 10;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
-		float lineHeight = 2.0;
+		float lineHeight = 1.5;
 		float yy = vOff + i * lineHeight * width;
 		glColor4ub(255,255,255,64);
 		ofLine(300, yy + width * 0.5, 500 + width, yy + width * 0.5);
@@ -107,11 +107,11 @@ void testApp::draw(){
 	ofDrawBitmapString( ofToString( ofGetFrameRate()),  10, 10);
 	
 	int c = 0;
-	int size = 80;
+	int size = 90;
 	int yy = floorLine + 50;
 	int rowHeight = size + 30;
-	int xx = 50;
-	int off = size/2.5;
+	int xx = 25;
+	int off = size/1.75;
 	int x = 0;
 	int row = 0;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){

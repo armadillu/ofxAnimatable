@@ -35,8 +35,9 @@ enum AnimCurve{
 	EASE_IN_EASE_OUT = 0,
 	EASE_IN, 
 	EASE_OUT, 
-	LINEAR,	
-	LATE_LINEAR, 
+	LINEAR,
+	EARLY_LINEAR,
+	LATE_LINEAR,
 	VERY_LATE_LINEAR, 
 	BOUNCY,	//this needs work TODO
 	OBJECT_DROP,
@@ -55,6 +56,7 @@ enum AnimCurve{
 	VERY_LATE_EASE_IN_EASE_OUT,
 	QUADRATIC_EASE_IN,
 	QUADRATIC_EASE_OUT,
+	EARLY_QUADRATIC_EASE_OUT,
 	QUADRATIC_BEZIER_PARAM, //http://www.flong.com/texts/code/shapers_exp/
 	EXPONENTIAL_SIGMOID_PARAM,
 	NUM_ANIM_CURVES //leave that on the last to see how many we have
@@ -92,8 +94,11 @@ class ofxAnimatable{
 		float waitTimeLeftPercent(){ return 1.0f - delay_ / waitTime_; }
 	
 		static string getCurveName(AnimCurve c);
+
+		//carefull with those, you'd better know what you are doing, those should almost be protected
 		static float calcCurveAt(float percent, AnimCurve type, float param1 = 0.5, float param2 = 0.5, float param3 = 0.5); //exposing this to get direct access to simple curve values
-		void drawCurve(int x, int y, int size);
+		float calcCurveAt( float percent );
+		void drawCurve(int x, int y, int size, bool bg = false);
 
 		virtual ~ofxAnimatable(void) {}
 		ofxAnimatable() {}
@@ -117,7 +122,7 @@ class ofxAnimatable{
 	
 		int			direction_;  // 1 : forward,   -1 : backward
 	
-		float calcCurveAt( float percent );
+
 
 		void startAnimation();			///Used by subclasses to indicate we are starting an anim
 		void startAnimationAfterDelay(float delay);
