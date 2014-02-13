@@ -11,17 +11,13 @@
 
 
 #include <iostream>
+#define _USE_MATH_DEFINES
 #include <Math.h>
+#include <cmath>
 using namespace std;
 
 #pragma once
-
-#define OF_AVAILABLE true
-
-#if (OF_AVAILABLE)
 #include "ofMain.h"
-#endif
-
 
 
 enum AnimRepeat{
