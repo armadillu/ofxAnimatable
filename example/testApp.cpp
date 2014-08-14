@@ -49,8 +49,7 @@ void testApp::setup(){
 	pointAnim.setRepeatType(PLAY_ONCE);
 	pointAnim.setCurve(EASE_IN_EASE_OUT);
 
-
-	img.loadImage("fitted_curve.png");
+	//img.loadImage("fitted_curve.png");
 }
 
 //--------------------------------------------------------------

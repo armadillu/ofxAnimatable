@@ -103,7 +103,7 @@ class ofxAnimatable{
 		//carefull with those, you'd better know what you are doing, those should almost be protected
 		//exposing this to get direct access to simple curve values
 		float calcCurveAt( float percent );
-	void drawCurve(int x, int y, int size, bool bg = false, ofColor c = ofColor(255,0,128));
+		void drawCurve(int x, int y, int size, bool bg = false, ofColor c = ofColor(255,0,128));
 
 		static float calcCurveAt(float percent, AnimCurve type, float param1 = 0.5, float param2 = 0.5, float param3 = 0.5, float param4 = 0.5);
 

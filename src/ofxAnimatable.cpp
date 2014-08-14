@@ -22,29 +22,28 @@ float cubicBezier(float x, float a, float b, float c, float d){
 	float y3a = 1.00f; // final y
 	float x3a = 1.00f; // final x
 
-	float A =   x3a - 3.0f * x2a + 3.0f * x1a - x0a;
+	float A = x3a - 3.0f * x2a + 3.0f * x1a - x0a;
 	float B = 3.0f * x2a - 6.0f * x1a + 3.0f * x0a;
 	float C = 3.0f * x1a - 3.0f * x0a;
-	float D =   x0a;
+	float D = x0a;
 
-	float E =   y3a - 3.0f * y2a + 3.0f * y1a - y0a;
+	float E = y3a - 3.0f * y2a + 3.0f * y1a - y0a;
 	float F = 3.0f * y2a - 6.0f * y1a + 3.0f * y0a;
 	float G = 3.0f * y1a - 3.0f * y0a;
-	float H =   y0a;
+	float H = y0a;
 
 	// Solve for t given x (using Newton-Raphelson), then solve for y given t.
 	// Assume for the first guess that t = x.
 	float currentt = x;
 	int nRefinementIterations = 5;
 	for (int i = 0; i < nRefinementIterations; i++){
-		float currentx = xFromT (currentt, A,B,C,D);
-		float currentslope = slopeFromT(currentt, A,B,C);
+		float currentx = xFromT (currentt,A,B,C,D);
+		float currentslope = slopeFromT(currentt,A,B,C);
 		currentt -= (currentx - x)*(currentslope);
-		currentt = ofClamp(currentt, 0.0f,1.0f);
+		currentt = ofClamp(currentt, 0.0f, 1.0f);
 	}
 
-	float y = yFromT (currentt,  E,F,G,H);
-	return y;
+	return yFromT(currentt,E,F,G,H);
 }
 
 
@@ -499,30 +498,30 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 				r = cosf( (2.0f * M_PI / 3.0f) * percent );
 			}else{
 				float range = 0.125f;
-				float diffRange = 0.125;
+				float diffRange = 0.125f;
 				float amp = p1;
-				float freq = 8;
+				float freq = 8.0f;
 
 				if ( percent < 0.75f + range ){
 					r = amp * sinf( freq * M_PI * percent );
 				}else{
-					diffRange *= 0.5; range += diffRange; amp *= 0.5f; freq *= 2.0f;
+					diffRange *= 0.5f; range += diffRange; amp *= 0.5f; freq *= 2.0f;
 					if ( percent < 0.75f + range ){
 						r = amp * sinf( freq * M_PI * percent );
 					}else{
-						diffRange *= 0.5; range += diffRange; amp *= 0.5f; freq *= 2.0f;
+						diffRange *= 0.5f; range += diffRange; amp *= 0.5f; freq *= 2.0f;
 						if ( percent < 0.75f + range ){
 							r = amp * sinf( freq * M_PI * percent );
 						}else{
-							diffRange *= 0.5; range += diffRange; amp *= 0.5f; freq *= 2.0f;
+							diffRange *= 0.5f; range += diffRange; amp *= 0.5f; freq *= 2.0f;
 							if ( percent < 0.75f + range ){
 								r = amp * sinf( freq * M_PI * percent );
 							}else{
-								diffRange *= 0.5; range += diffRange; amp *= 0.5f; freq *= 2.0f;
+								diffRange *= 0.5f; range += diffRange; amp *= 0.5f; freq *= 2.0f;
 								if ( percent < 0.75f + range ){
 									r = amp * sinf( freq * M_PI * percent );
 								}else{
-									diffRange *= 0.5; range += diffRange; amp *= 0.5f; freq *= 2.0f;
+									diffRange *= 0.5f; range += diffRange; amp *= 0.5f; freq *= 2.0f;
 									if ( percent < 0.75f + range ){
 										r = amp * sinf( freq * M_PI * percent );
 									}else{
