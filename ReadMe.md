@@ -31,7 +31,9 @@ Let's see how to make an ofPoint animate indefinitely between two positions, wit
 		pointAnim.draw();	
 	}
 
+Includes basic tweening curves, and customizable ones found [here](http://www.flong.com/texts/code/shapers_exp/); also includes Google's [Swift Out](http://www.google.com/design/spec/animation/authentic-motion.html#authentic-motion-mass-weight).
 
+![ofxAnimatable screenshot](https://farm4.staticflickr.com/3882/14733332819_0042c08fe9_z_d.jpg)
 
-![ofxAnimatable screenshot](http://farm9.staticflickr.com/8083/8329975610_ab506dddcb_z.jpg)
+see [big](https://farm4.staticflickr.com/3882/14733332819_c4af5c87a1_o_d.png)
 
