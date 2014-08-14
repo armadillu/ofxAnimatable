@@ -19,6 +19,13 @@ using namespace std;
 #pragma once
 #include "ofMain.h"
 
+#define B0F(t) ((1.0f - t) * (1.0f - t) * (1.0f - t))
+#define B1F(t) (3.0f * t * ( 1.0f - t) * (1.0f - t))
+#define B2F(t) (3.0f * t * t * (1.0f - t))
+#define B3F(t) (t * t * t)
+#define slopeFromT(t,A,B,C)  (1.0f / (3.0f * A * t * t + 2.0f * B * t + C))
+#define xFromT(t, A, B, C, D) (A * (t * t * t) + B * (t * t) + C * t + D)
+#define yFromT(t, E, F, G, H) (E * (t * t * t) + F * (t * t) + G * t + H)
 
 enum AnimRepeat{
 	PLAY_ONCE = 0,
@@ -54,7 +61,9 @@ enum AnimCurve{
 	QUADRATIC_EASE_OUT,
 	EARLY_QUADRATIC_EASE_OUT,
 	QUADRATIC_BEZIER_PARAM, //http://www.flong.com/texts/code/shapers_exp/
+	CUBIC_BEZIER_PARAM,
 	EXPONENTIAL_SIGMOID_PARAM,
+	SWIFT_GOOGLE,
 	NUM_ANIM_CURVES //leave that on the last to see how many we have
 };
 
@@ -76,7 +85,7 @@ class ofxAnimatable{
 		void setDoubleExpSigmoidParam(float param){doubleExpSigmoidParam = param;} //only for QUADRATIC_BEZIER_PARAM curve
 		void setQuadraticBezierParams(float a, float b){quadraticBezierParamA = a; quadraticBezierParamB = b; } //only for EXPONENTIAL_SIGMOID_PARAM curve
 		void setDropObjectParams(float bounceHeightPercent){bounceAmp = bounceHeightPercent;} //only for DROP_OBJECT curve
-
+		void setCubicBezierParams(float a, float b, float c, float d){cubicBezierParamA = a; cubicBezierParamB = b; cubicBezierParamC = c; cubicBezierParamD = d; } //only for EXPONENTIAL_SIGMOID_PARAM curve
 		float getDuration(){ return 1.0f/transitionSpeed_; }
 
 		float getPercentDone();			///get how much of the animation has been "walked"
@@ -92,9 +101,11 @@ class ofxAnimatable{
 		static string getCurveName(AnimCurve c);
 
 		//carefull with those, you'd better know what you are doing, those should almost be protected
-		static float calcCurveAt(float percent, AnimCurve type, float param1 = 0.5, float param2 = 0.5, float param3 = 0.5); //exposing this to get direct access to simple curve values
+		//exposing this to get direct access to simple curve values
 		float calcCurveAt( float percent );
-		void drawCurve(int x, int y, int size, bool bg = false);
+	void drawCurve(int x, int y, int size, bool bg = false, ofColor c = ofColor(255,0,128));
+
+		static float calcCurveAt(float percent, AnimCurve type, float param1 = 0.5, float param2 = 0.5, float param3 = 0.5, float param4 = 0.5);
 
 		virtual ~ofxAnimatable(void) {}
 		ofxAnimatable() {}
@@ -123,7 +134,7 @@ class ofxAnimatable{
 		void startAnimation();			///Used by subclasses to indicate we are starting an anim
 		void startAnimationAfterDelay(float delay);
 		void reset();					///Used by subclasses to indicate a reset of an animation
-		void fillInParams(float&p1, float &p2, float &p3);
+		void fillInParams(float&p1, float &p2, float &p3, float &p4);
 
 	private:
 	
@@ -136,6 +147,7 @@ class ofxAnimatable{
 		float doubleExpSigmoidParam;
 		float quadraticBezierParamA, quadraticBezierParamB;
 		float bounceAmp;
+		float cubicBezierParamA, cubicBezierParamB, cubicBezierParamC, cubicBezierParamD;
 };
 
 	

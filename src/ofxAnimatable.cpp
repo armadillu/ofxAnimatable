@@ -8,8 +8,114 @@
  */
 
 #include "ofxAnimatable.h"
-
 //from http://www.flong.com/texts/code/shapers_exp/
+
+
+float cubicBezier(float x, float a, float b, float c, float d){
+
+	float y0a = 0.00f; // initial y
+	float x0a = 0.00f; // initial x
+	float y1a = b;    // 1st influence y
+	float x1a = a;    // 1st influence x
+	float y2a = d;    // 2nd influence y
+	float x2a = c;    // 2nd influence x
+	float y3a = 1.00f; // final y
+	float x3a = 1.00f; // final x
+
+	float A =   x3a - 3.0f * x2a + 3.0f * x1a - x0a;
+	float B = 3.0f * x2a - 6.0f * x1a + 3.0f * x0a;
+	float C = 3.0f * x1a - 3.0f * x0a;
+	float D =   x0a;
+
+	float E =   y3a - 3.0f * y2a + 3.0f * y1a - y0a;
+	float F = 3.0f * y2a - 6.0f * y1a + 3.0f * y0a;
+	float G = 3.0f * y1a - 3.0f * y0a;
+	float H =   y0a;
+
+	// Solve for t given x (using Newton-Raphelson), then solve for y given t.
+	// Assume for the first guess that t = x.
+	float currentt = x;
+	int nRefinementIterations = 5;
+	for (int i = 0; i < nRefinementIterations; i++){
+		float currentx = xFromT (currentt, A,B,C,D);
+		float currentslope = slopeFromT(currentt, A,B,C);
+		currentt -= (currentx - x)*(currentslope);
+		currentt = ofClamp(currentt, 0.0f,1.0f);
+	}
+
+	float y = yFromT (currentt,  E,F,G,H);
+	return y;
+}
+
+
+//////////////////////////////////////////////////////////
+// Helper functions.
+
+
+float  findx (float t, float x0, float x1, float x2, float x3){
+	return x0 * B0F(t) + x1 * B1F(t) + x2 * B2F(t) + x3 * B3F(t);
+}
+float  findy (float t, float y0, float y1, float y2, float y3){
+	return y0 * B0F(t) + y1 * B1F(t) + y2 * B2F(t) + y3 * B3F(t);
+}
+
+float cubicBezierNearlyThroughTwoPoints(float x, float a, float b, float c, float d){
+
+	float y = 0.0f;
+	float epsilon = 0.00001f;
+	float min_param_a = 0.0f + epsilon;
+	float max_param_a = 1.0f - epsilon;
+	float min_param_b = 0.0f + epsilon;
+	float max_param_b = 1.0f - epsilon;
+	a = max(min_param_a, min(max_param_a, a));
+	b = max(min_param_b, min(max_param_b, b));
+
+	float x0 = 0.0f;
+	float y0 = 0.0f;
+	float x4 = a;
+	float y4 = b;
+	float x5 = c;
+	float y5 = d;
+	float x3 = 1.0f;
+	float y3 = 1.0f;
+	float x1,y1,x2,y2; // to be solved.
+
+	// arbitrary but reasonable
+	// t-values for interior control points
+	float t1 = 0.3f;
+	float t2 = 0.7f;
+
+	float B0t1 = B0F(t1);
+	float B1t1 = B1F(t1);
+	float B2t1 = B2F(t1);
+	float B3t1 = B3F(t1);
+	float B0t2 = B0F(t2);
+	float B1t2 = B1F(t2);
+	float B2t2 = B2F(t2);
+	float B3t2 = B3F(t2);
+
+	float ccx = x4 - x0*B0t1 - x3*B3t1;
+	float ccy = y4 - y0*B0t1 - y3*B3t1;
+	float ffx = x5 - x0*B0t2 - x3*B3t2;
+	float ffy = y5 - y0*B0t2 - y3*B3t2;
+
+	x2 = (ccx - (ffx*B1t1)/B1t2) / (B2t1 - (B1t1*B2t2)/B1t2);
+	y2 = (ccy - (ffy*B1t1)/B1t2) / (B2t1 - (B1t1*B2t2)/B1t2);
+	x1 = (ccx - x2*B2t1) / B1t1;
+	y1 = (ccy - y2*B2t1) / B1t1;
+
+	x1 = max(0.0f + epsilon, min(1.0f - epsilon, x1));
+	x2 = max(0.0f + epsilon, min(1.0f - epsilon, x2));
+
+	// Note that this function also requires cubicBezier()!
+	y = cubicBezier(x, x1, y1, x2, y2);
+	y = MAX(0.0f, MIN(1.0f, y));
+	return y;
+}
+
+
+/////////////////////////
+
 
 float doublePolynomialSigmoid(float x, int n){
 
@@ -137,7 +243,9 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case QUADRATIC_EASE_OUT: return "QUADRATIC_EASE_OUT";
 		case EARLY_QUADRATIC_EASE_OUT: return "EARLY_QUADRATIC_EASE_OUT";
 		case QUADRATIC_BEZIER_PARAM: return "QUADRATIC_BEZIER_PARAM";
+		case CUBIC_BEZIER_PARAM: return "CUBIC_BEZIER_PARAM";
 		case EXPONENTIAL_SIGMOID_PARAM: return "EXPONENTIAL_SIGMOID_PARAM";
+		case SWIFT_GOOGLE: return "SWIFT_GOOGLE";
 		case OBJECT_DROP: return "OBJECT_DROP";
 
 		default: return "UNKNOWN_CURVE!";
@@ -147,9 +255,13 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 
 void ofxAnimatable::setup(){
 
-	doubleExpSigmoidParam = 0.5;
-	quadraticBezierParamA = 0.25;
-	quadraticBezierParamB = 0.75;
+	doubleExpSigmoidParam = 0.5f;
+	quadraticBezierParamA = 0.25f;
+	quadraticBezierParamB = 0.75f;
+	cubicBezierParamA = 0.033f;
+	cubicBezierParamB = 0.973f;
+	cubicBezierParamC = 0.250f;
+	cubicBezierParamD = 0.750f;
 	bounceAmp = 0.05;
 	transitionSpeed_ = 1.0f / DEFAULT_ANIMATION_DURATION;
 	percentDone_ = 0.0f;
@@ -165,12 +277,13 @@ void ofxAnimatable::setup(){
 	delay_ = 0.0f;
 }
 
-void ofxAnimatable::drawCurve(int x, int y, int size, bool bg){
+void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 
-#if (OF_AVAILABLE)
+#if (OF_VERSION)
 	int xx = x;
 	int yy = y;
 	float s = size;
+	ofPushStyle();
 	if(bg){
 		ofSetColor(22);
 		ofRect(x, y, size, size);
@@ -178,29 +291,59 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg){
 	float steps = size;
 	string name = ofxAnimatable::getCurveName(curveStyle_);
 	glPointSize(1);
-	glColor4ub(255,255,255, 64);
-	ofLine(xx,yy + s, xx + s, yy + s);
-	ofLine(xx,yy, xx, yy + s);
-	glColor4ub(255,255,255, 32);
-	ofLine(xx,yy + s, xx + s, yy );
-	glColor4ub(255,255,255, 255);
 	ofMesh m;
+
 	m.setMode(OF_PRIMITIVE_LINE_STRIP);
 	float step = 1./steps;
-	float p1, p2, p3;
-	fillInParams(p1,p2,p3);
+	float p1, p2, p3, p4;
+	fillInParams(p1,p2,p3, p4);
 	for (float i = 0.0f ; i< 1.0f; i+= step){
-		float val = calcCurveAt(i, curveStyle_, p1, p2, p3);
+		float val = calcCurveAt(i, curveStyle_, p1, p2, p3, p4);
 		m.addVertex( ofVec3f(xx + s * i, yy + s - s * val) );
 	}
+
+	ofSetColor(c);
+	ofSetLineWidth(2);
 	m.draw();
-	glColor4ub(255,255,255, 255);
+	if (curveStyle_ == CUBIC_BEZIER_PARAM || curveStyle_ == QUADRATIC_BEZIER_PARAM ||
+		curveStyle_ == EXPONENTIAL_SIGMOID_PARAM ){
+		ofMesh pts;
+		glPointSize(3);
+		pts.setMode(OF_PRIMITIVE_POINTS);
+		switch (curveStyle_) {
+			case CUBIC_BEZIER_PARAM:
+				pts.addColor(ofColor::red);
+				pts.addVertex(ofVec2f(xx + cubicBezierParamA * size, yy + cubicBezierParamB * size));
+				pts.addColor(ofColor::green);
+				pts.addVertex(ofVec2f(xx + cubicBezierParamC * size, yy +cubicBezierParamD * size));
+				break;
+			case QUADRATIC_BEZIER_PARAM:
+				pts.addColor(ofColor::blue);
+				pts.addVertex(ofVec2f(xx + quadraticBezierParamA * size, yy + quadraticBezierParamB * size));
+				break;
+			case EXPONENTIAL_SIGMOID_PARAM:
+				pts.addColor(ofColor::cyan);
+				pts.addVertex(ofVec2f(xx + doubleExpSigmoidParam * size, yy + size));
+				break;
+		}
+		pts.draw();
+	}
+
+	ofSetLineWidth(1);
+	ofSetColor(255,255); //axes
+	ofLine(xx,yy + s, xx + s, yy + s);
+	ofLine(xx,yy, xx, yy + s);
+	ofSetColor(255,32); //linear
+	ofLine(xx,yy + s, xx + s, yy );
+	ofSetColor(170); //label
 	ofDrawBitmapString(name, x, y + s + 15);
+	ofPopStyle();
 #endif
 }
 
 
-void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3){
+
+void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &p4){
 
 	switch (curveStyle_) { //in case our curve has extra params, fill them in
 		case QUADRATIC_BEZIER_PARAM:
@@ -215,6 +358,12 @@ void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3){
 			p1 = bounceAmp;
 			break;
 
+		case CUBIC_BEZIER_PARAM:
+			p1 = cubicBezierParamA;
+			p2 = cubicBezierParamB;
+			p3 = cubicBezierParamC;
+			p4 = cubicBezierParamD;
+
 		default:
 			break;
 	}
@@ -222,16 +371,16 @@ void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3){
 
 float ofxAnimatable::calcCurveAt( float percent ){
 
-	float p1, p2, p3;
-	fillInParams(p1,p2,p3);
-	float r = calcCurveAt(percent, curveStyle_, p1, p2, p3);
+	float p1, p2, p3, p4;
+	fillInParams(p1,p2,p3,p4);
+	float r = calcCurveAt(percent, curveStyle_, p1, p2, p3, p4);
 	
 	currentSpeed_ =  r - prevSpeed_; //this is very ghetto and should be done properly! TODO
 	prevSpeed_ = r;
 	return r;
 }
 
-float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float param1, float param2, float param3){
+float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float p2, float p3, float p4){
 
 	float r = percent;
 	switch ( type ) {
@@ -330,11 +479,19 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float param1, fl
 			}break;
 
 		case QUADRATIC_BEZIER_PARAM:{
-			r = quadraticBezier(percent, param1, param2); break; 
+			r = quadraticBezier(percent, p1, p2); break; 
 		}
 
 		case EXPONENTIAL_SIGMOID_PARAM:{
-			r = doubleExponentialSigmoid(percent, param1); break;
+			r = doubleExponentialSigmoid(percent, p1); break;
+		}
+
+		case CUBIC_BEZIER_PARAM:{
+			r = cubicBezier(percent, p1, p2, p3, p4); break;
+		}
+
+		case SWIFT_GOOGLE:{
+			r = cubicBezier(percent, 0.444f, 0.013f, 0.188f, 0.956f); break;
 		}
 
 		case OBJECT_DROP:{
@@ -343,7 +500,7 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float param1, fl
 			}else{
 				float range = 0.125f;
 				float diffRange = 0.125;
-				float amp = param1;
+				float amp = p1;
 				float freq = 8;
 
 				if ( percent < 0.75f + range ){

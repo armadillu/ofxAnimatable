@@ -6,7 +6,7 @@
 int main( ){
 
     ofAppGlutWindow window;
-	window.setGlutDisplayString("rgba double samples>=16"); //uncomment for mac fsaa
+	window.setGlutDisplayString("rgba double samples>=8"); //uncomment for mac fsaa
 	ofSetupOpenGL(&window, 1320,800, OF_WINDOW);			// <-------- setup the GL context
 
 	// this kicks off the running of my app
