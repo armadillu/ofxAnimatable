@@ -274,6 +274,7 @@ void ofxAnimatable::setup(){
 	lastDT_ = 1;
 	waitTime_ = 0.0f;
 	delay_ = 0.0f;
+	curveStylePtr_ = &curveStyle_;
 }
 
 void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
@@ -288,7 +289,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 		ofRect(x, y, size, size);
 	}
 	float steps = size;
-	string name = ofxAnimatable::getCurveName(curveStyle_);
+	string name = ofxAnimatable::getCurveName(*curveStylePtr_);
 	glPointSize(1);
 	ofMesh m;
 
@@ -297,19 +298,19 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 	float p1, p2, p3, p4;
 	fillInParams(p1,p2,p3, p4);
 	for (float i = 0.0f ; i< 1.0f; i+= step){
-		float val = calcCurveAt(i, curveStyle_, p1, p2, p3, p4);
+		float val = calcCurveAt(i, *curveStylePtr_, p1, p2, p3, p4);
 		m.addVertex( ofVec3f(xx + s * i, yy + s - s * val) );
 	}
 
 	ofSetColor(c);
 	ofSetLineWidth(2);
 	m.draw();
-	if (curveStyle_ == CUBIC_BEZIER_PARAM || curveStyle_ == QUADRATIC_BEZIER_PARAM ||
-		curveStyle_ == EXPONENTIAL_SIGMOID_PARAM ){
+	if (*curveStylePtr_ == CUBIC_BEZIER_PARAM || *curveStylePtr_ == QUADRATIC_BEZIER_PARAM ||
+		*curveStylePtr_ == EXPONENTIAL_SIGMOID_PARAM ){
 		ofMesh pts;
 		glPointSize(3);
 		pts.setMode(OF_PRIMITIVE_POINTS);
-		switch (curveStyle_) {
+		switch (*curveStylePtr_) {
 			case CUBIC_BEZIER_PARAM:
 				pts.addColor(ofColor::red);
 				pts.addVertex(ofVec2f(xx + cubicBezierParamA * size, yy + cubicBezierParamB * size));
@@ -344,7 +345,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 
 void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &p4){
 
-	switch (curveStyle_) { //in case our curve has extra params, fill them in
+	switch (*curveStylePtr_) { //in case our curve has extra params, fill them in
 		case QUADRATIC_BEZIER_PARAM:
 			p1 = quadraticBezierParamA;
 			p2 = quadraticBezierParamB;
@@ -372,7 +373,7 @@ float ofxAnimatable::calcCurveAt( float percent ){
 
 	float p1, p2, p3, p4;
 	fillInParams(p1,p2,p3,p4);
-	float r = calcCurveAt(percent, curveStyle_, p1, p2, p3, p4);
+	float r = calcCurveAt(percent, *curveStylePtr_, p1, p2, p3, p4);
 	
 	currentSpeed_ =  r - prevSpeed_; //this is very ghetto and should be done properly! TODO
 	prevSpeed_ = r;
@@ -636,6 +637,10 @@ void ofxAnimatable::setRepeatType( AnimRepeat repeat ){
 
 void ofxAnimatable::setCurve( AnimCurve curveStyle){
 	curveStyle_ = curveStyle;
+}
+
+void ofxAnimatable::setCurve( AnimCurve *curveStyle){
+	curveStylePtr_ = curveStyle;
 }
 
 

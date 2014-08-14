@@ -79,6 +79,10 @@ class ofxAnimatable{
 		void resume();					//
 
 		void setCurve( AnimCurve curveStyle_ );
+		void setCurve( AnimCurve* curveStyle_ ); //use this if you want to change
+													//anim curve styles on the fly.
+													//just make sure the poitner remains valid!
+	
 		void setRepeatType( AnimRepeat repeat );
 		void setDuration( float seconds );
 
@@ -126,6 +130,8 @@ class ofxAnimatable{
 		float		waitTime_;	//original wait delay_
 		AnimRepeat 	repeat_;
 		AnimCurve	curveStyle_;
+		AnimCurve	*curveStylePtr_; //by default points to curveStyle_
+										//we always use the pointer!
 	
 		int			direction_;  // 1 : forward,   -1 : backward
 	
