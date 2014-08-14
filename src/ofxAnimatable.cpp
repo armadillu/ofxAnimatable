@@ -279,7 +279,7 @@ void ofxAnimatable::setup(){
 
 void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 
-#if (OF_VERSION)
+#if defined(OF_VERSION) || defined(OF_VERSION_MAJOR)
 	int xx = x;
 	int yy = y;
 	float s = size;

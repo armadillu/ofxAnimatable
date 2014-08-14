@@ -13,8 +13,13 @@ void testApp::setup(){
 	ofEnableSmoothing();
 	ofEnableAlphaBlending();
 	ofSetVerticalSync(true);
-	
-	width = 10;	
+#ifdef TIME_SAMPLE
+	TIME_SAMPLE_SET_FRAMERATE(60);
+	TIME_SAMPLE_SET_PRECISION(3);
+	TIME_SAMPLE_SET_AVERAGE_RATE(0.01);
+	TIME_SAMPLE_SET_DRAW_LOCATION(TIME_MEASUREMENTS_BOTTOM_LEFT);
+#endif
+	width = 10;
 
 	ofxAnimatableFloat f;
 	f.animateFromTo( xMargin, xMargin + widthCol );
@@ -81,6 +86,19 @@ void testApp::update(){
 	float d = 0.5 + 0.5 * sin( 0.06 * t + 44);
 	pos[CUBIC_BEZIER_PARAM].setCubicBezierParams(a, b, c, d);
 
+	//benchamrk the curves individually, report through ofxTimeMeasurements
+	#ifdef TIME_SAMPLE
+	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
+		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i);
+		string curveName = ofxAnimatable::getCurveName(curve);
+		TS_START(curveName);
+		for(int k = 0; k < 1000; k++){
+			ofxAnimatable::calcCurveAt(0.5f, curve, 0.5f, 0.5f, 0.5f, 0.5f);
+		}
+		TS_STOP(curveName);
+	}
+	#endif
+
 }
 
 //--------------------------------------------------------------
@@ -112,7 +130,6 @@ void testApp::draw(){
 //	ofSetColor(0,255,0);
 //	ofCircle(ss * c, ss * d, 3);
 //	ofPopMatrix();
-
 
 	int vOff = 20;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
@@ -152,7 +169,8 @@ void testApp::draw(){
 	int x = 0;
 	int row = 0;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
-		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i);		
+		string curveName = ofxAnimatable::getCurveName((AnimCurve)i);
+		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i);
 		drawPlot( xx + x, yy + row * rowHeight - 15 * i, size, curve, ofxAnimatable::getCurveName(curve) );
 		x += (size + off);
 		if (  x > ofGetWidth() -  1.0f * size - xx){
