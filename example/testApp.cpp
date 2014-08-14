@@ -92,7 +92,7 @@ void testApp::update(){
 		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i);
 		string curveName = ofxAnimatable::getCurveName(curve);
 		TS_START(curveName);
-		for(int k = 0; k < 1000; k++){
+		for(int k = 0; k < 5000; k++){
 			ofxAnimatable::calcCurveAt(0.5f, curve, 0.5f, 0.5f, 0.5f, 0.5f);
 		}
 		TS_STOP(curveName);

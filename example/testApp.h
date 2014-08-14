@@ -36,8 +36,9 @@ class testApp : public ofBaseApp{
 
 		float width;
 		float fr;
-	ofImage img;
-	float a,b,c,d;
+
+		ofImage img;
+		float a,b,c,d;
 
 
 };
