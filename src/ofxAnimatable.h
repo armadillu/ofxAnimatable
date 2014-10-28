@@ -114,6 +114,16 @@ class ofxAnimatable{
 		virtual ~ofxAnimatable(void) {}
 		ofxAnimatable() {}
 
+		struct AnimationEvent{
+			float percentDone;
+			AnimRepeat repeatSyle;
+			float direction;
+			int playCount;
+			ofxAnimatable * who;
+		};
+
+		ofEvent<AnimationEvent> animFinished;
+		ofEvent<AnimationEvent> animLooped;
 
 	protected:
 

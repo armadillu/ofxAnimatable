@@ -563,20 +563,35 @@ void ofxAnimatable::update(float dt){
 			
 			if (percentDone_ >= 1.0f) percentDone_ = 1.0f;
 			else percentDone_ = 0.0f;
-						
+
+			AnimationEvent args;
+			args.repeatSyle = repeat_;
+			args.direction = direction_;
+			args.percentDone = percentDone_;
+			args.direction = direction_;
+			args.playCount = playcount_;
+			args.who = this;
+			
 			switch (repeat_) {
 
-				case PLAY_ONCE:	
+				case PLAY_ONCE:
+					ofNotifyEvent(animFinished, args, this);
 					break;	//nothing to do;
 					
 				case LOOP_BACK_AND_FORTH:
 					direction_ = -direction_;
 					animating_ = true;
+					args.direction = direction_;
+					playcount_++;
+					ofNotifyEvent(animLooped, args, this);
 					break;
 					
-				case LOOP:	
+				case LOOP:
 					animating_ = true;
 					percentDone_ = 0.0f;
+					args.direction = direction_;
+					playcount_++;
+					ofNotifyEvent(animLooped, args, this);
 					break;
 
 				case LOOP_BACK_AND_FORTH_ONCE:
@@ -587,6 +602,9 @@ void ofxAnimatable::update(float dt){
 						animating_ = true;						
 						playcount_++;
 					}
+					args.direction = direction_;
+					args.playCount = playcount_;
+					ofNotifyEvent(animLooped, args, this);
 					break;
 			}
 		}
