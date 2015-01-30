@@ -55,11 +55,12 @@ void testApp::setup(){
 //--------------------------------------------------------------
 void testApp::update(){
 
-	//app timebase, to send to all animatable objets
-	float dt = 1.0f / ofGetFrameRate();
+	//app timebase, to send to all animatable objects
+	float dt = 1.0f / 60.0f;
 	
-	for ( int i = 0; i < NUM_ANIM_CURVES; i++ )
+	for ( int i = 0; i < NUM_ANIM_CURVES; i++ ){
 		pos[i].update( dt );
+	}
 	
 	ball.update( dt );
 	
@@ -74,7 +75,7 @@ void testApp::update(){
 	//animate our parametric curves
 	float a = 0.5 + 0.5 * sin( 0.06 * t);
 	float b = 0.5 + 0.5 * sin( 0.04 * t + 400);
-	pos[QUADRATIC_BEZIER_PARAM].setQuadraticBezierParams( a, b);
+	pos[QUADRATIC_BEZIER_PARAM].setQuadraticBezierParams(a, b);
 
 	float steep = 0.5 + 0.5 * sin( 0.1 * t);
 	pos[EXPONENTIAL_SIGMOID_PARAM].setDoubleExpSigmoidParam( steep );
@@ -85,7 +86,7 @@ void testApp::update(){
 	float d = 0.5 + 0.5 * sin( 0.06 * t + 44);
 	pos[CUBIC_BEZIER_PARAM].setCubicBezierParams(a, b, c, d);
 
-	//benchamrk the curves individually, report through ofxTimeMeasurements
+	//benchmark the curves individually, report through ofxTimeMeasurements
 	#ifdef TIME_SAMPLE
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
 		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i);
@@ -168,9 +169,9 @@ void testApp::draw(){
 	int x = 0;
 	int row = 0;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
-		string curveName = ofxAnimatable::getCurveName((AnimCurve)i);
 		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i);
-		drawPlot( xx + x, yy + row * rowHeight - 15 * i, size, curve, ofxAnimatable::getCurveName(curve) );
+		string curveName = ofxAnimatable::getCurveName((AnimCurve)i);
+		drawPlot( xx + x, yy + row * rowHeight - 15 * i, size, curve, curveName );
 		x += (size + off);
 		if (  x > ofGetWidth() -  1.0f * size - xx){
 			row++;

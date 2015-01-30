@@ -139,6 +139,70 @@ float doublePolynomialSigmoid(float x, int n){
 	return y;
 }
 
+//https://github.com/PrimaryFeather/Sparrow-Framework/blob/master/sparrow/src/Classes/SPTransitions.m#L86
+float easeOutBounce(float ratio){
+
+	float s = 7.5625f;
+	float p = 2.75f;
+	float l;
+	if (ratio < (1.0f/p)){
+		l = s * powf(ratio, 2.0f);
+	}else{
+		if (ratio < (2.0f/p)){
+			ratio -= 1.5f/p;
+			l = s * powf(ratio, 2.0f) + 0.75f;
+		}else{
+			if (ratio < 2.5f/p){
+				ratio -= 2.25f/p;
+				l = s * powf(ratio, 2.0f) + 0.9375f;
+			}else{
+				ratio -= 2.625f/p;
+				l = s * powf(ratio, 2.0f) + 0.984375f;
+			}
+		}
+	}
+	return l;
+}
+
+
+float easeInBounce(float ratio){
+	return 1.0f - easeOutBounce(1.0f) - ratio;
+}
+
+
+float easeInElastic(float ratio){
+	if (ratio == 0.0f || ratio == 1.0f) return ratio;
+	else{
+		float p = 0.3f;
+		float s = p / 4.0f;
+		float invRatio = ratio - 1.0f;
+		return -1.0f * powf(2.0f, 10.0f*invRatio) * sinf((invRatio-s)*TWO_PI/p);
+	}
+}
+
+
+float easeOutElastic(float ratio){
+
+	if (ratio == 0.0f || ratio == 1.0f) return ratio;
+	else{
+		float p = 0.3f;
+		float s = p / 4.0f;
+		return powf(2.0f, -10.0f*ratio) * sinf((ratio-s)*TWO_PI/p) + 1.0f;
+	}
+}
+
+
+float easeInOutElastic(float ratio){
+	if (ratio < 0.5f) return 0.5f * easeInElastic( ratio * 2.0f);
+	else              return 0.5f * easeOutElastic((ratio -0.5f ) * 2.0f) + 0.5f;
+}
+
+float easeOutInElastic(float ratio){
+	if (ratio < 0.5f) return 0.5f * easeOutElastic(ratio * 2.0f);
+	else              return 0.5f * easeInElastic((ratio - 0.5f) * 2.0f) + 0.5f;
+}
+
+
 float doubleExponentialSigmoid (float x, float a){
 
 	float epsilon = 0.00001f;
@@ -194,7 +258,7 @@ float exponentialEasing (float x, float a){
 }
 
 
-float quadraticBezier (float x, float a, float b){
+float quadraticBezier(float x, float a, float b){
 	// adapted from BEZMATH.PS (1993)
 	// by Don Lancaster, SYNERGETICS Inc.
 	// http://www.tinaja.com/text/bezmath.html
@@ -246,6 +310,10 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case EXPONENTIAL_SIGMOID_PARAM: return "EXPONENTIAL_SIGMOID_PARAM";
 		case SWIFT_GOOGLE: return "SWIFT_GOOGLE";
 		case OBJECT_DROP: return "OBJECT_DROP";
+		case OBJECT_DROP2: return "OBJECT_DROP2";
+		case EASE_IN_ELASTIC: return "EASE_IN_ELASTIC";
+		case EASE_IN_OUT_ELASTIC: return "EASE_IN_OUT_ELASTIC";
+		case EASE_OUT_IN_ELASTIC: return "EASE_OUT_IN_ELASTIC";
 
 		default: return "UNKNOWN_CURVE!";
 	}
@@ -538,7 +606,18 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 			break;
 		}
 
-		default: ;
+		case OBJECT_DROP2:
+			r = easeOutBounce(percent); break;
+
+		case EASE_IN_ELASTIC:
+			r = easeInElastic(percent); break;
+
+		case EASE_IN_OUT_ELASTIC:
+			r = easeInOutElastic(percent); break;
+
+		case EASE_OUT_IN_ELASTIC:
+			r = easeOutInElastic(percent); break;
+
 	}
 	return r;
 }
@@ -655,6 +734,7 @@ void ofxAnimatable::setRepeatType( AnimRepeat repeat ){
 
 void ofxAnimatable::setCurve( AnimCurve curveStyle){
 	curveStyle_ = curveStyle;
+	curveStylePtr_ = &curveStyle_;
 }
 
 void ofxAnimatable::setCurve( AnimCurve *curveStyle){
