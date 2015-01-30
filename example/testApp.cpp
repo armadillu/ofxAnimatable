@@ -161,7 +161,7 @@ void testApp::draw(){
 	ofDrawBitmapString( ofToString( ofGetFrameRate()),  10, 10);
 	
 	int c = 0;
-	int size = 100;
+	int size = 90;
 	int yy = size;
 	int rowHeight = 2.4 * size ;
 	int xx = 400;

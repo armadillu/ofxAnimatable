@@ -166,7 +166,18 @@ float easeOutBounce(float ratio){
 
 
 float easeInBounce(float ratio){
-	return 1.0f - easeOutBounce(1.0f) - ratio;
+	return 1.0f - easeOutBounce(1.0f - ratio);
+}
+
+float easeInOutBounce(float ratio){
+	if (ratio < 0.5f) return 0.5f * easeInBounce(ratio * 2.0f);
+	else              return 0.5f * easeOutBounce((ratio - 0.5f) * 2.0f) + 0.5f;
+}
+
+
+float easeOutInBounce(float ratio){
+	if (ratio < 0.5f) return 0.5f * easeOutBounce(ratio * 2.0f);
+	else              return 0.5f * easeInBounce((ratio - 0.5f) * 2.0f) + 0.5f;
 }
 
 
@@ -310,8 +321,12 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case EXPONENTIAL_SIGMOID_PARAM: return "EXPONENTIAL_SIGMOID_PARAM";
 		case SWIFT_GOOGLE: return "SWIFT_GOOGLE";
 		case OBJECT_DROP: return "OBJECT_DROP";
-		case OBJECT_DROP2: return "OBJECT_DROP2";
+		case EASE_IN_BOUNCE: return "EASE_IN_BOUNCE";
+		case EASE_OUT_BOUNCE: return "EASE_OUT_BOUNCE";
+		case EASE_IN_OUT_BOUNCE: return "EASE_IN_OUT_BOUNCE";
+		case EASE_OUT_IN_BOUNCE: return "EASE_OUT_IN_BOUNCE";
 		case EASE_IN_ELASTIC: return "EASE_IN_ELASTIC";
+		case EASE_OUT_ELASTIC: return "EASE_OUT_ELASTIC";
 		case EASE_IN_OUT_ELASTIC: return "EASE_IN_OUT_ELASTIC";
 		case EASE_OUT_IN_ELASTIC: return "EASE_OUT_IN_ELASTIC";
 
@@ -606,11 +621,23 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 			break;
 		}
 
-		case OBJECT_DROP2:
+		case EASE_IN_BOUNCE:
+			r = easeInBounce(percent); break;
+
+		case EASE_OUT_BOUNCE:
 			r = easeOutBounce(percent); break;
+
+		case EASE_IN_OUT_BOUNCE:
+			r = easeInOutBounce(percent); break;
+
+		case EASE_OUT_IN_BOUNCE:
+			r = easeOutInBounce(percent); break;
 
 		case EASE_IN_ELASTIC:
 			r = easeInElastic(percent); break;
+
+		case EASE_OUT_ELASTIC:
+			r = easeOutElastic(percent); break;
 
 		case EASE_IN_OUT_ELASTIC:
 			r = easeInOutElastic(percent); break;
