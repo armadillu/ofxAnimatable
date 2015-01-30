@@ -11,7 +11,7 @@
 //from http://www.flong.com/texts/code/shapers_exp/
 
 
-float cubicBezier(float x, float a, float b, float c, float d){
+inline float cubicBezier(float x, float a, float b, float c, float d){
 
 	float y0a = 0.00f; // initial y
 	float x0a = 0.00f; // initial x
@@ -51,14 +51,14 @@ float cubicBezier(float x, float a, float b, float c, float d){
 // Helper functions.
 
 
-float  findx (float t, float x0, float x1, float x2, float x3){
+inline float findx (float t, float x0, float x1, float x2, float x3){
 	return x0 * B0F(t) + x1 * B1F(t) + x2 * B2F(t) + x3 * B3F(t);
 }
-float  findy (float t, float y0, float y1, float y2, float y3){
+inline float  findy (float t, float y0, float y1, float y2, float y3){
 	return y0 * B0F(t) + y1 * B1F(t) + y2 * B2F(t) + y3 * B3F(t);
 }
 
-float cubicBezierNearlyThroughTwoPoints(float x, float a, float b, float c, float d){
+inline float cubicBezierNearlyThroughTwoPoints(float x, float a, float b, float c, float d){
 
 	float y = 0.0f;
 	float epsilon = 0.00001f;
@@ -139,7 +139,9 @@ float doublePolynomialSigmoid(float x, int n){
 	return y;
 }
 
+//http://stackoverflow.com/questions/5161465/how-to-create-custom-easing-function-with-core-animation
 //https://github.com/PrimaryFeather/Sparrow-Framework/blob/master/sparrow/src/Classes/SPTransitions.m#L86
+
 float easeOutBounce(float ratio){
 
 	float s = 7.5625f;
@@ -165,56 +167,75 @@ float easeOutBounce(float ratio){
 }
 
 
-float easeInBounce(float ratio){
+inline float easeInBounce(float ratio){
 	return 1.0f - easeOutBounce(1.0f - ratio);
 }
 
-float easeInOutBounce(float ratio){
+inline float easeInOutBounce(float ratio){
 	if (ratio < 0.5f) return 0.5f * easeInBounce(ratio * 2.0f);
 	else              return 0.5f * easeOutBounce((ratio - 0.5f) * 2.0f) + 0.5f;
 }
 
 
-float easeOutInBounce(float ratio){
+inline float easeOutInBounce(float ratio){
 	if (ratio < 0.5f) return 0.5f * easeOutBounce(ratio * 2.0f);
 	else              return 0.5f * easeInBounce((ratio - 0.5f) * 2.0f) + 0.5f;
 }
 
 
-float easeInElastic(float ratio){
+inline float easeInBack(float ratio, float offset = 0.0){
+	float s = 1.70158f + offset;
+	return powf(ratio, 2.0f) * ((s + 1.0f) * ratio - s);
+}
+
+inline float easeOutBack(float ratio, float offset = 0.0){
+	float invRatio = ratio - 1.0f;
+	float s = 1.70158f + offset;
+	return powf(invRatio, 2.0f) * ((s + 1.0f) * invRatio + s) + 1.0f;
+}
+
+inline float easeInOutBack(float ratio, float offset = 0.0){
+	if (ratio < 0.5f) return 0.5f * easeInBack (ratio * 2.0f, offset);
+	else              return 0.5f * easeOutBack((ratio - 0.5f) * 2.0f, offset) + 0.5f;
+}
+
+inline float easeOutInBack(float ratio, float offset = 0.0){
+	if (ratio < 0.5f) return 0.5f * easeOutBack(ratio * 2.0f, offset);
+	else              return 0.5f * easeInBack((ratio - 0.5f) * 2.0f, offset) + 0.5f;
+}
+
+inline float easeInElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f){
 	if (ratio == 0.0f || ratio == 1.0f) return ratio;
 	else{
-		float p = 0.3f;
-		float s = p / 4.0f;
+		float p = 0.3f * param2;
+		float s = p * 0.25f;
 		float invRatio = ratio - 1.0f;
-		return -1.0f * powf(2.0f, 10.0f*invRatio) * sinf((invRatio-s)*TWO_PI/p);
+		return -1.0f * powf(2.0f, param1 * 10.0f * invRatio) * sinf((invRatio-s) * TWO_PI / p);
 	}
 }
 
 
-float easeOutElastic(float ratio){
-
+inline float easeOutElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f){
 	if (ratio == 0.0f || ratio == 1.0f) return ratio;
 	else{
-		float p = 0.3f;
-		float s = p / 4.0f;
-		return powf(2.0f, -10.0f*ratio) * sinf((ratio-s)*TWO_PI/p) + 1.0f;
+		float p = 0.3f * param2;
+		float s = p * 0.25f;
+		return powf(2.0f, -param1 * 10.0f * ratio) * sinf((ratio-s) * TWO_PI / p) + 1.0f;
 	}
 }
 
-
-float easeInOutElastic(float ratio){
-	if (ratio < 0.5f) return 0.5f * easeInElastic( ratio * 2.0f);
-	else              return 0.5f * easeOutElastic((ratio -0.5f ) * 2.0f) + 0.5f;
+inline float easeInOutElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f){
+	if (ratio < 0.5f) return 0.5f * easeInElastic( ratio * 2.0f, param1, param2);
+	else              return 0.5f * easeOutElastic((ratio -0.5f ) * 2.0f, param1, param2) + 0.5f;
 }
 
-float easeOutInElastic(float ratio){
-	if (ratio < 0.5f) return 0.5f * easeOutElastic(ratio * 2.0f);
-	else              return 0.5f * easeInElastic((ratio - 0.5f) * 2.0f) + 0.5f;
+inline float easeOutInElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f){
+	if (ratio < 0.5f) return 0.5f * easeOutElastic(ratio * 2.0f, param1, param2);
+	else              return 0.5f * easeInElastic((ratio - 0.5f) * 2.0f, param1, param2) + 0.5f;
 }
 
 
-float doubleExponentialSigmoid (float x, float a){
+inline float doubleExponentialSigmoid (float x, float a){
 
 	float epsilon = 0.00001f;
 	float min_param_a = 0.0f + epsilon;
@@ -231,7 +252,7 @@ float doubleExponentialSigmoid (float x, float a){
 	return y;
 }
 
-float doubleExponentialSeat (float x, float a){
+inline float doubleExponentialSeat (float x, float a){
 
 	float epsilon = 0.00001f;
 	float min_param_a = 0.0f + epsilon;
@@ -248,7 +269,7 @@ float doubleExponentialSeat (float x, float a){
 }
 
 
-float exponentialEasing (float x, float a){
+inline float exponentialEasing (float x, float a){
 
 	float epsilon = 0.00001;
 	float min_param_a = 0.0f + epsilon;
@@ -269,7 +290,7 @@ float exponentialEasing (float x, float a){
 }
 
 
-float quadraticBezier(float x, float a, float b){
+inline float quadraticBezier(float x, float a, float b){
 	// adapted from BEZMATH.PS (1993)
 	// by Don Lancaster, SYNERGETICS Inc.
 	// http://www.tinaja.com/text/bezmath.html
@@ -321,10 +342,17 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case EXPONENTIAL_SIGMOID_PARAM: return "EXPONENTIAL_SIGMOID_PARAM";
 		case SWIFT_GOOGLE: return "SWIFT_GOOGLE";
 		case OBJECT_DROP: return "OBJECT_DROP";
+
+		case EASE_IN_BACK: return "EASE_IN_BACK";
+		case EASE_OUT_BACK: return "EASE_OUT_BACK";
+		case EASE_IN_OUT_BACK: return "EASE_IN_OUT_BACK";
+		case EASE_OUT_IN_BACK: return "EASE_OUT_IN_BACK";
+
 		case EASE_IN_BOUNCE: return "EASE_IN_BOUNCE";
 		case EASE_OUT_BOUNCE: return "EASE_OUT_BOUNCE";
 		case EASE_IN_OUT_BOUNCE: return "EASE_IN_OUT_BOUNCE";
 		case EASE_OUT_IN_BOUNCE: return "EASE_OUT_IN_BOUNCE";
+
 		case EASE_IN_ELASTIC: return "EASE_IN_ELASTIC";
 		case EASE_OUT_ELASTIC: return "EASE_OUT_ELASTIC";
 		case EASE_IN_OUT_ELASTIC: return "EASE_IN_OUT_ELASTIC";
@@ -344,7 +372,10 @@ void ofxAnimatable::setup(){
 	cubicBezierParamB = 0.973f;
 	cubicBezierParamC = 0.250f;
 	cubicBezierParamD = 0.750f;
-	bounceAmp = 0.05;
+	elasticGain = 1.0f;
+	elasticFreq = 1.0f;
+	easeBackOffset = 0.0f;
+	bounceAmp = 0.05f;
 	transitionSpeed_ = 1.0f / DEFAULT_ANIMATION_DURATION;
 	percentDone_ = 0.0f;
 	animating_ = false;
@@ -371,16 +402,16 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 		ofSetColor(22);
 		ofRect(x, y, size, size);
 	}
-	float steps = size;
+	float steps = size * 0.5f;
 	string name = ofxAnimatable::getCurveName(*curveStylePtr_);
 	glPointSize(1);
 	ofMesh m;
 
 	m.setMode(OF_PRIMITIVE_LINE_STRIP);
-	float step = 1./steps;
+	float step = 1.0f/steps;
 	float p1, p2, p3, p4;
 	fillInParams(p1,p2,p3, p4);
-	for (float i = 0.0f ; i< 1.0f; i+= step){
+	for (float i = 0.0f; i < 1.0f; i+= step){
 		float val = calcCurveAt(i, *curveStylePtr_, p1, p2, p3, p4);
 		m.addVertex( ofVec3f(xx + s * i, yy + s - s * val) );
 	}
@@ -418,7 +449,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 	ofLine(xx,yy, xx, yy + s);
 	ofSetColor(255,32); //linear
 	ofLine(xx,yy + s, xx + s, yy );
-	ofSetColor(170); //label
+	ofSetColor(c); //label
 	ofDrawBitmapString(name, x, y + s + 15);
 	ofPopStyle();
 #endif
@@ -426,7 +457,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 
 
 
-void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &p4){
+inline void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &p4){
 
 	switch (*curveStylePtr_) { //in case our curve has extra params, fill them in
 		case QUADRATIC_BEZIER_PARAM:
@@ -446,6 +477,22 @@ void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &p4){
 			p2 = cubicBezierParamB;
 			p3 = cubicBezierParamC;
 			p4 = cubicBezierParamD;
+			break;
+
+		case EASE_IN_ELASTIC:
+		case EASE_OUT_ELASTIC:
+		case EASE_IN_OUT_ELASTIC:
+		case EASE_OUT_IN_ELASTIC:
+			p1 = elasticGain;
+			p2 = elasticFreq;
+			break;
+
+		case EASE_IN_BACK:
+		case EASE_OUT_BACK:
+		case EASE_IN_OUT_BACK:
+		case EASE_OUT_IN_BACK:
+			p1 = easeBackOffset;
+			break;
 
 		default:
 			break;
@@ -621,6 +668,21 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 			break;
 		}
 
+												///////////////////////////////////////// BACK
+
+		case EASE_IN_BACK:
+			r = easeInBack(percent, p1); break;
+
+		case EASE_OUT_BACK:
+			r = easeOutBack(percent, p1); break;
+
+		case EASE_OUT_IN_BACK:
+			r = easeOutInBack(percent, p1); break;
+
+		case EASE_IN_OUT_BACK:
+			r = easeInOutBack(percent, p1); break;
+
+												///////////////////////////////////////// BOUNCE
 		case EASE_IN_BOUNCE:
 			r = easeInBounce(percent); break;
 
@@ -633,18 +695,18 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 		case EASE_OUT_IN_BOUNCE:
 			r = easeOutInBounce(percent); break;
 
+												///////////////////////////////////////// ELASTIC
 		case EASE_IN_ELASTIC:
-			r = easeInElastic(percent); break;
+			r = easeInElastic(percent, p1, p2); break;
 
 		case EASE_OUT_ELASTIC:
-			r = easeOutElastic(percent); break;
+			r = easeOutElastic(percent, p1, p2); break;
 
 		case EASE_IN_OUT_ELASTIC:
-			r = easeInOutElastic(percent); break;
+			r = easeInOutElastic(percent, p1, p2); break;
 
 		case EASE_OUT_IN_ELASTIC:
-			r = easeOutInElastic(percent); break;
-
+			r = easeOutInElastic(percent, p1, p2); break;
 	}
 	return r;
 }

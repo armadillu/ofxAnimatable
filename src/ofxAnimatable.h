@@ -46,6 +46,10 @@ enum AnimCurve{
 	OBJECT_DROP,
 	EASE_IN_BOUNCE,
 	EASE_OUT_BOUNCE,
+	EASE_IN_BACK,
+	EASE_OUT_BACK,
+	EASE_IN_OUT_BACK,
+	EASE_OUT_IN_BACK,
 	EASE_IN_OUT_BOUNCE,
 	EASE_OUT_IN_BOUNCE,
 	EASE_IN_ELASTIC,
@@ -98,6 +102,9 @@ class ofxAnimatable{
 		void setQuadraticBezierParams(float a, float b){quadraticBezierParamA = a; quadraticBezierParamB = b; } //only for EXPONENTIAL_SIGMOID_PARAM curve
 		void setDropObjectParams(float bounceHeightPercent){bounceAmp = bounceHeightPercent;} //only for DROP_OBJECT curve
 		void setCubicBezierParams(float a, float b, float c, float d){cubicBezierParamA = a; cubicBezierParamB = b; cubicBezierParamC = c; cubicBezierParamD = d; } //only for EXPONENTIAL_SIGMOID_PARAM curve
+		void setElasticGain(float gain, float freq){elasticGain = gain; elasticFreq = freq;}
+		void setEaseBackOffset(float offset){easeBackOffset = offset;}
+
 		float getDuration(){ return 1.0f/transitionSpeed_; }
 
 		float getPercentDone();			///get how much of the animation has been "walked"
@@ -158,7 +165,7 @@ class ofxAnimatable{
 		void startAnimation();			///Used by subclasses to indicate we are starting an anim
 		void startAnimationAfterDelay(float delay);
 		void reset();					///Used by subclasses to indicate a reset of an animation
-		void fillInParams(float&p1, float &p2, float &p3, float &p4);
+		inline void fillInParams(float&p1, float &p2, float &p3, float &p4);
 
 	private:
 	
@@ -172,6 +179,8 @@ class ofxAnimatable{
 		float quadraticBezierParamA, quadraticBezierParamB;
 		float bounceAmp;
 		float cubicBezierParamA, cubicBezierParamB, cubicBezierParamC, cubicBezierParamD;
+		float elasticGain, elasticFreq;
+		float easeBackOffset;
 };
 
 	

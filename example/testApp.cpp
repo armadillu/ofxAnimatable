@@ -86,14 +86,32 @@ void testApp::update(){
 	float d = 0.5 + 0.5 * sin( 0.06 * t + 44);
 	pos[CUBIC_BEZIER_PARAM].setCubicBezierParams(a, b, c, d);
 
+
+	float elastG = 1.0 + 0.5 * sinf(t * 0.1);
+	float elastFreq = 1.0 + 0.5 * sinf(t * 0.1 + 1.0);
+	pos[EASE_IN_ELASTIC].setElasticGain(elastG, elastFreq);
+	pos[EASE_OUT_ELASTIC].setElasticGain(elastG, elastFreq);
+	pos[EASE_IN_OUT_ELASTIC].setElasticGain(elastG, elastFreq);
+	pos[EASE_OUT_IN_ELASTIC].setElasticGain(elastG, elastFreq);
+
+
+	float easeOutOffset =  1.5 * sinf(t * 0.07);
+	pos[EASE_IN_BACK].setEaseBackOffset(easeOutOffset);
+	pos[EASE_OUT_BACK].setEaseBackOffset(easeOutOffset);
+	pos[EASE_IN_OUT_BACK].setEaseBackOffset(easeOutOffset);
+	pos[EASE_OUT_IN_BACK].setEaseBackOffset(easeOutOffset);
+
+
 	//benchmark the curves individually, report through ofxTimeMeasurements
 	#ifdef TIME_SAMPLE
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
 		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i);
 		string curveName = ofxAnimatable::getCurveName(curve);
 		TS_START(curveName);
-		for(int k = 0; k < 5000; k++){
-			ofxAnimatable::calcCurveAt(0.5f, curve, 0.5f, 0.5f, 0.5f, 0.5f);
+		int nIterations = 3000;
+		for(int k = 0; k < nIterations; k++){
+			float percent = k / float(nIterations - 1);
+			ofxAnimatable::calcCurveAt(percent, curve, 0.5f, 0.5f, 0.5f, 0.5f);
 		}
 		TS_STOP(curveName);
 	}
@@ -131,6 +149,7 @@ void testApp::draw(){
 //	ofCircle(ss * c, ss * d, 3);
 //	ofPopMatrix();
 
+	//all left animation plots
 	int vOff = 20;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
 		float lineHeight = 1.7f;
@@ -139,7 +158,7 @@ void testApp::draw(){
 		ofLine(xMargin, yy + width * 0.5, xMargin + widthCol + width, yy + width * 0.5);
 		glColor4ub(255,255,255,255);
 		ofRect( pos[i].val(), yy, width, width);
-		ofDrawBitmapString( curveNames[i] + " vel: " + ofToString( pos[i].getCurrentSpeed(), 1), xMargin + widthCol + 20, yy + 10);
+		ofDrawBitmapString( curveNames[i] /*+ " vel: " + ofToString( pos[i].getCurrentSpeed(), 1)*/, xMargin + widthCol + 20, yy + 10);
 	}
 
 	//ball and floor
@@ -157,22 +176,23 @@ void testApp::draw(){
 	glPointSize(10);
 	pointAnim.draw();
 
-	glColor4ub(255,255,255,255);
-	ofDrawBitmapString( ofToString( ofGetFrameRate()),  10, 10);
-	
+
+	//plots
 	int c = 0;
-	int size = 90;
-	int yy = size;
-	int rowHeight = 2.4 * size ;
-	int xx = 400;
-	int off = size/3.0f;
+	int size = 80;
+	int yy = size * 1.2;
+	int rowHeight = 2.7 * size ;
+	int xx = 330;
+	int colWidth = size/2.35f;
 	int x = 0;
 	int row = 0;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
+		ofColor c = ofColor::red;
+		c.setHsb(fmod(128 + 3 * 255.0f * i/float(NUM_ANIM_CURVES), 255), 255, 255);
 		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i);
 		string curveName = ofxAnimatable::getCurveName((AnimCurve)i);
-		drawPlot( xx + x, yy + row * rowHeight - 15 * i, size, curve, curveName );
-		x += (size + off);
+		drawPlot( xx + x, yy + row * rowHeight - 13 * i, size, curve, curveName, c );
+		x += (size + colWidth);
 		if (  x > ofGetWidth() -  1.0f * size - xx){
 			row++;
 			x = 0;
@@ -180,14 +200,14 @@ void testApp::draw(){
 	}
 }
 
-void testApp::drawPlot(int x, int y, int size, AnimCurve curve, string title){
+void testApp::drawPlot(int x, int y, int size, AnimCurve curve, string title, ofColor c){
 
 	ofxAnimatableFloat a = pos[curve];
 	a.setCurve(curve);
 	a.setDuration(1);
 	a.reset(0);
 	a.animateTo(1);
-	a.drawCurve(x, y, size);
+	a.drawCurve(x, y, size, true, c);
 }
 
 
