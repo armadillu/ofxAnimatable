@@ -364,9 +364,33 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 }
 
 
-ofxAnimatable& ofxAnimatable::operator=(const ofxAnimatable& other) {
+ofxAnimatable& ofxAnimatable::operator=(const ofxAnimatable& o) {
+	doubleExpSigmoidParam = o.doubleExpSigmoidParam;
+	quadraticBezierParamA = o.quadraticBezierParamA;
+	bounceAmp = o.bounceAmp;
+	cubicBezierParamA = o.cubicBezierParamA;
+	cubicBezierParamB = o.cubicBezierParamB;
+	cubicBezierParamC = o.cubicBezierParamC;
+	cubicBezierParamD = o.cubicBezierParamD;
+	elasticGain = o.elasticGain;
+	elasticFreq = o.elasticFreq;
+	easeBackOffset = o.easeBackOffset;
+
+	animating_ = o.animating_;
+	paused_ = o.paused_;
+	playcount_ = o.playcount_;
+	transitionSpeed_ = o.transitionSpeed_;
+	percentDone_ = o.percentDone_;
+	delay_ = o.delay_;
+	waitTime_ = o.waitTime_;
+	repeat_ = o.repeat_;
+	curveStyle_ = o.curveStyle_;
+
 	ofLogWarning("ofxAnimatable") << "Copying an ofxAnimatable object, this could be troublesome if you dont understand how ofxAnimatable works internally";
 	curveStylePtr_ = &curveStyle_;
+
+	direction_ = o.direction_;
+
 	return *this;
 }
 

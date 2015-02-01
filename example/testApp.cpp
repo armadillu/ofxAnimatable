@@ -87,10 +87,10 @@ void testApp::update(){
 
 	float elastG = 1.0 + 0.5 * sinf(t * 0.1);
 	float elastFreq = 1.0 + 0.5 * sinf(t * 0.1 + 1.0);
-	pos[EASE_IN_ELASTIC].setElasticGain(elastG, elastFreq);
-	pos[EASE_OUT_ELASTIC].setElasticGain(elastG, elastFreq);
-	pos[EASE_IN_OUT_ELASTIC].setElasticGain(elastG, elastFreq);
-	pos[EASE_OUT_IN_ELASTIC].setElasticGain(elastG, elastFreq);
+	pos[EASE_IN_ELASTIC].setElasticParams(elastG, elastFreq);
+	pos[EASE_OUT_ELASTIC].setElasticParams(elastG, elastFreq);
+	pos[EASE_IN_OUT_ELASTIC].setElasticParams(elastG, elastFreq);
+	pos[EASE_OUT_IN_ELASTIC].setElasticParams(elastG, elastFreq);
 
 
 	float easeOutOffset =  1.5 * sinf(t * 0.07);
