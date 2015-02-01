@@ -102,7 +102,7 @@ class ofxAnimatable{
 		void setQuadraticBezierParams(float a, float b){quadraticBezierParamA = a; quadraticBezierParamB = b; } //only for EXPONENTIAL_SIGMOID_PARAM curve
 		void setDropObjectParams(float bounceHeightPercent){bounceAmp = bounceHeightPercent;} //only for DROP_OBJECT curve
 		void setCubicBezierParams(float a, float b, float c, float d){cubicBezierParamA = a; cubicBezierParamB = b; cubicBezierParamC = c; cubicBezierParamD = d; } //only for EXPONENTIAL_SIGMOID_PARAM curve
-		void setElasticParams(float gain, float freq){elasticGain = 1.0f / gain; elasticFreq = freq;}
+		void setElasticParams(float gain, float freq){elasticGain = 1.0f / gain; elasticFreq = 1.0f / freq;}
 		void setEaseBackOffset(float offset){easeBackOffset = offset;}
 
 		float getDuration(){ return 1.0f/transitionSpeed_; }
