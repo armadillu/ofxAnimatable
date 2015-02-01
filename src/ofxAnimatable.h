@@ -91,7 +91,7 @@ class ofxAnimatable{
 		void resume();					//
 
 		void setCurve( AnimCurve curveStyle_ );
-		void setCurve( AnimCurve* curveStyle_ ); //use this if you want to change
+		void setCurve( AnimCurve* curveStyle_ );	//use this if you want to change
 													//anim curve styles on the fly.
 													//just make sure the poitner remains valid!
 	
@@ -129,7 +129,11 @@ class ofxAnimatable{
 		virtual ~ofxAnimatable(void) {}
 		ofxAnimatable() {}
 
-		struct AnimationEvent{
+		//we need a custom step when assigning ofxAnimatable objs
+		//otherwise the curve* of the 2nd will point to the curve of the 1st
+		ofxAnimatable& operator=(const ofxAnimatable& other);
+
+	struct AnimationEvent{
 			float percentDone;
 			AnimRepeat repeatSyle;
 			float direction;
@@ -155,7 +159,7 @@ class ofxAnimatable{
 		float		waitTime_;	//original wait delay_
 		AnimRepeat 	repeat_;
 		AnimCurve	curveStyle_;
-		AnimCurve	*curveStylePtr_; //by default points to curveStyle_
+		AnimCurve	*curveStylePtr_;	//by default points to curveStyle_
 										//we always use the pointer!
 	
 		int			direction_;  // 1 : forward,   -1 : backward

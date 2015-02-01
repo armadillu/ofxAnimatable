@@ -363,6 +363,14 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 	return "error";
 }
 
+
+ofxAnimatable& ofxAnimatable::operator=(const ofxAnimatable& other) {
+	ofLogWarning("ofxAnimatable") << "Copying an ofxAnimatable object, this could be troublesome if you dont understand how ofxAnimatable works internally";
+	curveStylePtr_ = &curveStyle_;
+	return *this;
+}
+
+
 void ofxAnimatable::setup(){
 
 	doubleExpSigmoidParam = 0.5f;
@@ -384,12 +392,14 @@ void ofxAnimatable::setup(){
 	playcount_ = 0;
 	repeat_ = PLAY_ONCE;
 	curveStyle_ = EASE_IN_EASE_OUT;
+	curveStylePtr_ = &curveStyle_;
 	currentSpeed_ = 0.0f;
 	lastDT_ = 1;
 	waitTime_ = 0.0f;
 	delay_ = 0.0f;
-	curveStylePtr_ = &curveStyle_;
 }
+
+
 
 void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 
@@ -823,11 +833,10 @@ void ofxAnimatable::setRepeatType( AnimRepeat repeat ){
 
 void ofxAnimatable::setCurve( AnimCurve curveStyle){
 	curveStyle_ = curveStyle;
-	curveStylePtr_ = &curveStyle_;
 }
 
-void ofxAnimatable::setCurve( AnimCurve *curveStyle){
-	curveStylePtr_ = curveStyle;
+void ofxAnimatable::setCurve( AnimCurve *newCurveStylePtr){
+	curveStylePtr_ = newCurveStylePtr; //replacing the pointer, careful!
 }
 
 

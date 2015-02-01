@@ -21,13 +21,11 @@ void testApp::setup(){
 #endif
 	width = 10;
 
-	ofxAnimatableFloat f;
-	f.animateFromTo( xMargin, xMargin + widthCol );
-	f.setDuration(2);	
-	f.setRepeatType( LOOP_BACK_AND_FORTH );
-	
+
 	for ( int i = 0; i < NUM_ANIM_CURVES; i++ ){
-		pos[i] = f;
+		pos[i].animateFromTo( xMargin, xMargin + widthCol );
+		pos[i].setDuration(2);
+		pos[i].setRepeatType( LOOP_BACK_AND_FORTH );
 		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i );
 		pos[i].setCurve( curve );
 		curveNames[i] = ofxAnimatable::getCurveName( curve );
@@ -202,12 +200,7 @@ void testApp::draw(){
 
 void testApp::drawPlot(int x, int y, int size, AnimCurve curve, string title, ofColor c){
 
-	ofxAnimatableFloat a = pos[curve];
-	a.setCurve(curve);
-	a.setDuration(1);
-	a.reset(0);
-	a.animateTo(1);
-	a.drawCurve(x, y, size, true, c);
+	pos[curve].drawCurve(x, y, size, true, c);
 }
 
 
