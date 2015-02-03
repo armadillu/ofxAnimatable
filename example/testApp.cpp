@@ -42,12 +42,13 @@ void testApp::setup(){
 	colorAnim.setRepeatType(LOOP_BACK_AND_FORTH);
 	colorAnim.setCurve(LINEAR);
 	colorAnim.animateTo( ofColor::white );
-	
-	pointAnim.setPosition( ofPoint(100,100) );
-	pointAnim.setRepeatType(PLAY_ONCE);
-	pointAnim.setCurve(EASE_IN_EASE_OUT);
 
-	//img.loadImage("fitted_curve.png");
+	pointAnim.setDuration(0.3);
+	pointAnim.setPosition( ofPoint(100,100) );
+	pointAnim.setRepeatType(PLAY_N_TIMES);
+	pointAnim.setCurve(QUADRATIC_EASE_OUT);
+	pointAnim.setRepeatTimes(3);
+	//pointAnim.setAutoFlipCurve(true);
 }
 
 //--------------------------------------------------------------
@@ -65,9 +66,9 @@ void testApp::update(){
 	colorAnim.update( dt );
 	pointAnim.update( dt );
 
-	if ( !pointAnim.isOrWillBeAnimating() ){
-		pointAnim.animateToAfterDelay( ofPoint( ofRandom(0, ofGetWidth()), ofRandom(0, ofGetHeight())), 0.5);
-	}
+//	if ( !pointAnim.isOrWillBeAnimating() ){
+//		pointAnim.animateToAfterDelay( ofPoint( ofRandom(0, ofGetWidth()), ofRandom(0, ofGetHeight())), 0.5);
+//	}
 
 	float t = ofGetFrameNum();
 	//animate our parametric curves

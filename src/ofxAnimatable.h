@@ -32,6 +32,8 @@ enum AnimRepeat{
 	LOOP, 
 	LOOP_BACK_AND_FORTH, 
 	LOOP_BACK_AND_FORTH_ONCE,
+	PLAY_N_TIMES,
+	LOOP_BACK_AND_FORTH_N_TIMES
 };
 
 enum AnimCurve{
@@ -96,7 +98,9 @@ class ofxAnimatable{
 													//just make sure the poitner remains valid!
 	
 		void setRepeatType( AnimRepeat repeat );
+		void setRepeatTimes(int times); //you must set setRepeatType to PLAY_N_TIMES or LOOP_BACK_AND_FORTH_N_TIMES
 		void setDuration( float seconds );
+		void setAutoFlipCurve(bool autoF);//when repeat set to back and forth, and autoFlip==true it will auto invert your curve when looping (ease_in > ease_out and so on)
 
 		void setDoubleExpSigmoidParam(float param){doubleExpSigmoidParam = param;} //only for QUADRATIC_BEZIER_PARAM curve
 		void setQuadraticBezierParams(float a, float b){quadraticBezierParamA = a; quadraticBezierParamB = b; } //only for EXPONENTIAL_SIGMOID_PARAM curve
@@ -150,6 +154,7 @@ class ofxAnimatable{
 		bool		paused_;
 	
 		int 		playcount_;
+		int			desiredPlayCount;
 	
 		float		transitionSpeed_;	///this is 1/N (N == # of updates) it will take for the transition to end
 		float		percentDone_;		/// [0..1]
@@ -157,7 +162,9 @@ class ofxAnimatable{
 	
 		float		delay_;		//countdown timer that stores delay when startAnimationAfterDelay() is used
 		float		waitTime_;	//original wait delay_
+
 		AnimRepeat 	repeat_;
+		bool		autoFlipCurve; //when set to back and forth, will auto invert your curve when looping (ease_in > ease_out)
 		AnimCurve	curveStyle_;
 		AnimCurve	*curveStylePtr_;	//by default points to curveStyle_
 										//we always use the pointer!
@@ -177,6 +184,9 @@ class ofxAnimatable{
 		float currentSpeed_;
 		float prevSpeed_;
 		float lastDT_;
+
+		bool isCurveInvertable(AnimCurve c);
+		AnimCurve getInverseCurve(AnimCurve c);
 
 		//for some of the curves
 		float doubleExpSigmoidParam;

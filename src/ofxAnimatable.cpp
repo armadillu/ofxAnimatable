@@ -406,12 +406,14 @@ void ofxAnimatable::setup(){
 	cubicBezierParamD = 0.750f;
 	elasticGain = 1.0f;
 	elasticFreq = 1.0f;
+	desiredPlayCount = 0;
 	easeBackOffset = 0.0f;
 	bounceAmp = 0.05f;
 	transitionSpeed_ = 1.0f / DEFAULT_ANIMATION_DURATION;
 	percentDone_ = 0.0f;
 	animating_ = false;
 	paused_ = false;
+	autoFlipCurve = false;
 	direction_ = 1;
 	playcount_ = 0;
 	repeat_ = PLAY_ONCE;
@@ -776,6 +778,16 @@ void ofxAnimatable::update(float dt){
 			
 			switch (repeat_) {
 
+				case PLAY_N_TIMES:
+					if(playcount_ == desiredPlayCount - 1){
+						ofNotifyEvent(animFinished, args, this);
+					}else{
+						playcount_++;
+						animating_ = true;
+						percentDone_ = 0.0f;
+					}
+					break;
+
 				case PLAY_ONCE:
 					ofNotifyEvent(animFinished, args, this);
 					break;	//nothing to do;
@@ -785,6 +797,11 @@ void ofxAnimatable::update(float dt){
 					animating_ = true;
 					args.direction = direction_;
 					playcount_++;
+					if(autoFlipCurve){
+						if(isCurveInvertable(curveStyle_)){
+							curveStyle_ = getInverseCurve(curveStyle_);
+						}
+					}
 					ofNotifyEvent(animLooped, args, this);
 					break;
 					
@@ -799,19 +816,78 @@ void ofxAnimatable::update(float dt){
 				case LOOP_BACK_AND_FORTH_ONCE:
 					if (playcount_ >= 1){	//time to stop
 						//we are done
+						ofNotifyEvent(animFinished, args, this);
 					}else{	
 						direction_ = -direction_;
-						animating_ = true;						
+						animating_ = true;
 						playcount_++;
+					}
+					if(autoFlipCurve){
+						if(isCurveInvertable(curveStyle_)){
+							curveStyle_ = getInverseCurve(curveStyle_);
+						}
 					}
 					args.direction = direction_;
 					args.playCount = playcount_;
 					ofNotifyEvent(animLooped, args, this);
 					break;
+
+				case LOOP_BACK_AND_FORTH_N_TIMES:
+					if ((playcount_ + 1) >= desiredPlayCount * 2 && direction_ == -1){	//time to stop
+						ofNotifyEvent(animFinished, args, this);
+						//we are done
+					}else{
+						direction_ = -direction_;
+						animating_ = true;
+						playcount_++;
+					}
+					if(autoFlipCurve){
+						if(isCurveInvertable(curveStyle_)){
+							curveStyle_ = getInverseCurve(curveStyle_);
+						}
+					}
+					args.direction = direction_;
+					args.playCount = playcount_;
+					ofNotifyEvent(animLooped, args, this);
+					break;
+
 			}
 		}
 	}
 	lastDT_ = dt;
+}
+
+bool ofxAnimatable::isCurveInvertable(AnimCurve c){
+
+	switch (c) {
+		case EASE_IN: return true; /**/
+		case EASE_OUT: return true;
+		case QUADRATIC_EASE_IN: return true; /**/
+		case QUADRATIC_EASE_OUT: return true;
+		case EASE_IN_BOUNCE: return true; /**/
+		case EASE_OUT_BOUNCE: return true;
+		case EASE_IN_BACK: return true; /**/
+		case EASE_OUT_BACK: return true;
+		case EASE_IN_ELASTIC: return true; /**/
+		case EASE_OUT_ELASTIC: return true;
+	}
+	return false;
+}
+
+AnimCurve ofxAnimatable::getInverseCurve(AnimCurve c){
+	switch (c) {
+		case EASE_IN: return EASE_OUT; /**/
+		case EASE_OUT: return EASE_IN;
+		case QUADRATIC_EASE_IN: return QUADRATIC_EASE_OUT; /**/
+		case QUADRATIC_EASE_OUT: return QUADRATIC_EASE_IN;
+		case EASE_IN_BOUNCE: return EASE_OUT_BOUNCE; /**/
+		case EASE_OUT_BOUNCE: return EASE_IN_BOUNCE;
+		case EASE_IN_BACK: return EASE_OUT_BACK; /**/
+		case EASE_OUT_BACK: return EASE_IN_BACK;
+		case EASE_IN_ELASTIC: return EASE_OUT_ELASTIC; /**/
+		case EASE_OUT_ELASTIC: return EASE_IN_ELASTIC;
+	}
+	return LINEAR;
 }
 
 
@@ -849,6 +925,9 @@ void ofxAnimatable::setDuration( float seconds ){
 	transitionSpeed_ = 1.0f / seconds;
 }
 
+void ofxAnimatable::setRepeatTimes(int n){
+	desiredPlayCount = n;
+}
 
 void ofxAnimatable::setRepeatType( AnimRepeat repeat ){
 	repeat_ = repeat;
@@ -863,6 +942,9 @@ void ofxAnimatable::setCurve( AnimCurve *newCurveStylePtr){
 	curveStylePtr_ = newCurveStylePtr; //replacing the pointer, careful!
 }
 
+void ofxAnimatable::setAutoFlipCurve(bool autoF){
+	autoFlipCurve = autoF;
+}
 
 float ofxAnimatable::getPercentDone(){ 
 	return percentDone_; 
@@ -898,7 +980,6 @@ bool ofxAnimatable::isOrWillBeAnimating(){
 void ofxAnimatable::pause(){
 	paused_ = true;
 }
-
 
 void ofxAnimatable::resume(){
 	paused_ = false;
