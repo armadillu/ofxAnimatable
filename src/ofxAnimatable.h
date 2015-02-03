@@ -9,7 +9,6 @@
 
 #define DEFAULT_ANIMATION_DURATION	1.0f
 
-
 #include <iostream>
 #define _USE_MATH_DEFINES
 #include <Math.h>

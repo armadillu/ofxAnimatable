@@ -133,7 +133,7 @@ float doublePolynomialSigmoid(float x, int n){
 		if (x <= 0.5f){
 			y = pow( 2.0f * x, n) / 2.0f;
 		} else {
-			y = 1.0 + pow( 2.0f * (x-1.0f), n) / 2.0;
+			y = 1.0f + pow( 2.0f * (x-1.0f), n) / 2.0f;
 		}
 	}
 	return y;
@@ -247,7 +247,7 @@ inline float doubleExponentialSigmoid (float x, float a){
 	if ( x <= 0.5f ){
 		y = ( pow( 2.0f * x, 1.0f/a) ) / 2.0f;
 	} else {
-		y = 1.0 - ( pow( 2.0f * (1.0f-x), 1.0f / a) ) / 2.0f;
+		y = 1.0f - ( pow( 2.0f * (1.0f-x), 1.0f / a) ) / 2.0f;
 	}
 	return y;
 }
@@ -261,7 +261,7 @@ inline float doubleExponentialSeat (float x, float a){
 
 	float y = 0.0f;
 	if (x <= 0.5f){
-		y = (powf(2.0 * x, 1.0f - a) ) / 2.0f;
+		y = (powf(2.0f * x, 1.0f - a) ) / 2.0f;
 	} else {
 		y = 1.0f - ( pow(2.0f * ( 1.0f - x ), 1.0f-a) ) / 2.0f;
 	}
@@ -271,7 +271,7 @@ inline float doubleExponentialSeat (float x, float a){
 
 inline float exponentialEasing (float x, float a){
 
-	float epsilon = 0.00001;
+	float epsilon = 0.00001f;
 	float min_param_a = 0.0f + epsilon;
 	float max_param_a = 1.0f - epsilon;
 	a = max(min_param_a, min(max_param_a, a));
@@ -295,7 +295,7 @@ inline float quadraticBezier(float x, float a, float b){
 	// by Don Lancaster, SYNERGETICS Inc.
 	// http://www.tinaja.com/text/bezmath.html
 
-	float epsilon = 0.00001;
+	float epsilon = 0.00001f;
 	a = max(0.0f, min(1.0f, a));
 	b = max(0.0f, min(1.0f, b));
 	if (a == 0.5f){
@@ -303,9 +303,9 @@ inline float quadraticBezier(float x, float a, float b){
 	}
 
 	// solve t from x (an inverse operation)
-	float om2a = 1 - 2*a;
-	float t = (sqrt(a*a + om2a*x) - a)/om2a;
-	float y = (1-2*b)*(t*t) + (2*b)*t;
+	float om2a = 1.0f - 2.0f * a;
+	float t = (sqrt( a * a + om2a * x) - a) / om2a;
+	float y = (1.0f - 2.0f * b) * (t * t) + (2.0f * b) * t;
 	return y;
 }
 
