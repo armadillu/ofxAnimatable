@@ -204,34 +204,34 @@ inline float easeOutInBack(float ratio, float offset = 0.0){
 	else              return 0.5f * easeInBack((ratio - 0.5f) * 2.0f, offset) + 0.5f;
 }
 
-inline float easeInElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f){
+inline float easeInElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f, float param3 = 1.0f){
 	if (ratio == 0.0f || ratio == 1.0f) return ratio;
 	else{
 		float p = 0.3f * param2;
 		float s = p * 0.25f;
 		float invRatio = ratio - 1.0f;
-		return -1.0f * powf(2.0f, param1 * 10.0f * invRatio) * sinf((invRatio-s) * TWO_PI / p);
+		return -1.0f * powf(2.0f + param3, param1 * 10.0f * invRatio) * sinf((invRatio-s) * TWO_PI / p);
 	}
 }
 
 
-inline float easeOutElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f){
+inline float easeOutElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f, float param3 = 1.0f){
 	if (ratio == 0.0f || ratio == 1.0f) return ratio;
 	else{
 		float p = 0.3f * param2;
 		float s = p * 0.25f;
-		return powf(2.0f, -param1 * 10.0f * ratio) * sinf((ratio-s) * TWO_PI / p) + 1.0f;
+		return powf(2.0f + param3, -param1 * 10.0f * ratio) * sinf((ratio-s) * TWO_PI / p) + 1.0f;
 	}
 }
 
-inline float easeInOutElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f){
-	if (ratio < 0.5f) return 0.5f * easeInElastic( ratio * 2.0f, param1, param2);
-	else              return 0.5f * easeOutElastic((ratio -0.5f ) * 2.0f, param1, param2) + 0.5f;
+inline float easeInOutElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f, float param3 = 1.0f){
+	if (ratio < 0.5f) return 0.5f * easeInElastic( ratio * 2.0f, param1, param2, param3);
+	else              return 0.5f * easeOutElastic((ratio -0.5f ) * 2.0f, param1, param2, param3) + 0.5f;
 }
 
-inline float easeOutInElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f){
-	if (ratio < 0.5f) return 0.5f * easeOutElastic(ratio * 2.0f, param1, param2);
-	else              return 0.5f * easeInElastic((ratio - 0.5f) * 2.0f, param1, param2) + 0.5f;
+inline float easeOutInElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f, float param3 = 1.0f){
+	if (ratio < 0.5f) return 0.5f * easeOutElastic(ratio * 2.0f, param1, param2, param3);
+	else              return 0.5f * easeInElastic((ratio - 0.5f) * 2.0f, param1, param2, param3) + 0.5f;
 }
 
 
@@ -374,6 +374,7 @@ ofxAnimatable& ofxAnimatable::operator=(const ofxAnimatable& o) {
 	cubicBezierParamD = o.cubicBezierParamD;
 	elasticGain = o.elasticGain;
 	elasticFreq = o.elasticFreq;
+	elasticDecay = o.elasticFreq;
 	easeBackOffset = o.easeBackOffset;
 
 	animating_ = o.animating_;
@@ -406,6 +407,7 @@ void ofxAnimatable::setup(){
 	cubicBezierParamD = 0.750f;
 	elasticGain = 1.0f;
 	elasticFreq = 1.0f;
+	elasticDecay = 0.0f;
 	desiredPlayCount = 0;
 	easeBackOffset = 0.0f;
 	bounceAmp = 0.05f;
@@ -435,7 +437,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 	float s = size;
 	ofPushStyle();
 	if(bg){
-		ofSetColor(22);
+		ofSetColor(0,230);
 		ofRect(x, y, size, size);
 	}
 	float steps = size * 0.5f;
@@ -521,6 +523,7 @@ inline void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &
 		case EASE_OUT_IN_ELASTIC:
 			p1 = elasticGain;
 			p2 = elasticFreq;
+			p3 = elasticDecay;
 			break;
 
 		case EASE_IN_BACK:
@@ -733,16 +736,16 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 
 												///////////////////////////////////////// ELASTIC
 		case EASE_IN_ELASTIC:
-			r = easeInElastic(percent, p1, p2); break;
+			r = easeInElastic(percent, p1, p2, p3); break;
 
 		case EASE_OUT_ELASTIC:
-			r = easeOutElastic(percent, p1, p2); break;
+			r = easeOutElastic(percent, p1, p2, p3); break;
 
 		case EASE_IN_OUT_ELASTIC:
-			r = easeInOutElastic(percent, p1, p2); break;
+			r = easeInOutElastic(percent, p1, p2, p3); break;
 
 		case EASE_OUT_IN_ELASTIC:
-			r = easeOutInElastic(percent, p1, p2); break;
+			r = easeOutInElastic(percent, p1, p2, p3); break;
 	}
 	return r;
 }
