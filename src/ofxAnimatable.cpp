@@ -210,7 +210,7 @@ inline float easeInElastic(float ratio, float param1 = 1.0f, float param2 = 1.0f
 		float p = 0.3f * param2;
 		float s = p * 0.25f;
 		float invRatio = ratio - 1.0f;
-		return -1.0f * powf(2.0f + param3, param1 * 10.0f * invRatio) * sinf((invRatio-s) * TWO_PI / p);
+		return -1.0f * powf(2.0f + param3, param1 * 10.0f * invRatio) * sinf((invRatio*invRatio-s) * TWO_PI / p);
 	}
 }
 
@@ -220,7 +220,7 @@ inline float easeOutElastic(float ratio, float param1 = 1.0f, float param2 = 1.0
 	else{
 		float p = 0.3f * param2;
 		float s = p * 0.25f;
-		return powf(2.0f + param3, -param1 * 10.0f * ratio) * sinf((ratio-s) * TWO_PI / p) + 1.0f;
+		return powf(2.0f + param3, -param1 * 10.0f * ratio) * sinf((ratio*ratio-s) * TWO_PI / p) + 1.0f;
 	}
 }
 
