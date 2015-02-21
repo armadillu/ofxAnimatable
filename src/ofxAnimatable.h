@@ -26,6 +26,8 @@ using namespace std;
 #define xFromT(t, A, B, C, D) (A * (t * t * t) + B * (t * t) + C * t + D)
 #define yFromT(t, E, F, G, H) (E * (t * t * t) + F * (t * t) + G * t + H)
 
+#define BOUNCES_MAX	20
+
 enum AnimRepeat{
 	PLAY_ONCE = 0,
 	LOOP, 
@@ -50,33 +52,46 @@ enum AnimCurve{
 	EARLY_SQUARE, 
 	SQUARE,
 	LATE_SQUARE,
+
 	BLINK_5,
 	BLINK_3,
 	BLINK_2,
 	BLINK_AND_FADE_1,
 	BLINK_AND_FADE_2,
 	BLINK_AND_FADE_3,
+
 	LATE_EASE_IN_EASE_OUT,
 	VERY_LATE_EASE_IN_EASE_OUT,
 	QUADRATIC_EASE_IN,
 	QUADRATIC_EASE_OUT,
 	EARLY_QUADRATIC_EASE_OUT,
+
 	QUADRATIC_BEZIER_PARAM, //http://www.flong.com/texts/code/shapers_exp/
+
 	CUBIC_BEZIER_PARAM,
+
 	EXPONENTIAL_SIGMOID_PARAM,
+
 	SWIFT_GOOGLE,
+
 	EASE_IN_BOUNCE,
 	EASE_OUT_BOUNCE,
+	EASE_IN_OUT_BOUNCE,
+	EASE_OUT_IN_BOUNCE,
+
 	EASE_IN_BACK,
 	EASE_OUT_BACK,
 	EASE_IN_OUT_BACK,
 	EASE_OUT_IN_BACK,
-	EASE_IN_OUT_BOUNCE,
-	EASE_OUT_IN_BOUNCE,
+
 	EASE_IN_ELASTIC,
 	EASE_OUT_ELASTIC,
 	EASE_IN_OUT_ELASTIC,
 	EASE_OUT_IN_ELASTIC,
+
+	BOUNCE_IN_CUSTOM,
+	BOUNCE_OUT_CUSTOM,
+
 	NUM_ANIM_CURVES //leave that on the last to see how many we have
 };
 
@@ -110,6 +125,7 @@ class ofxAnimatable{
 		void setElasticParams(float gain, float freq, float decay){elasticGain = 1.0f / gain; elasticFreq = 1.0f / freq; elasticDecay = decay - 1.0f;}
 		void setEaseBackOffset(float offset){easeBackOffset = offset;}
 
+		void setCustomBounceParams(int bounceNum, float bounceElast);
 		float getDuration(){ return 1.0f/transitionSpeed_; }
 
 		float getPercentDone();			///get how much of the animation has been "walked"
@@ -129,7 +145,10 @@ class ofxAnimatable{
 		float calcCurveAt( float percent );
 		void drawCurve(int x, int y, int size, bool bg = false, ofColor c = ofColor(255,0,128));
 
-		static float calcCurveAt(float percent, AnimCurve type, float param1 = 0.5, float param2 = 0.5, float param3 = 0.5, float param4 = 0.5);
+		static float calcCurveAt(float percent, AnimCurve type,
+								 float param1 = 0.5, float param2 = 0.5,
+								 float param3 = 0.5, float param4 = 0.5,
+								 float *pa1 = NULL, float *pa2 = NULL);
 
 		virtual ~ofxAnimatable(void) {}
 		ofxAnimatable() {}
@@ -177,10 +196,13 @@ class ofxAnimatable{
 		void startAnimation();			///Used by subclasses to indicate we are starting an anim
 		void startAnimationAfterDelay(float delay);
 		void reset();					///Used by subclasses to indicate a reset of an animation
-		inline void fillInParams(float&p1, float &p2, float &p3, float &p4);
+		inline void fillInParams(float&p1, float &p2, float &p3, float &p4,
+								 float ** pa1, float ** pa2);
 
 	private:
-	
+
+		void initCustomBounce();
+
 		virtual void startAfterWait() = 0;
 		float currentSpeed_;
 		float prevSpeed_;
@@ -196,6 +218,12 @@ class ofxAnimatable{
 		float cubicBezierParamA, cubicBezierParamB, cubicBezierParamC, cubicBezierParamD;
 		float elasticGain, elasticFreq, elasticDecay;
 		float easeBackOffset;
+		float bounceNumB, bounceElast; //params
+
+		//storing intermediate states for bounce
+		float bounceAcc;
+		float bounceDuration[BOUNCES_MAX];
+		float bounceVelocity[BOUNCES_MAX];
 };
 
 	

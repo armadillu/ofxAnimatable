@@ -7,18 +7,18 @@ int widthCol = 60;
 //--------------------------------------------------------------
 void testApp::setup(){
 
-	
-	ofBackground(44);
+	ofBackground(22);
 	ofSetFrameRate(60);
 	ofEnableSmoothing();
 	ofEnableAlphaBlending();
 	ofSetVerticalSync(true);
-#ifdef TIME_SAMPLE
+	#ifdef TIME_SAMPLE
 	TIME_SAMPLE_SET_FRAMERATE(60);
 	TIME_SAMPLE_SET_PRECISION(3);
 	TIME_SAMPLE_SET_AVERAGE_RATE(0.01);
-	TIME_SAMPLE_SET_DRAW_LOCATION(TIME_MEASUREMENTS_BOTTOM_LEFT);
-#endif
+	TIME_SAMPLE_SET_DRAW_LOCATION(TIME_MEASUREMENTS_BOTTOM_RIGHT);
+	TIME_SAMPLE_DISABLE();
+	#endif
 	width = 10;
 
 
@@ -49,6 +49,7 @@ void testApp::setup(){
 	pointAnim.setCurve(QUADRATIC_EASE_OUT);
 	pointAnim.setRepeatTimes(3);
 	//pointAnim.setAutoFlipCurve(true);
+
 }
 
 //--------------------------------------------------------------
@@ -85,14 +86,13 @@ void testApp::update(){
 	float d = 0.5 + 0.5 * sin( 0.06 * t + 44);
 	pos[CUBIC_BEZIER_PARAM].setCubicBezierParams(a, b, c, d);
 
-
-	float elastG = 1.0 + 0.5 * sinf(t * 0.1);
-	float elastFreq = 1.0 + 0.5 * sinf(t * 0.1 + 1.0);
-	pos[EASE_IN_ELASTIC].setElasticParams(elastG, elastFreq);
-	pos[EASE_OUT_ELASTIC].setElasticParams(elastG, elastFreq);
-	pos[EASE_IN_OUT_ELASTIC].setElasticParams(elastG, elastFreq);
-	pos[EASE_OUT_IN_ELASTIC].setElasticParams(elastG, elastFreq);
-
+	float elastG = 1.0 + 0.5 * sinf(t * 0.05);
+	float elastFreq = 1.0 + 0.5 * sinf(t * 0.075 + 1.0);
+	float elastDecay = 0.5 + 0.25 * sinf(t * 0.0375 - 1.0);
+	pos[EASE_IN_ELASTIC].setElasticParams(elastG, elastFreq, elastDecay);
+	pos[EASE_OUT_ELASTIC].setElasticParams(elastG, elastFreq, elastDecay);
+	pos[EASE_IN_OUT_ELASTIC].setElasticParams(elastG, elastFreq, elastDecay);
+	pos[EASE_OUT_IN_ELASTIC].setElasticParams(elastG, elastFreq, elastDecay);
 
 	float easeOutOffset =  1.5 * sinf(t * 0.07);
 	pos[EASE_IN_BACK].setEaseBackOffset(easeOutOffset);
@@ -100,6 +100,10 @@ void testApp::update(){
 	pos[EASE_IN_OUT_BACK].setEaseBackOffset(easeOutOffset);
 	pos[EASE_OUT_IN_BACK].setEaseBackOffset(easeOutOffset);
 
+	int numBounces =  1 + 6 * fabs(sinf(t * 0.005));
+	float bounceElast = 0.2 + 0.5 * fabs(sinf(-t * 0.02));
+	pos[BOUNCE_IN_CUSTOM].setCustomBounceParams(numBounces, bounceElast);
+	pos[BOUNCE_OUT_CUSTOM].setCustomBounceParams(numBounces, bounceElast);
 
 	//benchmark the curves individually, report through ofxTimeMeasurements
 	#ifdef TIME_SAMPLE
@@ -108,9 +112,11 @@ void testApp::update(){
 		string curveName = ofxAnimatable::getCurveName(curve);
 		TS_START(curveName);
 		int nIterations = 3000;
+		float buffer1[20];
+		float buffer2[20];
 		for(int k = 0; k < nIterations; k++){
 			float percent = k / float(nIterations - 1);
-			ofxAnimatable::calcCurveAt(percent, curve, 0.5f, 0.5f, 0.5f, 0.5f);
+			ofxAnimatable::calcCurveAt(percent, curve, 0.5f, 0.5f, 0.5f, 0.5f, &buffer1[0], &buffer2[0]);
 		}
 		TS_STOP(curveName);
 	}
@@ -120,33 +126,6 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
-
-	//ghetto test for cuadratic bezier curve params
-//	float ss = 160.0;
-//	float offx = 10;
-//	if (!ofGetKeyPressed()){
-//		a = (ofGetMouseX() - offx)/ss;
-//		b = (ofGetMouseY() - floorLine + ss)/ss;
-//	}else{
-//		c = (ofGetMouseX() - offx)/ss;
-//		d = (ofGetMouseY() - floorLine + ss)/ss;
-//	}
-//	pos[CUBIC_BEZIER_PARAM].setCubicBezierParams(a, b, c, d);
-//
-//	ofPushMatrix();
-//	ofTranslate(offx, floorLine - ss);
-//	ofSetColor(255);
-//	img.draw(0,0);
-//	pos[CUBIC_BEZIER_PARAM].drawCurve(0, 0, ss, false, ofColor::red);
-//	ofDrawBitmapString("a:" + ofToString(a,3) +
-//					   "  b:" + ofToString(b,3) +
-//					   "\nc:" + ofToString(c,3) +
-//					   "  d:" + ofToString(d,3), 0, ss + 30);
-//	ofSetColor(255,0,0);
-//	ofCircle(ss * a, ss * b, 3);
-//	ofSetColor(0,255,0);
-//	ofCircle(ss * c, ss * d, 3);
-//	ofPopMatrix();
 
 	//all left animation plots
 	int vOff = 20;
@@ -197,6 +176,7 @@ void testApp::draw(){
 			x = 0;
 		}
 	}
+
 }
 
 void testApp::drawPlot(int x, int y, int size, AnimCurve curve, string title, ofColor c){

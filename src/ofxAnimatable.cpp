@@ -146,20 +146,21 @@ float easeOutBounce(float ratio){
 
 	float s = 7.5625f;
 	float p = 2.75f;
+	float pow = 2.0f;
 	float l;
 	if (ratio < (1.0f/p)){
-		l = s * powf(ratio, 2.0f);
+		l = s * powf(ratio, pow);
 	}else{
 		if (ratio < (2.0f/p)){
 			ratio -= 1.5f/p;
-			l = s * powf(ratio, 2.0f) + 0.75f;
+			l = s * powf(ratio, pow) + 0.75f;
 		}else{
 			if (ratio < 2.5f/p){
 				ratio -= 2.25f/p;
-				l = s * powf(ratio, 2.0f) + 0.9375f;
+				l = s * powf(ratio, pow) + 0.9375f;
 			}else{
 				ratio -= 2.625f/p;
-				l = s * powf(ratio, 2.0f) + 0.984375f;
+				l = s * powf(ratio, pow) + 0.984375f;
 			}
 		}
 	}
@@ -310,6 +311,69 @@ inline float quadraticBezier(float x, float a, float b){
 }
 
 
+float customBounce(float t,
+				   float numBm, float acc,
+				   float* bDurations, float* bVels ){
+
+	if(bDurations == NULL || bVels == NULL) return 0;
+
+	t = ofClamp(t, 0.0f, 1.0f);
+	int index = 0;
+	float totalDuration = 0.0f;
+
+	// get index to particular bounce
+	while(index < numBm && t > totalDuration + bDurations[index]){
+		totalDuration += bDurations[index];
+		index++;
+	}
+
+	// get duration within bounce (if not the first one)
+	t = t - totalDuration;
+
+	float height = 0.0f;
+	if (index == 0){
+		height = 1.0f + acc * (t * t) * 0.5f;
+	}else{
+		height = t * (bVels[index] + (acc * t) * 0.5f);
+	}
+	return height;
+}
+
+
+// taken from http://sbcgamesdev.blogspot.com/2013/05/bounce-timing-function_8.html and moded heavily
+void ofxAnimatable::initCustomBounce(){
+
+	// get "some" acceleration and calculate time for bounces
+	float acceleration = 0.001f;
+	float totalDuration = 0.0f;
+	float height = 1.0f;
+	for (int i = 0; i < bounceNumB; i++){
+		// s = 1/2 a * t^2 ... 2s / a = t^2 ... sqrt(2s / a) = t
+		float duration = sqrtf(2.0f * height / acceleration) * 2.0f;
+		if (i == 0) duration *= 0.5f;
+		bounceDuration[i] = duration;
+		totalDuration += duration;
+		height *= bounceElast;
+	}
+
+	// adjust total duration to fit requested duration
+	for (int i = 0; i < bounceNumB; i++){
+		bounceDuration[i] = bounceDuration[i] / totalDuration;
+	}
+
+	// s = 1/2 a * t^2 ... 2s / t^2 = a
+	bounceAcc = 2.0f / (bounceDuration[0] * bounceDuration[0]);
+
+	// calculate initial bounce velocities
+	for (int i = 0; i < bounceNumB; i++){
+		if (i == 0) bounceVelocity[i] = 0.0f;
+		else bounceVelocity[i] = bounceDuration[i] / 2.0f * bounceAcc;
+	}
+	// change the sign of acceleration to point downwards
+	bounceAcc = -bounceAcc;
+}
+
+
 std::string ofxAnimatable::getCurveName(AnimCurve c){
 	
 	switch (c) {
@@ -358,9 +422,19 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case EASE_IN_OUT_ELASTIC: return "EASE_IN_OUT_ELASTIC";
 		case EASE_OUT_IN_ELASTIC: return "EASE_OUT_IN_ELASTIC";
 
+		case BOUNCE_IN_CUSTOM: return "BOUNCE_IN_CUSTOM";
+		case BOUNCE_OUT_CUSTOM: return "BOUNCE_OUT_CUSTOM";
+
 		default: return "UNKNOWN_CURVE!";
 	}
 	return "error";
+}
+
+
+void ofxAnimatable::setCustomBounceParams(int bounceNum, float bounceElast_){
+	bounceNumB = ofClamp(bounceNum, 1, BOUNCES_MAX-1);
+	bounceElast = bounceElast_;
+	initCustomBounce();
 }
 
 
@@ -376,6 +450,15 @@ ofxAnimatable& ofxAnimatable::operator=(const ofxAnimatable& o) {
 	elasticFreq = o.elasticFreq;
 	elasticDecay = o.elasticFreq;
 	easeBackOffset = o.easeBackOffset;
+
+	bounceNumB = o.bounceNumB;
+	bounceElast = o.bounceElast;
+	bounceAcc = o.bounceAcc;
+
+	for(int i = 0; i < BOUNCES_MAX; i++){
+		bounceDuration[i] = o.bounceDuration[i];
+		bounceVelocity[i] = o.bounceVelocity[i];
+	}
 
 	animating_ = o.animating_;
 	paused_ = o.paused_;
@@ -408,6 +491,12 @@ void ofxAnimatable::setup(){
 	elasticGain = 1.0f;
 	elasticFreq = 1.0f;
 	elasticDecay = 0.0f;
+
+	bounceNumB = 7;
+	bounceElast = 0.5;
+	bounceAcc = 0.0f;
+	initCustomBounce();
+
 	desiredPlayCount = 0;
 	easeBackOffset = 0.0f;
 	bounceAmp = 0.05f;
@@ -428,7 +517,6 @@ void ofxAnimatable::setup(){
 }
 
 
-
 void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 
 #if defined(OF_VERSION) || defined(OF_VERSION_MAJOR)
@@ -440,7 +528,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 		ofSetColor(0,230);
 		ofRect(x, y, size, size);
 	}
-	float steps = size * 0.5f;
+	float steps = size;
 	string name = ofxAnimatable::getCurveName(*curveStylePtr_);
 	glPointSize(1);
 	ofMesh m;
@@ -448,17 +536,33 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 	m.setMode(OF_PRIMITIVE_LINE_STRIP);
 	float step = 1.0f/steps;
 	float p1, p2, p3, p4;
-	fillInParams(p1,p2,p3, p4);
+	float *pa1, *pa2;
+	fillInParams(p1,p2,p3,p4, &pa1, &pa2);
 	for (float i = 0.0f; i < 1.0f; i+= step){
-		float val = calcCurveAt(i, *curveStylePtr_, p1, p2, p3, p4);
+		float val = calcCurveAt(i, *curveStylePtr_, p1, p2, p3, p4, pa1, pa2);
 		m.addVertex( ofVec3f(xx + s * i, yy + s - s * val) );
 	}
 
 	ofSetColor(c);
 	ofSetLineWidth(2);
 	m.draw();
-	if (*curveStylePtr_ == CUBIC_BEZIER_PARAM || *curveStylePtr_ == QUADRATIC_BEZIER_PARAM ||
-		*curveStylePtr_ == EXPONENTIAL_SIGMOID_PARAM ){
+
+	ofSetLineWidth(1);
+	ofSetColor(255,255); //axes
+	ofLine(xx,yy + s, xx + s, yy + s);
+	ofLine(xx,yy, xx, yy + s);
+	ofSetColor(255,32); //linear
+	ofLine(xx,yy + s, xx + s, yy );
+	ofSetColor(c); //label
+	ofDrawBitmapString(name, x, y + s + 15);
+
+	if (*curveStylePtr_ == CUBIC_BEZIER_PARAM ||
+		*curveStylePtr_ == QUADRATIC_BEZIER_PARAM ||
+		*curveStylePtr_ == EXPONENTIAL_SIGMOID_PARAM ||
+		*curveStylePtr_ == BOUNCE_IN_CUSTOM ||
+		*curveStylePtr_ == BOUNCE_OUT_CUSTOM
+
+		){
 		ofMesh pts;
 		glPointSize(3);
 		pts.setMode(OF_PRIMITIVE_POINTS);
@@ -477,25 +581,26 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 				pts.addColor(ofColor::cyan);
 				pts.addVertex(ofVec2f(xx + doubleExpSigmoidParam * size, yy + size));
 				break;
+			case BOUNCE_IN_CUSTOM:
+			case BOUNCE_OUT_CUSTOM:
+				pts.addColor(ofColor::orange);
+				pts.addVertex(ofVec2f(xx + (bounceNumB / (BOUNCES_MAX-1)) * size, yy + size));
+				pts.addColor(ofColor::purple);
+				pts.addVertex(ofVec2f(xx , yy + size -bounceElast * size));
+				break;
+
 		}
 		pts.draw();
 	}
 
-	ofSetLineWidth(1);
-	ofSetColor(255,255); //axes
-	ofLine(xx,yy + s, xx + s, yy + s);
-	ofLine(xx,yy, xx, yy + s);
-	ofSetColor(255,32); //linear
-	ofLine(xx,yy + s, xx + s, yy );
-	ofSetColor(c); //label
-	ofDrawBitmapString(name, x, y + s + 15);
 	ofPopStyle();
 #endif
 }
 
 
 
-inline void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &p4){
+inline void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &p4,
+										float **pa1, float **pa2){
 
 	switch (*curveStylePtr_) { //in case our curve has extra params, fill them in
 		case QUADRATIC_BEZIER_PARAM:
@@ -533,23 +638,33 @@ inline void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &
 			p1 = easeBackOffset;
 			break;
 
-		default:
+		case BOUNCE_IN_CUSTOM:
+		case BOUNCE_OUT_CUSTOM:
+			p1 = bounceNumB;
+			p2 = bounceAcc;
+			*pa1 = &bounceDuration[0];
+			*pa2 = &bounceVelocity[0];
 			break;
+
+		default: break;
 	}
 }
 
 float ofxAnimatable::calcCurveAt( float percent ){
 
 	float p1, p2, p3, p4;
-	fillInParams(p1,p2,p3,p4);
-	float r = calcCurveAt(percent, *curveStylePtr_, p1, p2, p3, p4);
+	float *pa1, *pa2;
+	fillInParams(p1,p2,p3,p4, &pa1, &pa2);
+	float r = calcCurveAt(percent, *curveStylePtr_, p1, p2, p3, p4, pa1, pa2);
 	
 	currentSpeed_ =  r - prevSpeed_; //this is very ghetto and should be done properly! TODO
 	prevSpeed_ = r;
 	return r;
 }
 
-float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float p2, float p3, float p4){
+float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float p2,
+								 float p3, float p4,
+								 float * pa1, float * pa2){
 
 	float r = percent;
 	switch ( type ) {
@@ -616,7 +731,6 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 			r = (fmod(v, 1.01f) < 0.5f ? 0.0f : 1.0f);
 			if (percent >= 0.875f) r = 8 * percent - 8 * 0.875f ;
 		}break;
-
 
 		case LATE_SQUARE:
 			r = (percent < 0.75f) ? 0.0f : 1.0f; break;
@@ -746,10 +860,16 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 
 		case EASE_OUT_IN_ELASTIC:
 			r = easeOutInElastic(percent, p1, p2, p3); break;
+
+												///////////////////////////////////////// CUSTOM BOUNCE
+		case BOUNCE_IN_CUSTOM:
+			r = customBounce(1.0f - percent, p1, p2, pa1, pa2); break;
+
+		case BOUNCE_OUT_CUSTOM:
+			r = 1.0f - customBounce(percent, p1, p2, pa1, pa2); break;
 	}
 	return r;
 }
-
 
 void ofxAnimatable::update(float dt){
 	
