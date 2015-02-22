@@ -131,9 +131,9 @@ float doublePolynomialSigmoid(float x, int n){
 	else {
 		// odd polynomial
 		if (x <= 0.5f){
-			y = pow( 2.0f * x, n) / 2.0f;
+			y = pow( 2.0f * x, n) * 0.5f;
 		} else {
-			y = 1.0f + pow( 2.0f * (x-1.0f), n) / 2.0f;
+			y = 1.0f + pow( 2.0f * (x-1.0f), n) * 0.5f;
 		}
 	}
 	return y;
@@ -246,9 +246,9 @@ inline float doubleExponentialSigmoid (float x, float a){
 
 	float y = 0.0f;
 	if ( x <= 0.5f ){
-		y = ( pow( 2.0f * x, 1.0f/a) ) / 2.0f;
+		y = ( pow( 2.0f * x, 1.0f/a) ) * 0.5f;
 	} else {
-		y = 1.0f - ( pow( 2.0f * (1.0f-x), 1.0f / a) ) / 2.0f;
+		y = 1.0f - ( pow( 2.0f * (1.0f-x), 1.0f / a) ) * 0.5f;
 	}
 	return y;
 }
@@ -262,9 +262,9 @@ inline float doubleExponentialSeat (float x, float a){
 
 	float y = 0.0f;
 	if (x <= 0.5f){
-		y = (powf(2.0f * x, 1.0f - a) ) / 2.0f;
+		y = (powf(2.0f * x, 1.0f - a) ) * 0.5f;
 	} else {
-		y = 1.0f - ( pow(2.0f * ( 1.0f - x ), 1.0f-a) ) / 2.0f;
+		y = 1.0f - ( pow(2.0f * ( 1.0f - x ), 1.0f-a) ) * 0.5f;
 	}
 	return y;
 }
@@ -285,7 +285,7 @@ inline float exponentialEasing (float x, float a){
 	} else {
 		// de-emphasis
 		a = 2.0f*(a-0.5f);
-		float y = powf(x, 1.0/(1-a));
+		float y = powf(x, 1.0f/(1.0f-a));
 		return y;
 	}
 }
@@ -315,7 +315,7 @@ float customBounce(float t,
 				   float numBm, float acc,
 				   float* bDurations, float* bVels ){
 
-	if(bDurations == NULL || bVels == NULL) return 0;
+	if(bDurations == NULL || bVels == NULL) return 0.0f;
 
 	t = ofClamp(t, 0.0f, 1.0f);
 	int index = 0;
