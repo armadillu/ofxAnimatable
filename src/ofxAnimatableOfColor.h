@@ -39,6 +39,7 @@ class ofxAnimatableOfColor : public ofxAnimatable {
 		void fadeIn();
 		void fadeOut();
 		void animateToAlpha( float a );
+		void animateToAlphaAfterDelay( float a, float delay );
 		void startBlinking(float blinkDuration = 1.0f);			///will set repeat to LOOP_BACK_AND_FORTH, curve to EASE_IN_EASE_OUT
 	
 		//gets

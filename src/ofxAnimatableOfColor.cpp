@@ -103,6 +103,18 @@ void ofxAnimatableOfColor::animateToAlpha( float a ){
 	ofxAnimatable::startAnimation();	
 }
 
+void ofxAnimatableOfColor::animateToAlphaAfterDelay( float a, float delay ){
+
+    if (delay <= 0.0f){
+        animateToAlpha(a);
+    }else{
+        originalColor_ = getCurrentColor();
+        targetTempColor_ = originalColor_;
+        targetTempColor_.a = a;
+        animateToAfterDelay(targetTempColor_, delay);
+    }
+}
+
 
 void ofxAnimatableOfColor::startBlinking( float blinkDuration){
 
