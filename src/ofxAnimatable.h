@@ -143,6 +143,7 @@ class ofxAnimatable{
 		float waitTimeLeftPercent(){ return 1.0f - delay_ / waitTime_; }
 	
 		static string getCurveName(AnimCurve c);
+		static AnimCurve getCurveFromName(const string& name);
 
 		//carefull with those, you'd better know what you are doing, those should almost be protected
 		//exposing this to get direct access to simple curve values

@@ -430,6 +430,58 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 	return "error";
 }
 
+AnimCurve ofxAnimatable::getCurveFromName(const string& name){
+
+	if(name == "EASE_IN_EASE_OUT") return EASE_IN_EASE_OUT;
+	if(name == "EASE_IN") return EASE_IN;
+	if(name == "EASE_OUT") return EASE_OUT;
+	if(name == "LINEAR") return LINEAR;
+	if(name == "BOUNCY") return BOUNCY;
+	if(name == "TANH") return TANH;
+	if(name == "SINH") return SINH;
+	if(name == "SQUARE") return SQUARE;
+	if(name == "LATE_SQUARE") return LATE_SQUARE;
+	if(name == "EARLY_SQUARE") return EARLY_SQUARE;
+	if(name == "BLINK_5") return BLINK_5;
+	if(name == "BLINK_3") return BLINK_3;
+	if(name == "BLINK_2") return BLINK_2;
+	if(name == "BLINK_AND_FADE_1") return BLINK_AND_FADE_1;
+	if(name == "BLINK_AND_FADE_2") return BLINK_AND_FADE_2;
+	if(name == "BLINK_AND_FADE_3") return BLINK_AND_FADE_3;
+	if(name == "LATE_LINEAR") return LATE_LINEAR;
+	if(name == "LATE_EASE_IN_EASE_OUT") return LATE_EASE_IN_EASE_OUT;
+	if(name == "EARLY_LINEAR") return EARLY_LINEAR;
+	if(name == "VERY_LATE_LINEAR") return VERY_LATE_LINEAR;
+	if(name == "VERY_LATE_EASE_IN_EASE_OUT") return VERY_LATE_EASE_IN_EASE_OUT;
+	if(name == "QUADRATIC_EASE_IN") return QUADRATIC_EASE_IN;
+	if(name == "QUADRATIC_EASE_OUT") return QUADRATIC_EASE_OUT;
+	if(name == "EARLY_QUADRATIC_EASE_OUT") return EARLY_QUADRATIC_EASE_OUT;
+	if(name == "QUADRATIC_BEZIER_PARAM") return QUADRATIC_BEZIER_PARAM;
+	if(name == "CUBIC_BEZIER_PARAM") return CUBIC_BEZIER_PARAM;
+	if(name == "EXPONENTIAL_SIGMOID_PARAM") return EXPONENTIAL_SIGMOID_PARAM;
+	if(name == "SWIFT_GOOGLE") return SWIFT_GOOGLE;
+	if(name == "OBJECT_DROP") return OBJECT_DROP;
+	if(name == "EASE_IN_BACK") return EASE_IN_BACK;
+	if(name == "EASE_OUT_BACK") return EASE_OUT_BACK;
+	if(name == "EASE_IN_OUT_BACK") return EASE_IN_OUT_BACK;
+	if(name == "EASE_OUT_IN_BACK") return EASE_OUT_IN_BACK;
+
+	if(name == "EASE_IN_BOUNCE") return EASE_IN_BOUNCE;
+	if(name == "EASE_OUT_BOUNCE") return EASE_OUT_BOUNCE;
+	if(name == "EASE_IN_OUT_BOUNCE") return EASE_IN_OUT_BOUNCE;
+	if(name == "EASE_OUT_IN_BOUNCE") return EASE_OUT_IN_BOUNCE;
+
+	if(name == "EASE_IN_ELASTIC") return EASE_IN_ELASTIC;
+	if(name == "EASE_OUT_ELASTIC") return EASE_OUT_ELASTIC;
+	if(name == "EASE_IN_OUT_ELASTIC") return EASE_IN_OUT_ELASTIC;
+	if(name == "EASE_OUT_IN_ELASTIC") return EASE_OUT_IN_ELASTIC;
+
+	if(name == "BOUNCE_IN_CUSTOM") return BOUNCE_IN_CUSTOM;
+	if(name == "BOUNCE_OUT_CUSTOM") return BOUNCE_OUT_CUSTOM;
+	ofLogError("ofxAnimatable") << "Unknown Curve (" << name << ")";
+	return EASE_IN_EASE_OUT;
+}
+
 
 void ofxAnimatable::setCustomBounceParams(int bounceNum, float bounceElast_){
 	bounceNumB = ofClamp(bounceNum, 1, BOUNCES_MAX-1);
