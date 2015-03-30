@@ -230,5 +230,3 @@ class ofxAnimatable{
 		float bounceDuration[BOUNCES_MAX];
 		float bounceVelocity[BOUNCES_MAX];
 };
-
-	
