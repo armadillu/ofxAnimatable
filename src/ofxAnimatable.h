@@ -30,8 +30,8 @@ using namespace std;
 
 enum AnimRepeat{
 	PLAY_ONCE = 0,
-	LOOP, 
-	LOOP_BACK_AND_FORTH, 
+	LOOP,
+	LOOP_BACK_AND_FORTH,
 	LOOP_BACK_AND_FORTH_ONCE,
 	PLAY_N_TIMES,
 	LOOP_BACK_AND_FORTH_N_TIMES
@@ -39,17 +39,17 @@ enum AnimRepeat{
 
 enum AnimCurve{
 	EASE_IN_EASE_OUT = 0,
-	EASE_IN, 
-	EASE_OUT, 
+	EASE_IN,
+	EASE_OUT,
 	LINEAR,
 	EARLY_LINEAR,
 	LATE_LINEAR,
-	VERY_LATE_LINEAR, 
+	VERY_LATE_LINEAR,
 	BOUNCY,	//this needs work TODO
 	OBJECT_DROP,
 	TANH,
-	SINH, 	
-	EARLY_SQUARE, 
+	SINH,
+	EARLY_SQUARE,
 	SQUARE,
 	LATE_SQUARE,
 
@@ -97,7 +97,7 @@ enum AnimCurve{
 
 
 class ofxAnimatable{
-	
+
 	public:
 
 		void setup();
@@ -110,7 +110,7 @@ class ofxAnimatable{
 		void setCurve( AnimCurve* curveStyle_ );	//use this if you want to change
 													//anim curve styles on the fly.
 													//just make sure the poitner remains valid!
-	
+
 		void setRepeatType( AnimRepeat repeat );
 		void setRepeatTimes(int times); //you must set setRepeatType to PLAY_N_TIMES or LOOP_BACK_AND_FORTH_N_TIMES
 		void setDuration( float seconds );
@@ -141,7 +141,7 @@ class ofxAnimatable{
 		float getCurrentSpeed(); ///as a percentage of linear speed
 		float timeLeftForAnimationToStart(){ return delay_; }
 		float waitTimeLeftPercent(){ return 1.0f - delay_ / waitTime_; }
-	
+
 		static string getCurveName(AnimCurve c);
 		static AnimCurve getCurveFromName(const string& name);
 
@@ -177,14 +177,14 @@ class ofxAnimatable{
 
 		bool		animating_;
 		bool		paused_;
-	
+
 		int 		playcount_;
 		int			desiredPlayCount;
-	
+
 		float		transitionSpeed_;	///this is 1/N (N == # of updates) it will take for the transition to end
 		float		percentDone_;		/// [0..1]
-			
-	
+
+
 		float		delay_;		//countdown timer that stores delay when startAnimationAfterDelay() is used
 		float		waitTime_;	//original wait delay_
 
@@ -193,9 +193,9 @@ class ofxAnimatable{
 		AnimCurve	curveStyle_;
 		AnimCurve	*curveStylePtr_;	//by default points to curveStyle_
 										//we always use the pointer!
-	
+
 		int			direction_;  // 1 : forward,   -1 : backward
-	
+
 
 
 		void startAnimation();			///Used by subclasses to indicate we are starting an anim
@@ -231,4 +231,3 @@ class ofxAnimatable{
 		float bounceVelocity[BOUNCES_MAX];
 };
 
-	
