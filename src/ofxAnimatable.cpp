@@ -1087,7 +1087,8 @@ AnimCurve ofxAnimatable::getInverseCurve(AnimCurve c){
 		case EASE_IN_ELASTIC: return EASE_OUT_ELASTIC; /**/
 		case EASE_OUT_ELASTIC: return EASE_IN_ELASTIC;
 	}
-	return LINEAR;
+	ofLogError("ofxAnimatable") << getCurveName(c) << " curve has no inverse!";
+	return c;
 }
 
 

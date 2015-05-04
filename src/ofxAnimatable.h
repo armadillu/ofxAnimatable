@@ -148,6 +148,9 @@ class ofxAnimatable{
 		static string getCurveName(AnimCurve c);
 		static AnimCurve getCurveFromName(const string& name);
 
+		static bool isCurveInvertable(AnimCurve c); //easeIn becomes easeOut, etc
+		static AnimCurve getInverseCurve(AnimCurve c); //does this curve have an inverse?
+
 		//carefull with those, you'd better know what you are doing, those should almost be protected
 		//exposing this to get direct access to simple curve values
 		float calcCurveAt( float percent );
@@ -215,9 +218,6 @@ class ofxAnimatable{
 		float currentSpeed_;
 		float prevSpeed_;
 		float lastDT_;
-
-		bool isCurveInvertable(AnimCurve c);
-		AnimCurve getInverseCurve(AnimCurve c);
 
 		//for some of the curves
 		float doubleExpSigmoidParam;
