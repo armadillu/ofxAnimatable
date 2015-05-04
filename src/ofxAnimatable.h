@@ -92,6 +92,9 @@ enum AnimCurve{
 	BOUNCE_IN_CUSTOM,
 	BOUNCE_OUT_CUSTOM,
 
+	SMOOTH_STEP, //http://en.wikipedia.org/wiki/Smoothstep
+	SMOOTHER_STEP,
+
 	NUM_ANIM_CURVES //leave that on the last to see how many we have
 };
 

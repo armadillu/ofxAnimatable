@@ -291,6 +291,16 @@ inline float exponentialEasing (float x, float a){
 }
 
 
+//http://en.wikipedia.org/wiki/Smoothstep
+
+inline float smoothStep(float x){
+	return x * x * (3.0f - 2.0f * x);
+}
+
+inline float smootherStep(float x){
+	return x * x * x * ( x * ( x * 6.0f - 15.0f) + 10.0f);
+}
+
 inline float quadraticBezier(float x, float a, float b){
 	// adapted from BEZMATH.PS (1993)
 	// by Don Lancaster, SYNERGETICS Inc.
@@ -425,6 +435,9 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case BOUNCE_IN_CUSTOM: return "BOUNCE_IN_CUSTOM";
 		case BOUNCE_OUT_CUSTOM: return "BOUNCE_OUT_CUSTOM";
 
+		case SMOOTH_STEP: return "SMOOTH_STEP";
+		case SMOOTHER_STEP: return "SMOOTHER_STEP";
+
 		default: return "UNKNOWN_CURVE!";
 	}
 	return "error";
@@ -478,6 +491,10 @@ AnimCurve ofxAnimatable::getCurveFromName(const string& name){
 
 	if(name == "BOUNCE_IN_CUSTOM") return BOUNCE_IN_CUSTOM;
 	if(name == "BOUNCE_OUT_CUSTOM") return BOUNCE_OUT_CUSTOM;
+
+	if(name == "SMOOTH_STEP") return SMOOTH_STEP;
+	if(name == "SMOOTHER_STEP") return SMOOTHER_STEP;
+
 	ofLogError("ofxAnimatable") << "Unknown Curve (" << name << ")";
 	return EASE_IN_EASE_OUT;
 }
@@ -919,6 +936,14 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 
 		case BOUNCE_OUT_CUSTOM:
 			r = 1.0f - customBounce(percent, p1, p2, pa1, pa2); break;
+
+												//////////////////////////////////////// SMOOTH STEP
+		case SMOOTH_STEP:
+			r = smoothStep(percent); break;
+
+		case SMOOTHER_STEP:
+			r = smootherStep(percent); break;
+
 	}
 	return r;
 }
