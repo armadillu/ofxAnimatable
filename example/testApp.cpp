@@ -1,6 +1,6 @@
 #include "testApp.h"
 
-int floorLine = 750;
+int floorLine = 630;
 int xMargin = 0;
 int widthCol = 60;
 
@@ -128,13 +128,15 @@ void testApp::update(){
 void testApp::draw(){
 
 	//all left animation plots
-	int vOff = 20;
+	int vOff = 8;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
-		float lineHeight = 1.7f;
+		float lineHeight = 1.35f;
 		float yy = vOff + i * lineHeight * width;
 		glColor4ub(255,255,255,64);
 		ofLine(xMargin, yy + width * 0.5, xMargin + widthCol + width, yy + width * 0.5);
-		glColor4ub(255,255,255,255);
+		ofColor c = ofColor::red;
+		c.setHsb(fmod(128 + 3 * 255.0f * i/float(NUM_ANIM_CURVES), 255), 255, 255);
+		ofSetColor(c);
 		ofRect( pos[i].val(), yy, width, width);
 		ofDrawBitmapString( curveNames[i] /*+ " vel: " + ofToString( pos[i].getCurrentSpeed(), 1)*/, xMargin + widthCol + 20, yy + 10);
 	}
@@ -156,23 +158,28 @@ void testApp::draw(){
 
 
 	//plots
-	int c = 0;
-	int size = 80;
-	int yy = size * 1.2;
-	int rowHeight = 2.7 * size ;
-	int xx = 330;
-	int colWidth = size/2.35f;
+	int yy;;
+	int xx = 300;
+	int size = 70; //of each plot
+	int rowPad = 30;
+	int colPad = 25;
+	int vOffset = 13;
+	int numCol = (ofGetWidth() - xx) / (size + colPad);
+	yy = numCol * vOffset;
 	int x = 0;
 	int row = 0;
+	int col = 0;
 	for ( int i = 0 ; i < NUM_ANIM_CURVES; i++ ){
 		ofColor c = ofColor::red;
 		c.setHsb(fmod(128 + 3 * 255.0f * i/float(NUM_ANIM_CURVES), 255), 255, 255);
 		AnimCurve curve = (AnimCurve) (EASE_IN_EASE_OUT + i);
 		string curveName = ofxAnimatable::getCurveName((AnimCurve)i);
-		drawPlot( xx + x, yy + row * rowHeight - 13 * i, size, curve, curveName, c );
-		x += (size + colWidth);
+		drawPlot( xx + x, yy + row * (size + rowPad) - vOffset * col, size, curve, curveName, c );
+		x += size + colPad;
+		col ++;
 		if (  x > ofGetWidth() -  1.0f * size - xx){
 			row++;
+			col = 0;
 			x = 0;
 		}
 	}
