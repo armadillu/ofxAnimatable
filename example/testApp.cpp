@@ -158,8 +158,8 @@ void testApp::draw(){
 
 
 	//plots
-	int yy = 100;
-	int xx = 330;
+	int yy;;
+	int xx = 300;
 	int size = 70; //of each plot
 	int rowPad = 30;
 	int colPad = 25;
