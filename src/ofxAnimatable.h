@@ -128,9 +128,9 @@ class ofxAnimatable{
 		void setAutoFlipCurve(bool autoF);//when repeat set to back and forth, and autoFlip==true it will auto invert your curve when looping (ease_in > ease_out and so on)
 
 		void setDoubleExpSigmoidParam(float param){doubleExpSigmoidParam = param;} //only for QUADRATIC_BEZIER_PARAM curve
-		void setQuadraticBezierParams(float a, float b){quadraticBezierParamA = a; quadraticBezierParamB = b; } //only for EXPONENTIAL_SIGMOID_PARAM curve
+		void setQuadraticBezierParams(float a, float b){quadraticBezierParamAx = a; quadraticBezierParamAy = b; } //only for EXPONENTIAL_SIGMOID_PARAM curve
 		void setDropObjectParams(float bounceHeightPercent){bounceAmp = bounceHeightPercent;} //only for DROP_OBJECT curve
-		void setCubicBezierParams(float a, float b, float c, float d){cubicBezierParamA = a; cubicBezierParamB = b; cubicBezierParamC = c; cubicBezierParamD = d; } //only for EXPONENTIAL_SIGMOID_PARAM curve
+		void setCubicBezierParams(float a, float b, float c, float d){cubicBezierParamAx = a; cubicBezierParamAy = b; cubicBezierParamBx = c; cubicBezierParamBy = d; } //only for EXPONENTIAL_SIGMOID_PARAM curve
 
 		//elastic decay should not be < 0!
 		void setElasticParams(float gain, float freq, float decay){elasticGain = 1.0f / gain; elasticFreq = 1.0f / freq; elasticDecay = decay - 1.0f;}
@@ -228,9 +228,9 @@ class ofxAnimatable{
 
 		//for some of the curves
 		float doubleExpSigmoidParam;
-		float quadraticBezierParamA, quadraticBezierParamB;
+		float quadraticBezierParamAx, quadraticBezierParamAy;
 		float bounceAmp;
-		float cubicBezierParamA, cubicBezierParamB, cubicBezierParamC, cubicBezierParamD;
+		float cubicBezierParamAx, cubicBezierParamAy, cubicBezierParamBx, cubicBezierParamBy;
 		float elasticGain, elasticFreq, elasticDecay;
 		float easeBackOffset;
 		float bounceNumB, bounceElast; //params

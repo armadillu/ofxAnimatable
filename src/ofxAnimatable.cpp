@@ -518,12 +518,12 @@ void ofxAnimatable::setCustomBounceParams(int bounceNum, float bounceElast_){
 
 ofxAnimatable& ofxAnimatable::operator=(const ofxAnimatable& o) {
 	doubleExpSigmoidParam = o.doubleExpSigmoidParam;
-	quadraticBezierParamA = o.quadraticBezierParamA;
+	quadraticBezierParamAx = o.quadraticBezierParamAx;
 	bounceAmp = o.bounceAmp;
-	cubicBezierParamA = o.cubicBezierParamA;
-	cubicBezierParamB = o.cubicBezierParamB;
-	cubicBezierParamC = o.cubicBezierParamC;
-	cubicBezierParamD = o.cubicBezierParamD;
+	cubicBezierParamAx = o.cubicBezierParamAx;
+	cubicBezierParamAy = o.cubicBezierParamAy;
+	cubicBezierParamBx = o.cubicBezierParamBx;
+	cubicBezierParamBy = o.cubicBezierParamBy;
 	elasticGain = o.elasticGain;
 	elasticFreq = o.elasticFreq;
 	elasticDecay = o.elasticFreq;
@@ -560,12 +560,12 @@ ofxAnimatable& ofxAnimatable::operator=(const ofxAnimatable& o) {
 void ofxAnimatable::setup(){
 
 	doubleExpSigmoidParam = 0.5f;
-	quadraticBezierParamA = 0.25f;
-	quadraticBezierParamB = 0.75f;
-	cubicBezierParamA = 0.033f;
-	cubicBezierParamB = 0.973f;
-	cubicBezierParamC = 0.250f;
-	cubicBezierParamD = 0.750f;
+	quadraticBezierParamAx = 0.25f;
+	quadraticBezierParamAy = 0.75f;
+	cubicBezierParamAx = 0.033f;
+	cubicBezierParamAy = 0.973f;
+	cubicBezierParamBx = 0.250f;
+	cubicBezierParamBy = 0.750f;
 	elasticGain = 1.0f;
 	elasticFreq = 1.0f;
 	elasticDecay = 0.0f;
@@ -642,31 +642,39 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 
 		){
 		ofMesh pts;
-		glPointSize(3);
+		glPointSize(4);
 		pts.setMode(OF_PRIMITIVE_POINTS);
+		int blink = (ofGetFrameNum()%6 > 2) ? 255 : 0;
 		switch (*curveStylePtr_) {
 			case CUBIC_BEZIER_PARAM:
-				pts.addColor(ofColor::red);
-				pts.addVertex(ofVec2f(xx + cubicBezierParamA * size, yy + cubicBezierParamB * size));
-				pts.addColor(ofColor::green);
-				pts.addVertex(ofVec2f(xx + cubicBezierParamC * size, yy +cubicBezierParamD * size));
+				pts.addColor(ofColor(ofColor::cyan,blink));
+				pts.addVertex(ofVec2f(xx + cubicBezierParamAx * size, yy + size - cubicBezierParamAy * size));
+				pts.addColor(ofColor(ofColor::magenta,blink));
+				pts.addVertex(ofVec2f(xx + cubicBezierParamBx * size, yy + size - cubicBezierParamBy * size));
+				ofSetColor(ofColor::cyan);
+				ofDrawBitmapString("A", pts.getVertices()[0] + ofVec2f(5,4));
+				ofSetColor(ofColor::magenta);
+				ofDrawBitmapString("B", pts.getVertices()[1] + ofVec2f(5,4));
 				break;
 			case QUADRATIC_BEZIER_PARAM:
-				pts.addColor(ofColor::blue);
-				pts.addVertex(ofVec2f(xx + quadraticBezierParamA * size, yy + quadraticBezierParamB * size));
+				pts.addColor(ofColor(ofColor::blue,blink));
+				pts.addVertex(ofVec2f(xx + quadraticBezierParamAx * size, yy + size - quadraticBezierParamAy * size));
+				ofDrawBitmapString("QB", pts.getVertices()[0] + ofVec2f(5,4));
 				break;
 			case EXPONENTIAL_SIGMOID_PARAM:
-				pts.addColor(ofColor::cyan);
-				pts.addVertex(ofVec2f(xx + doubleExpSigmoidParam * size, yy + size));
+				pts.addColor(ofColor(ofColor::cyan,blink));
+				pts.addVertex(ofVec2f(xx + doubleExpSigmoidParam * size, yy + size * 0.5));
+				ofDrawBitmapString("ES", pts.getVertices()[0] + ofVec2f(5,4));
 				break;
 			case BOUNCE_IN_CUSTOM:
 			case BOUNCE_OUT_CUSTOM:
-				pts.addColor(ofColor::orange);
+				pts.addColor(ofColor(ofColor::orange,blink));
 				pts.addVertex(ofVec2f(xx + (bounceNumB / (BOUNCES_MAX-1)) * size, yy + size));
-				pts.addColor(ofColor::purple);
+				pts.addColor(ofColor(ofColor::purple,blink));
 				pts.addVertex(ofVec2f(xx , yy + size -bounceElast * size));
+				ofDrawBitmapString("B1", pts.getVertices()[0] + ofVec2f(5,4));
+				ofDrawBitmapString("BE", pts.getVertices()[1] + ofVec2f(5,4));
 				break;
-
 		}
 		pts.draw();
 	}
@@ -682,8 +690,8 @@ inline void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &
 
 	switch (*curveStylePtr_) { //in case our curve has extra params, fill them in
 		case QUADRATIC_BEZIER_PARAM:
-			p1 = quadraticBezierParamA;
-			p2 = quadraticBezierParamB;
+			p1 = quadraticBezierParamAx;
+			p2 = quadraticBezierParamAy;
 			break;
 		case EXPONENTIAL_SIGMOID_PARAM:
 			p1 = doubleExpSigmoidParam;
@@ -694,10 +702,10 @@ inline void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &
 			break;
 
 		case CUBIC_BEZIER_PARAM:
-			p1 = cubicBezierParamA;
-			p2 = cubicBezierParamB;
-			p3 = cubicBezierParamC;
-			p4 = cubicBezierParamD;
+			p1 = cubicBezierParamAx;
+			p2 = cubicBezierParamAy;
+			p3 = cubicBezierParamBx;
+			p4 = cubicBezierParamBy;
 			break;
 
 		case EASE_IN_ELASTIC:
