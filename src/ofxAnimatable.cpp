@@ -349,6 +349,15 @@ float customBounce(float t,
 	return height;
 }
 
+ofxAnimatable::ofxAnimatable(){
+	autoUpdating = false;
+}
+
+ofxAnimatable::~ofxAnimatable(){
+	if(autoUpdating){
+		stopAutoUpdate();
+	}
+}
 
 // taken from http://sbcgamesdev.blogspot.com/2013/05/bounce-timing-function_8.html and moded heavily
 void ofxAnimatable::initCustomBounce(){
@@ -946,6 +955,29 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 
 	}
 	return r;
+}
+
+void ofxAnimatable::startAutoUpdate(){
+
+	if(!autoUpdating){
+		autoUpdating = true;
+		ofAddListener(ofEvents().update, this, &ofxAnimatable::autoUpdate);
+	}else{
+		ofLogError("ofxAnimatable") << "startAutoUpdate() can't start, already autoUpdating";
+	}
+}
+
+void ofxAnimatable::stopAutoUpdate(){
+	if(autoUpdating){
+		autoUpdating = false;
+		ofRemoveListener(ofEvents().update, this, &ofxAnimatable::autoUpdate);
+	}else{
+		ofLogError("ofxAnimatable") << "stopAutoUpdate() can't stop, not autoUpdating";
+	}
+}
+
+void ofxAnimatable::autoUpdate(ofEventArgs&){
+	update(1.0f / ofGetTargetFrameRate());
 }
 
 void ofxAnimatable::update(float dt){

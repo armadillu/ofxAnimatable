@@ -103,8 +103,16 @@ class ofxAnimatable{
 	
 	public:
 
-		void setup();
-		void update(float dt);
+		ofxAnimatable();
+		virtual ~ofxAnimatable();
+
+		virtual void setup();
+		virtual void update(float dt);
+
+		void autoUpdate(ofEventArgs&); //to by called by autoUpdate, dont call directly
+
+		void startAutoUpdate();
+		void stopAutoUpdate();
 
 		void pause();					//really needed?
 		void resume();					//
@@ -161,9 +169,6 @@ class ofxAnimatable{
 								 float param3 = 0.5, float param4 = 0.5,
 								 float *pa1 = NULL, float *pa2 = NULL);
 
-		virtual ~ofxAnimatable(void) {}
-		ofxAnimatable() {}
-
 		//we need a custom step when assigning ofxAnimatable objs
 		//otherwise the curve* of the 2nd will point to the curve of the 1st
 		ofxAnimatable& operator=(const ofxAnimatable& other);
@@ -209,6 +214,8 @@ class ofxAnimatable{
 		void reset();					///Used by subclasses to indicate a reset of an animation
 		inline void fillInParams(float&p1, float &p2, float &p3, float &p4,
 								 float ** pa1, float ** pa2);
+
+		bool autoUpdating;
 
 	private:
 
