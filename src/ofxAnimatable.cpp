@@ -511,7 +511,7 @@ AnimCurve ofxAnimatable::getCurveFromName(const string& name){
 vector<string> ofxAnimatable::getAllCurveNames(){
     vector<string> curveNames;
     for (int i = 0; i < NUM_ANIM_CURVES; i++) {
-        curveNames.push_back(ofxAnimatable::getCurveName((AnimCurve)i));
+        curveNames.push_back( ofxAnimatable::getCurveName((AnimCurve)i) );
     }
 }
 
