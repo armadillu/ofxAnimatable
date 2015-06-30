@@ -155,6 +155,7 @@ class ofxAnimatable{
 	
 		static string getCurveName(AnimCurve c);
 		static AnimCurve getCurveFromName(const string& name);
+        static vector<string> getAllCurveNames();
 
 		static bool isCurveInvertable(AnimCurve c); //easeIn becomes easeOut, etc
 		static AnimCurve getInverseCurve(AnimCurve c); //does this curve have an inverse?
