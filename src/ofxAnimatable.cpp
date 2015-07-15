@@ -513,6 +513,7 @@ vector<string> ofxAnimatable::getAllCurveNames(){
     for (int i = 0; i < NUM_ANIM_CURVES; i++) {
         curveNames.push_back( ofxAnimatable::getCurveName((AnimCurve)i) );
     }
+    return curveNames;
 }
 
 void ofxAnimatable::setCustomBounceParams(int bounceNum, float bounceElast_){
