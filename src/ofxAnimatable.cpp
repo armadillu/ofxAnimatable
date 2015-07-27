@@ -508,6 +508,13 @@ AnimCurve ofxAnimatable::getCurveFromName(const string& name){
 	return EASE_IN_EASE_OUT;
 }
 
+vector<string> ofxAnimatable::getAllCurveNames(){
+    vector<string> curveNames;
+    for (int i = 0; i < NUM_ANIM_CURVES; i++) {
+        curveNames.push_back( ofxAnimatable::getCurveName((AnimCurve)i) );
+    }
+    return curveNames;
+}
 
 void ofxAnimatable::setCustomBounceParams(int bounceNum, float bounceElast_){
 	bounceNumB = ofClamp(bounceNum, 1, BOUNCES_MAX-1);
