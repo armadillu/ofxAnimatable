@@ -173,7 +173,7 @@ class ofxAnimatable{
 		//otherwise the curve* of the 2nd will point to the curve of the 1st
 		ofxAnimatable& operator=(const ofxAnimatable& other);
 
-	struct AnimationEvent{
+		struct AnimationEvent{
 			float percentDone;
 			AnimRepeat repeatSyle;
 			float direction;
