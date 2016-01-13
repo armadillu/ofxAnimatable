@@ -96,6 +96,8 @@ enum AnimCurve{
 	SMOOTHER_STEP,
 
 	NUM_ANIM_CURVES //leave that on the last to see how many we have
+
+	//todo add http://sol.gfxile.net/interpolation/ - Weighted Average
 };
 
 
