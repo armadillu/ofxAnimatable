@@ -242,6 +242,8 @@ class ofxAnimatable{
 		float bounceAcc;
 		float bounceDuration[BOUNCES_MAX];
 		float bounceVelocity[BOUNCES_MAX];
+
+		static bool warnedAboutCopy;
 };
 
 	

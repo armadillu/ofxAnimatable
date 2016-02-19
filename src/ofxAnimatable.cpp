@@ -11,6 +11,8 @@
 //from http://www.flong.com/texts/code/shapers_exp/
 
 
+bool ofxAnimatable::warnedAboutCopy = false;
+
 inline float cubicBezier(float x, float a, float b, float c, float d){
 
 	float y0a = 0.00f; // initial y
@@ -555,7 +557,10 @@ ofxAnimatable& ofxAnimatable::operator=(const ofxAnimatable& o) {
 	repeat_ = o.repeat_;
 	curveStyle_ = o.curveStyle_;
 
-	ofLogWarning("ofxAnimatable") << "Copying an ofxAnimatable object, this could be troublesome if you dont understand how ofxAnimatable works internally";
+	if(!warnedAboutCopy){
+		ofLogWarning("ofxAnimatable") << "Copying an ofxAnimatable object, this might not behave as expected if you used setCurve(AnimCurve*) - you might need to call it again.";
+		warnedAboutCopy = true;
+	}
 	curveStylePtr_ = &curveStyle_;
 
 	direction_ = o.direction_;
