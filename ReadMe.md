@@ -32,3 +32,6 @@ Includes basic tweening curves, and customizable ones found [here](http://www.fl
 
 see [big](https://farm8.staticflickr.com/7298/16217582178_4e5789e8cb_o_d.png)
 
+
+##LICENSE
+ofxAnimatable is made available under the [MIT](http://opensource.org/licenses/MIT) license.
