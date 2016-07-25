@@ -660,9 +660,9 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 		switch (*curveStylePtr_) {
 			case CUBIC_BEZIER_PARAM:
 				pts.addColor(ofColor(ofColor::cyan,blink));
-				pts.addVertex(ofVec2f(xx + cubicBezierParamAx * size, yy + size - cubicBezierParamAy * size));
+				pts.addVertex(ofVec3f(xx + cubicBezierParamAx * size, yy + size - cubicBezierParamAy * size));
 				pts.addColor(ofColor(ofColor::magenta,blink));
-				pts.addVertex(ofVec2f(xx + cubicBezierParamBx * size, yy + size - cubicBezierParamBy * size));
+				pts.addVertex(ofVec3f(xx + cubicBezierParamBx * size, yy + size - cubicBezierParamBy * size));
 				ofSetColor(ofColor::cyan);
 				ofDrawBitmapString("A", pts.getVertices()[0] + ofVec2f(5,4));
 				ofSetColor(ofColor::magenta);
@@ -670,20 +670,20 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 				break;
 			case QUADRATIC_BEZIER_PARAM:
 				pts.addColor(ofColor(ofColor::blue,blink));
-				pts.addVertex(ofVec2f(xx + quadraticBezierParamAx * size, yy + size - quadraticBezierParamAy * size));
+				pts.addVertex(ofVec3f(xx + quadraticBezierParamAx * size, yy + size - quadraticBezierParamAy * size));
 				ofDrawBitmapString("QB", pts.getVertices()[0] + ofVec2f(5,4));
 				break;
 			case EXPONENTIAL_SIGMOID_PARAM:
 				pts.addColor(ofColor(ofColor::cyan,blink));
-				pts.addVertex(ofVec2f(xx + doubleExpSigmoidParam * size, yy + size * 0.5));
+				pts.addVertex(ofVec3f(xx + doubleExpSigmoidParam * size, yy + size * 0.5));
 				ofDrawBitmapString("ES", pts.getVertices()[0] + ofVec2f(5,4));
 				break;
 			case BOUNCE_IN_CUSTOM:
 			case BOUNCE_OUT_CUSTOM:
 				pts.addColor(ofColor(ofColor::orange,blink));
-				pts.addVertex(ofVec2f(xx + (bounceNumB / (BOUNCES_MAX-1)) * size, yy + size));
+				pts.addVertex(ofVec3f(xx + (bounceNumB / (BOUNCES_MAX-1)) * size, yy + size));
 				pts.addColor(ofColor(ofColor::purple,blink));
-				pts.addVertex(ofVec2f(xx , yy + size -bounceElast * size));
+				pts.addVertex(ofVec3f(xx , yy + size -bounceElast * size));
 				ofDrawBitmapString("B1", pts.getVertices()[0] + ofVec2f(5,4));
 				ofDrawBitmapString("BE", pts.getVertices()[1] + ofVec2f(5,4));
 				break;
