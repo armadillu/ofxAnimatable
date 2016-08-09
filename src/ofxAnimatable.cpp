@@ -1004,7 +1004,7 @@ void ofxAnimatable::update(float dt){
 	
 	if (delay_ > 0.0f ){
 		delay_ -= dt;
-		if (delay_ < 0.0f){
+		if (delay_ <= 0.0f){
 			startAfterWait();
 		}
 	}
