@@ -28,7 +28,7 @@ void ofxAnimatableOfPoint::draw(){
 		ofPoint p = getCurrentPosition();
 		ofTranslate(p.x, p.y, p.z);
 		float s = 10.0f;
-		ofRect( -s * 0.5f, -s * 0.5f, s, s );
+		ofDrawRectangle( -s * 0.5f, -s * 0.5f, s, s );
 	ofPopMatrix();
 	
 }

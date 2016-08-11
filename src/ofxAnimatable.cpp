@@ -616,7 +616,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 	ofPushStyle();
 	if(bg){
 		ofSetColor(0,230);
-		ofRect(x, y, size, size);
+		ofDrawRectangle(x, y, size, size);
 	}
 	float steps = size;
 	string name = ofxAnimatable::getCurveName(*curveStylePtr_);
@@ -639,10 +639,10 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 
 	ofSetLineWidth(1);
 	ofSetColor(255,255); //axes
-	ofLine(xx,yy + s, xx + s, yy + s);
-	ofLine(xx,yy, xx, yy + s);
+	ofDrawLine(xx,yy + s, xx + s, yy + s);
+	ofDrawLine(xx,yy, xx, yy + s);
 	ofSetColor(255,32); //linear
-	ofLine(xx,yy + s, xx + s, yy );
+	ofDrawLine(xx,yy + s, xx + s, yy );
 	ofSetColor(c); //label
 	ofDrawBitmapString(name, x, y + s + 15);
 
@@ -687,6 +687,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 				ofDrawBitmapString("B1", pts.getVertices()[0] + ofVec2f(5,4));
 				ofDrawBitmapString("BE", pts.getVertices()[1] + ofVec2f(5,4));
 				break;
+			default: break;
 		}
 		pts.draw();
 	}
@@ -973,6 +974,8 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 		case SMOOTHER_STEP:
 			r = smootherStep(percent); break;
 
+		default: break;
+
 	}
 	return r;
 }
@@ -1122,6 +1125,7 @@ bool ofxAnimatable::isCurveInvertable(AnimCurve c){
 		case EASE_OUT_BACK: return true;
 		case EASE_IN_ELASTIC: return true; /**/
 		case EASE_OUT_ELASTIC: return true;
+		default: break;
 	}
 	return false;
 }
@@ -1138,6 +1142,7 @@ AnimCurve ofxAnimatable::getInverseCurve(AnimCurve c){
 		case EASE_OUT_BACK: return EASE_IN_BACK;
 		case EASE_IN_ELASTIC: return EASE_OUT_ELASTIC; /**/
 		case EASE_OUT_ELASTIC: return EASE_IN_ELASTIC;
+		default: break;
 	}
 	ofLogError("ofxAnimatable") << getCurveName(c) << " curve has no inverse!";
 	return c;
