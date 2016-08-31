@@ -185,6 +185,7 @@ class ofxAnimatable{
 		};
 
 		ofEvent<AnimationEvent> animFinished;
+		ofEvent<AnimationEvent> delayedAnimStart;
 		ofEvent<AnimationEvent> animLooped;
 
 	protected:

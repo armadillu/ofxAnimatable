@@ -1009,6 +1009,14 @@ void ofxAnimatable::update(float dt){
 		delay_ -= dt;
 		if (delay_ <= 0.0f){
 			startAfterWait();
+			AnimationEvent args;
+			args.repeatSyle = repeat_;
+			args.direction = direction_;
+			args.percentDone = percentDone_;
+			args.direction = direction_;
+			args.playCount = playcount_;
+			args.who = this;
+			ofNotifyEvent(delayedAnimStart, args, this);
 		}
 	}
 
