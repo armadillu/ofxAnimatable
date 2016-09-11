@@ -578,9 +578,9 @@ void ofxAnimatable::setup(){
 	cubicBezierParamAy = 0.973f;
 	cubicBezierParamBx = 0.250f;
 	cubicBezierParamBy = 0.750f;
-	elasticGain = 1.0f;
+	elasticGain = 0.5f;
 	elasticFreq = 1.0f;
-	elasticDecay = 0.0f;
+	elasticDecay = 0.3f;
 
 	bounceNumB = 7;
 	bounceElast = 0.5;
