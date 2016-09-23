@@ -1,4 +1,4 @@
-Set of classes that to set up very simple animations, with curves, repeat modes and scheduling. As if now, you can animate ofPoints, ofColors and floats.
+Set of classes that to set up very simple animations, with curves, repeat modes and scheduling. As of now, you can animate ofPoints, ofColors and floats.
 
 Let's see how to make a value animate indefinitely between two positions, with an EaseInEaseOut curve.
 
