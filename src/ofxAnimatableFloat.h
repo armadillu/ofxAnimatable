@@ -24,7 +24,6 @@ class ofxAnimatableFloat : public ofxAnimatable{
 		void animateToIfFinished( float newVal );	///starts new animation to newVal only if there isnt an anim going on
 		void animateFromTo( float originalValue, float destinationValue );
 
-
 		//gets
 		float val();								///gives you the current value.
 		float getCurrentValue(){ return val(); }
@@ -33,8 +32,6 @@ class ofxAnimatableFloat : public ofxAnimatable{
 
 		void reset(float newVal);					///sets an original value, and stops animation
 		void reset();								///goes back to the original value
-
-
 	
 		///trying to make everyone life's easier with operators, I want an ofxAnimatableFloat to behave 
 		///like a float here, but doesn't quite work all the time

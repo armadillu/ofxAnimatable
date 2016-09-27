@@ -187,9 +187,13 @@ class ofxAnimatable{
 		ofEvent<AnimationEvent> animFinished;
 		ofEvent<AnimationEvent> delayedAnimStart;
 		ofEvent<AnimationEvent> animLooped;
+	
+		void setAnimFinishedLambda(std::function<void()> func){animEndedLambdaFunc = func;}
 
 	protected:
 
+		std::function<void()> animEndedLambdaFunc = nullptr;
+	
 		bool		animating_;
 		bool		paused_;
 	
@@ -211,13 +215,10 @@ class ofxAnimatable{
 	
 		int			direction_;  // 1 : forward,   -1 : backward
 	
-
-
 		void startAnimation();			///Used by subclasses to indicate we are starting an anim
 		void startAnimationAfterDelay(float delay);
 		void reset();					///Used by subclasses to indicate a reset of an animation
-		inline void fillInParams(float&p1, float &p2, float &p3, float &p4,
-								 float ** pa1, float ** pa2);
+		inline void fillInParams(float&p1, float &p2, float &p3, float &p4, float ** pa1, float ** pa2);
 
 		bool autoUpdating;
 

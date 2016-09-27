@@ -1044,6 +1044,7 @@ void ofxAnimatable::update(float dt){
 				case PLAY_N_TIMES:
 					if(playcount_ == desiredPlayCount - 1){
 						ofNotifyEvent(animFinished, args, this);
+						if(animEndedLambdaFunc != nullptr) animEndedLambdaFunc();
 					}else{
 						playcount_++;
 						animating_ = true;
@@ -1053,6 +1054,7 @@ void ofxAnimatable::update(float dt){
 
 				case PLAY_ONCE:
 					ofNotifyEvent(animFinished, args, this);
+					if(animEndedLambdaFunc != nullptr) animEndedLambdaFunc();
 					break;	//nothing to do;
 					
 				case LOOP_BACK_AND_FORTH:
@@ -1080,6 +1082,7 @@ void ofxAnimatable::update(float dt){
 					if (playcount_ >= 1){	//time to stop
 						//we are done
 						ofNotifyEvent(animFinished, args, this);
+						if(animEndedLambdaFunc != nullptr) animEndedLambdaFunc();
 					}else{	
 						direction_ = -direction_;
 						animating_ = true;
@@ -1098,6 +1101,7 @@ void ofxAnimatable::update(float dt){
 				case LOOP_BACK_AND_FORTH_N_TIMES:
 					if ((playcount_ + 1) >= desiredPlayCount * 2 && direction_ == -1){	//time to stop
 						ofNotifyEvent(animFinished, args, this);
+						if(animEndedLambdaFunc != nullptr) animEndedLambdaFunc();
 						//we are done
 					}else{
 						direction_ = -direction_;
