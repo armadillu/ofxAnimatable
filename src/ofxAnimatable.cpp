@@ -692,6 +692,12 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 		pts.draw();
 	}
 
+	if (animating_) {
+		float val = calcCurveAt(percentDone_, *curveStylePtr_, p1, p2, p3, p4, pa1, pa2);
+		ofColor col; col.setHsb((25 * ofGetFrameNum()) % 255, 255, 255);
+		ofSetColor(col);
+		ofDrawCircle(ofVec2f(xx + size * percentDone_, yy + size * (1.-val)), size / 50);
+	}
 	ofPopStyle();
 #endif
 }
