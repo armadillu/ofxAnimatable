@@ -122,7 +122,7 @@ class ofxAnimatable{
 		void setCurve( AnimCurve curveStyle_ );
 		void setCurve( AnimCurve* curveStyle_ );	//use this if you want to change
 													//anim curve styles on the fly.
-													//just make sure the poitner remains valid!
+													//just make sure the pointer remains valid!
 	
 		void setRepeatType( AnimRepeat repeat );
 		void setRepeatTimes(int times); //you must set setRepeatType to PLAY_N_TIMES or LOOP_BACK_AND_FORTH_N_TIMES
