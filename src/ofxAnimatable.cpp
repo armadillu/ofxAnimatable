@@ -518,6 +518,16 @@ vector<string> ofxAnimatable::getAllCurveNames(){
     return curveNames;
 }
 
+
+float ofxAnimatable::getTimeLeftUntilDone(){
+	if(isAnimating()){
+		return getDuration() * (1.0f - getPercentDone());
+	}else{
+		return 0.0f;
+	}
+}
+
+
 void ofxAnimatable::setCustomBounceParams(int bounceNum, float bounceElast_){
 	bounceNumB = ofClamp(bounceNum, 1, BOUNCES_MAX-1);
 	bounceElast = bounceElast_;

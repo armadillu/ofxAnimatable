@@ -140,6 +140,7 @@ class ofxAnimatable{
 
 		void setCustomBounceParams(int bounceNum, float bounceElast);
 		float getDuration(){ return 1.0f/transitionSpeed_; }
+		float getTimeLeftUntilDone();
 
 		int getPlayCount(){return playcount_;}; ///returns 2x what the user requested when LOOP_BACK_AND_FORTH - when using PLAY_N_TIMES
 		int getDesiredPlayCount(){return desiredPlayCount;}; ///when using PLAY_N_TIMES
