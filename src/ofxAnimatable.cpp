@@ -422,6 +422,12 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case QUADRATIC_EASE_IN: return "QUADRATIC_EASE_IN";
 		case QUADRATIC_EASE_OUT: return "QUADRATIC_EASE_OUT";
 		case EARLY_QUADRATIC_EASE_OUT: return "EARLY_QUADRATIC_EASE_OUT";
+        case CUBIC_EASE_IN: return "CUBIC_EASE_IN";
+        case CUBIC_EASE_OUT: return "CUBIC_EASE_OUT";
+        case QUARTIC_EASE_IN: return "QUARTIC_EASE_IN";
+        case QUARTIC_EASE_OUT: return "QUARTIC_EASE_OUT";
+        case QUINTIC_EASE_IN: return "QUINTIC_EASE_IN";
+        case QUINTIC_EASE_OUT: return "QUINTIC_EASE_OUT";
 		case QUADRATIC_BEZIER_PARAM: return "QUADRATIC_BEZIER_PARAM";
 		case CUBIC_BEZIER_PARAM: return "CUBIC_BEZIER_PARAM";
 		case EXPONENTIAL_SIGMOID_PARAM: return "EXPONENTIAL_SIGMOID_PARAM";
@@ -448,8 +454,6 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 
 		case SMOOTH_STEP: return "SMOOTH_STEP";
 		case SMOOTHER_STEP: return "SMOOTHER_STEP";
-            
-        case QUARTIC_IN: return "QUARTIC_IN";
 
 		default: return "UNKNOWN_CURVE!";
 	}
@@ -482,6 +486,12 @@ AnimCurve ofxAnimatable::getCurveFromName(const string& name){
 	if(name == "QUADRATIC_EASE_IN") return QUADRATIC_EASE_IN;
 	if(name == "QUADRATIC_EASE_OUT") return QUADRATIC_EASE_OUT;
 	if(name == "EARLY_QUADRATIC_EASE_OUT") return EARLY_QUADRATIC_EASE_OUT;
+    if(name == "CUBIC_EASE_IN") return CUBIC_EASE_IN;
+    if(name == "CUBIC_EASE_OUT") return CUBIC_EASE_OUT;
+    if(name == "QUARTIC_EASE_IN") return QUARTIC_EASE_IN;
+    if(name == "QUARTIC_EASE_OUT") return QUARTIC_EASE_OUT;
+    if(name == "QUINTIC_EASE_IN") return QUINTIC_EASE_IN;
+    if(name == "QUINTIC_EASE_OUT") return QUINTIC_EASE_OUT;
 	if(name == "QUADRATIC_BEZIER_PARAM") return QUADRATIC_BEZIER_PARAM;
 	if(name == "CUBIC_BEZIER_PARAM") return CUBIC_BEZIER_PARAM;
 	if(name == "EXPONENTIAL_SIGMOID_PARAM") return EXPONENTIAL_SIGMOID_PARAM;
@@ -507,8 +517,6 @@ AnimCurve ofxAnimatable::getCurveFromName(const string& name){
 
 	if(name == "SMOOTH_STEP") return SMOOTH_STEP;
 	if(name == "SMOOTHER_STEP") return SMOOTHER_STEP;
-
-    if(name == "QUARTIC_IN") return QUARTIC_IN;
     
 	ofLogError("ofxAnimatable") << "Unknown Curve (" << name << ")";
 	return EASE_IN_EASE_OUT;
@@ -858,6 +866,24 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 			float x = (percent - 0.25) * p;
 			r = (percent < 0.25f) ? 0.0f :  1.0f - ( x - 1.0f) * ( x - 1.0f);
 		}break;
+            
+        case CUBIC_EASE_IN:
+            r = percent * percent * percent; break;
+            
+        case CUBIC_EASE_OUT:
+            r = 1.0f - ((1.0f - percent) * (1.0f - percent) * (1.0f - percent)); break;
+            
+        case QUARTIC_EASE_IN:
+            r = percent * percent * percent * percent; break;
+            
+        case QUARTIC_EASE_OUT:
+            r = 1.0f - ((1.0f - percent) * (1.0f - percent) * (1.0f - percent) * (1.0f - percent)); break;
+            
+        case QUINTIC_EASE_IN:
+            r = percent * percent * percent * percent * percent; break;
+            
+        case QUINTIC_EASE_OUT:
+            r = 1.0f - ((1.0f - percent) * (1.0f - percent) * (1.0f - percent) * (1.0f - percent) * (1.0f - percent)); break;
 
 		case BOUNCY:{
 			float k = 0.5f;
@@ -977,9 +1003,6 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 
 		case SMOOTHER_STEP:
 			r = smootherStep(percent); break;
-            
-        case QUARTIC_IN:
-            r = pow(percent,3); break;
 
 		default: break;
 
