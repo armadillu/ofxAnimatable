@@ -448,6 +448,8 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 
 		case SMOOTH_STEP: return "SMOOTH_STEP";
 		case SMOOTHER_STEP: return "SMOOTHER_STEP";
+            
+        case QUARTIC_IN: return "QUARTIC_IN";
 
 		default: return "UNKNOWN_CURVE!";
 	}
@@ -506,6 +508,8 @@ AnimCurve ofxAnimatable::getCurveFromName(const string& name){
 	if(name == "SMOOTH_STEP") return SMOOTH_STEP;
 	if(name == "SMOOTHER_STEP") return SMOOTHER_STEP;
 
+    if(name == "QUARTIC_IN") return QUARTIC_IN;
+    
 	ofLogError("ofxAnimatable") << "Unknown Curve (" << name << ")";
 	return EASE_IN_EASE_OUT;
 }
@@ -973,6 +977,9 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 
 		case SMOOTHER_STEP:
 			r = smootherStep(percent); break;
+            
+        case QUARTIC_IN:
+            r = pow(percent,3); break;
 
 		default: break;
 

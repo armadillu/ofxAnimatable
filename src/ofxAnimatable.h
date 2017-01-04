@@ -94,6 +94,8 @@ enum AnimCurve{
 
 	SMOOTH_STEP, //http://en.wikipedia.org/wiki/Smoothstep
 	SMOOTHER_STEP,
+    
+    QUARTIC_IN,
 
 	NUM_ANIM_CURVES //leave that on the last to see how many we have
 
