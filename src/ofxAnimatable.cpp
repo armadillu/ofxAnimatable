@@ -406,30 +406,27 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case TANH: return "TANH";
 		case SINH: return "SINH";
 		case SQUARE: return "SQUARE";
-		case LATE_SQUARE: return "LATE_SQUARE";
-		case EARLY_SQUARE: return "EARLY_SQUARE";
+
 		case BLINK_5: return "BLINK_5";
 		case BLINK_3: return "BLINK_3";
 		case BLINK_2: return "BLINK_2";
 		case BLINK_AND_FADE_1: return "BLINK_AND_FADE_1";
 		case BLINK_AND_FADE_2: return "BLINK_AND_FADE_2";
 		case BLINK_AND_FADE_3: return "BLINK_AND_FADE_3";
-		case LATE_LINEAR: return "LATE_LINEAR";
-		case LATE_EASE_IN_EASE_OUT: return "LATE_EASE_IN_EASE_OUT";
-		case EARLY_LINEAR: return "EARLY_LINEAR";
-		case VERY_LATE_LINEAR: return "VERY_LATE_LINEAR";
-		case VERY_LATE_EASE_IN_EASE_OUT: return "VERY_LATE_EASE_IN_EASE_OUT";		
+
 		case QUADRATIC_EASE_IN: return "QUADRATIC_EASE_IN";
 		case QUADRATIC_EASE_OUT: return "QUADRATIC_EASE_OUT";
-		case EARLY_QUADRATIC_EASE_OUT: return "EARLY_QUADRATIC_EASE_OUT";
         case CUBIC_EASE_IN: return "CUBIC_EASE_IN";
         case CUBIC_EASE_OUT: return "CUBIC_EASE_OUT";
         case QUARTIC_EASE_IN: return "QUARTIC_EASE_IN";
         case QUARTIC_EASE_OUT: return "QUARTIC_EASE_OUT";
         case QUINTIC_EASE_IN: return "QUINTIC_EASE_IN";
         case QUINTIC_EASE_OUT: return "QUINTIC_EASE_OUT";
+
 		case QUADRATIC_BEZIER_PARAM: return "QUADRATIC_BEZIER_PARAM";
 		case CUBIC_BEZIER_PARAM: return "CUBIC_BEZIER_PARAM";
+		case CUBIC_BEZIER2_PARAM: return "CUBIC_BEZIER2_PARAM";
+
 		case EXPONENTIAL_SIGMOID_PARAM: return "EXPONENTIAL_SIGMOID_PARAM";
 		case SWIFT_GOOGLE: return "SWIFT_GOOGLE";
 		case OBJECT_DROP: return "OBJECT_DROP";
@@ -454,6 +451,16 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 
 		case SMOOTH_STEP: return "SMOOTH_STEP";
 		case SMOOTHER_STEP: return "SMOOTHER_STEP";
+
+		//Deprecated!
+		case LATE_SQUARE: return "LATE_SQUARE";
+		case EARLY_SQUARE: return "EARLY_SQUARE";
+		case LATE_LINEAR: return "LATE_LINEAR";
+		case LATE_EASE_IN_EASE_OUT: return "LATE_EASE_IN_EASE_OUT";
+		case EARLY_LINEAR: return "EARLY_LINEAR";
+		case VERY_LATE_LINEAR: return "VERY_LATE_LINEAR";
+		case VERY_LATE_EASE_IN_EASE_OUT: return "VERY_LATE_EASE_IN_EASE_OUT";
+		case EARLY_QUADRATIC_EASE_OUT: return "EARLY_QUADRATIC_EASE_OUT";
 
 		default: return "UNKNOWN_CURVE!";
 	}
@@ -494,6 +501,7 @@ AnimCurve ofxAnimatable::getCurveFromName(const string& name){
     if(name == "QUINTIC_EASE_OUT") return QUINTIC_EASE_OUT;
 	if(name == "QUADRATIC_BEZIER_PARAM") return QUADRATIC_BEZIER_PARAM;
 	if(name == "CUBIC_BEZIER_PARAM") return CUBIC_BEZIER_PARAM;
+	if(name == "CUBIC_BEZIER2_PARAM") return CUBIC_BEZIER2_PARAM;
 	if(name == "EXPONENTIAL_SIGMOID_PARAM") return EXPONENTIAL_SIGMOID_PARAM;
 	if(name == "SWIFT_GOOGLE") return SWIFT_GOOGLE;
 	if(name == "OBJECT_DROP") return OBJECT_DROP;
@@ -669,6 +677,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 	ofDrawBitmapString(name, x, y + s + 15);
 
 	if (*curveStylePtr_ == CUBIC_BEZIER_PARAM ||
+		*curveStylePtr_ == CUBIC_BEZIER2_PARAM ||
 		*curveStylePtr_ == QUADRATIC_BEZIER_PARAM ||
 		*curveStylePtr_ == EXPONENTIAL_SIGMOID_PARAM ||
 		*curveStylePtr_ == BOUNCE_IN_CUSTOM ||
@@ -680,6 +689,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 		pts.setMode(OF_PRIMITIVE_POINTS);
 		int blink = (ofGetFrameNum()%6 > 2) ? 255 : 0;
 		switch (*curveStylePtr_) {
+			case CUBIC_BEZIER2_PARAM:
 			case CUBIC_BEZIER_PARAM:
 				pts.addColor(ofColor(ofColor::cyan,blink));
 				pts.addVertex(ofVec3f(xx + cubicBezierParamAx * size, yy + size - cubicBezierParamAy * size));
@@ -743,6 +753,7 @@ inline void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &
 			break;
 
 		case CUBIC_BEZIER_PARAM:
+		case CUBIC_BEZIER2_PARAM:
 			p1 = cubicBezierParamAx;
 			p2 = cubicBezierParamAy;
 			p3 = cubicBezierParamBx;
@@ -796,35 +807,16 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 	float r = percent;
 	switch ( type ) {
 
-		case EASE_IN_EASE_OUT:
-			r = 0.5f - 0.5f * cosf( M_PI * percent ); break;
-
-		case EASE_IN:
-			r = 1.0f + sinf( M_PI_2 * percent - M_PI_2); break;
-
-		case EASE_OUT:
-			r = sinf( M_PI_2 * percent ); break;
-
-		case LINEAR:
-			break;
-
-		case EARLY_LINEAR:
-			r = ( percent < 0.25f ) ? 0.0f : 1.33333333f * (percent - 0.25f); break;
-
-		case LATE_LINEAR:
-			r = ( percent < 0.5f ) ? 0.0f : 2.0f * percent - 1.0f; break;
-
-		case VERY_LATE_LINEAR:
-			r = ( percent < 0.75f ) ? 0.0f : 4.0f * percent - 3.0f; break;
-
-		case TANH:
-			r = 0.5f + 0.5f * tanh( 2.0f * M_PI * percent - M_PI ) * 1.00374187319732; break;
-
-		case SINH:
-			r = 0.5f + 0.23482f * sinh( 3.0f * percent - 1.5f ); break;
-
-		case SQUARE:
-			r = (percent < 0.5f) ? 0.0f : 1.0f; break;
+		case EASE_IN_EASE_OUT: r = 0.5f - 0.5f * cosf( M_PI * percent ); break;
+		case EASE_IN: r = 1.0f + sinf( M_PI_2 * percent - M_PI_2); break;
+		case EASE_OUT: r = sinf( M_PI_2 * percent ); break;
+		case LINEAR: break;
+		case EARLY_LINEAR: r = ( percent < 0.25f ) ? 0.0f : 1.33333333f * (percent - 0.25f); break;
+		case LATE_LINEAR: r = ( percent < 0.5f ) ? 0.0f : 2.0f * percent - 1.0f; break;
+		case VERY_LATE_LINEAR: r = ( percent < 0.75f ) ? 0.0f : 4.0f * percent - 3.0f; break;
+		case TANH: r = 0.5f + 0.5f * tanh( 2.0f * M_PI * percent - M_PI ) * 1.00374187319732; break;
+		case SINH: r = 0.5f + 0.23482f * sinh( 3.0f * percent - 1.5f ); break;
+		case SQUARE: r = (percent < 0.5f) ? 0.0f : 1.0f; break;
 
 		case BLINK_5:{
 			float v = percent * 5.0f;
@@ -859,11 +851,8 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 			if (percent >= 0.875f) r = 8 * percent - 8 * 0.875f ;
 		}break;
 
-		case LATE_SQUARE:
-			r = (percent < 0.75f) ? 0.0f : 1.0f; break;
-
-		case EARLY_SQUARE:
-			r = (percent < 0.25f) ? 0.0f : 1.0f; break;
+		case LATE_SQUARE: r = (percent < 0.75f) ? 0.0f : 1.0f; break;
+		case EARLY_SQUARE: r = (percent < 0.25f) ? 0.0f : 1.0f; break;
 
 		case LATE_EASE_IN_EASE_OUT:
 			r = (percent < 0.5f) ? 0.0f : 0.5f + 0.5f * cosf( 2.0f * M_PI * percent); break;
@@ -871,52 +860,47 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 		case VERY_LATE_EASE_IN_EASE_OUT:
 			r = (percent < 0.75f) ? 0.0f : 0.5f + 0.5f * cosf( 4.0f * M_PI * percent); break;
 
-		case QUADRATIC_EASE_IN:
-			r = percent * percent; break;
+		case QUADRATIC_EASE_IN: r = percent * percent; break;
 
-		case QUADRATIC_EASE_OUT:
-			r = 1.0f - (percent - 1.0f) * (percent - 1.0f); break;
+		case QUADRATIC_EASE_OUT: r = 1.0f - (percent - 1.0f) * (percent - 1.0f); break;
 
 		case EARLY_QUADRATIC_EASE_OUT:{
-			float p = 1.333333333f;
-			float x = (percent - 0.25) * p;
+			const float p = 1.333333333f;
+			const float x = (percent - 0.25f) * p;
 			r = (percent < 0.25f) ? 0.0f :  1.0f - ( x - 1.0f) * ( x - 1.0f);
 		}break;
             
-        case CUBIC_EASE_IN:
-            r = percent * percent * percent; break;
+        case CUBIC_EASE_IN: r = percent * percent * percent; break;
             
-        case CUBIC_EASE_OUT:
-            r = 1.0f - ((1.0f - percent) * (1.0f - percent) * (1.0f - percent)); break;
+		case CUBIC_EASE_OUT:{
+			const float iPct = (1.0f - percent);
+            r = 1.0f - ( iPct * iPct * iPct ); break;
+		}
+
+        case QUARTIC_EASE_IN: r = percent * percent * percent * percent; break;
             
-        case QUARTIC_EASE_IN:
-            r = percent * percent * percent * percent; break;
+		case QUARTIC_EASE_OUT:{
+			const float iPct = (1.0f - percent);
+            r = 1.0f - (iPct * iPct * iPct * iPct);
+		}break;
+
+
+        case QUINTIC_EASE_IN: r = percent * percent * percent * percent * percent; break;
             
-        case QUARTIC_EASE_OUT:
-            r = 1.0f - ((1.0f - percent) * (1.0f - percent) * (1.0f - percent) * (1.0f - percent)); break;
-            
-        case QUINTIC_EASE_IN:
-            r = percent * percent * percent * percent * percent; break;
-            
-        case QUINTIC_EASE_OUT:
-            r = 1.0f - ((1.0f - percent) * (1.0f - percent) * (1.0f - percent) * (1.0f - percent) * (1.0f - percent)); break;
+		case QUINTIC_EASE_OUT:{
+			const float iPct = (1.0f - percent);
+            r = 1.0f - (iPct * iPct * iPct * iPct * iPct);
+		}break;
 
 		case BOUNCY:{
-			float k = 0.5f;
+			const float k = 0.5f;
 			r = 0.5f - 0.51f * cosf( M_PI * percent + k * percent - k * 0.5f );
-			}break;
+		}break;
 
-		case QUADRATIC_BEZIER_PARAM:{
-			r = quadraticBezier(percent, p1, p2); break; 
-		}
-
-		case EXPONENTIAL_SIGMOID_PARAM:{
-			r = doubleExponentialSigmoid(percent, p1); break;
-		}
-
-		case CUBIC_BEZIER_PARAM:{
-			r = cubicBezier(percent, p1, p2, p3, p4); break;
-		}
+		case QUADRATIC_BEZIER_PARAM: r = quadraticBezier(percent, p1, p2); break;
+		case EXPONENTIAL_SIGMOID_PARAM: r = doubleExponentialSigmoid(percent, p1); break;
+		case CUBIC_BEZIER_PARAM: r = cubicBezier(percent, p1, p2, p3, p4); break;
+		case CUBIC_BEZIER2_PARAM: r = cubicBezierNearlyThroughTwoPoints(percent, p1, p2, p3, p4); break;
 
 		case SWIFT_GOOGLE:{
 			r = cubicBezier(percent, 0.444f, 0.013f, 0.188f, 0.956f); break;
@@ -962,66 +946,33 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 					}
 				}
 			}
-			r = 1.0f-r;
+			r = 1.0f - r;
 			break;
 		}
 
 												///////////////////////////////////////// BACK
-
-		case EASE_IN_BACK:
-			r = easeInBack(percent, p1); break;
-
-		case EASE_OUT_BACK:
-			r = easeOutBack(percent, p1); break;
-
-		case EASE_OUT_IN_BACK:
-			r = easeOutInBack(percent, p1); break;
-
-		case EASE_IN_OUT_BACK:
-			r = easeInOutBack(percent, p1); break;
-
+		case EASE_IN_BACK: r = easeInBack(percent, p1); break;
+		case EASE_OUT_BACK: r = easeOutBack(percent, p1); break;
+		case EASE_OUT_IN_BACK: r = easeOutInBack(percent, p1); break;
+		case EASE_IN_OUT_BACK: r = easeInOutBack(percent, p1); break;
 												///////////////////////////////////////// BOUNCE
-		case EASE_IN_BOUNCE:
-			r = easeInBounce(percent); break;
-
-		case EASE_OUT_BOUNCE:
-			r = easeOutBounce(percent); break;
-
-		case EASE_IN_OUT_BOUNCE:
-			r = easeInOutBounce(percent); break;
-
-		case EASE_OUT_IN_BOUNCE:
-			r = easeOutInBounce(percent); break;
-
+		case EASE_IN_BOUNCE: r = easeInBounce(percent); break;
+		case EASE_OUT_BOUNCE: r = easeOutBounce(percent); break;
+		case EASE_IN_OUT_BOUNCE: r = easeInOutBounce(percent); break;
+		case EASE_OUT_IN_BOUNCE: r = easeOutInBounce(percent); break;
 												///////////////////////////////////////// ELASTIC
-		case EASE_IN_ELASTIC:
-			r = easeInElastic(percent, p1, p2, p3); break;
-
-		case EASE_OUT_ELASTIC:
-			r = easeOutElastic(percent, p1, p2, p3); break;
-
-		case EASE_IN_OUT_ELASTIC:
-			r = easeInOutElastic(percent, p1, p2, p3); break;
-
-		case EASE_OUT_IN_ELASTIC:
-			r = easeOutInElastic(percent, p1, p2, p3); break;
-
+		case EASE_IN_ELASTIC: r = easeInElastic(percent, p1, p2, p3); break;
+		case EASE_OUT_ELASTIC: r = easeOutElastic(percent, p1, p2, p3); break;
+		case EASE_IN_OUT_ELASTIC: r = easeInOutElastic(percent, p1, p2, p3); break;
+		case EASE_OUT_IN_ELASTIC: r = easeOutInElastic(percent, p1, p2, p3); break;
 												///////////////////////////////////////// CUSTOM BOUNCE
-		case BOUNCE_IN_CUSTOM:
-			r = customBounce(1.0f - percent, p1, p2, pa1, pa2); break;
-
-		case BOUNCE_OUT_CUSTOM:
-			r = 1.0f - customBounce(percent, p1, p2, pa1, pa2); break;
-
+		case BOUNCE_IN_CUSTOM: r = customBounce(1.0f - percent, p1, p2, pa1, pa2); break;
+		case BOUNCE_OUT_CUSTOM:	r = 1.0f - customBounce(percent, p1, p2, pa1, pa2); break;
 												//////////////////////////////////////// SMOOTH STEP
-		case SMOOTH_STEP:
-			r = smoothStep(percent); break;
-
-		case SMOOTHER_STEP:
-			r = smootherStep(percent); break;
+		case SMOOTH_STEP: r = smoothStep(percent); break;
+		case SMOOTHER_STEP:	r = smootherStep(percent); break;
 
 		default: break;
-
 	}
 	return r;
 }
@@ -1183,6 +1134,12 @@ bool ofxAnimatable::isCurveInvertable(AnimCurve c){
 		case EASE_OUT_BACK: return true;
 		case EASE_IN_ELASTIC: return true; /**/
 		case EASE_OUT_ELASTIC: return true;
+		case CUBIC_EASE_IN: return true; /**/
+		case CUBIC_EASE_OUT: return true;
+		case QUARTIC_EASE_IN: return true; /**/
+		case QUARTIC_EASE_OUT: return true;
+		case QUINTIC_EASE_IN: return true; /**/
+		case QUINTIC_EASE_OUT: return true;
 		default: break;
 	}
 	return false;
@@ -1200,6 +1157,13 @@ AnimCurve ofxAnimatable::getInverseCurve(AnimCurve c){
 		case EASE_OUT_BACK: return EASE_IN_BACK;
 		case EASE_IN_ELASTIC: return EASE_OUT_ELASTIC; /**/
 		case EASE_OUT_ELASTIC: return EASE_IN_ELASTIC;
+		case CUBIC_EASE_IN: return CUBIC_EASE_OUT; /**/
+		case CUBIC_EASE_OUT: return CUBIC_EASE_IN;
+		case QUARTIC_EASE_IN: return QUARTIC_EASE_OUT; /**/
+		case QUARTIC_EASE_OUT: return QUARTIC_EASE_IN;
+		case QUINTIC_EASE_IN: return QUINTIC_EASE_OUT; /**/
+		case QUINTIC_EASE_OUT: return QUINTIC_EASE_IN;
+
 		default: break;
 	}
 	ofLogError("ofxAnimatable") << getCurveName(c) << " curve has no inverse!";

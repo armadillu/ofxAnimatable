@@ -42,16 +42,11 @@ enum AnimCurve{
 	EASE_IN, 
 	EASE_OUT, 
 	LINEAR,
-	EARLY_LINEAR,
-	LATE_LINEAR,
-	VERY_LATE_LINEAR, 
 	BOUNCY,	//this needs work TODO
 	OBJECT_DROP,
 	TANH,
 	SINH, 	
-	EARLY_SQUARE, 
 	SQUARE,
-	LATE_SQUARE, //13
 
 	BLINK_5,
 	BLINK_3,
@@ -60,12 +55,8 @@ enum AnimCurve{
 	BLINK_AND_FADE_2,
 	BLINK_AND_FADE_3,
 
-	LATE_EASE_IN_EASE_OUT, //20
-	VERY_LATE_EASE_IN_EASE_OUT,
 	QUADRATIC_EASE_IN,
 	QUADRATIC_EASE_OUT,
-	EARLY_QUADRATIC_EASE_OUT,
-    
     CUBIC_EASE_IN,
     CUBIC_EASE_OUT,
     QUARTIC_EASE_IN,
@@ -76,12 +67,13 @@ enum AnimCurve{
 	QUADRATIC_BEZIER_PARAM, //http://www.flong.com/texts/code/shapers_exp/
 
 	CUBIC_BEZIER_PARAM,
+	CUBIC_BEZIER2_PARAM, //same as above, but Curve will go through pts A & B
 
 	EXPONENTIAL_SIGMOID_PARAM,
 
 	SWIFT_GOOGLE,
 
-	EASE_IN_BOUNCE,		//28
+	EASE_IN_BOUNCE,
 	EASE_OUT_BOUNCE,
 	EASE_IN_OUT_BOUNCE,
 	EASE_OUT_IN_BOUNCE,
@@ -101,7 +93,18 @@ enum AnimCurve{
 
 	SMOOTH_STEP, //http://en.wikipedia.org/wiki/Smoothstep
 	SMOOTHER_STEP,
-    
+
+	//EARLY/LATE versions.... deprecated! will be removed at some point
+	EARLY_SQUARE,
+	LATE_SQUARE,
+	EARLY_LINEAR,
+	LATE_LINEAR,
+	VERY_LATE_LINEAR,
+	LATE_EASE_IN_EASE_OUT,
+	VERY_LATE_EASE_IN_EASE_OUT,
+	EARLY_QUADRATIC_EASE_OUT,
+
+
 	NUM_ANIM_CURVES //leave that on the last to see how many we have
 
 	//todo add http://sol.gfxile.net/interpolation/ - Weighted Average
