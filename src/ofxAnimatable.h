@@ -65,6 +65,13 @@ enum AnimCurve{
 	QUADRATIC_EASE_IN,
 	QUADRATIC_EASE_OUT,
 	EARLY_QUADRATIC_EASE_OUT,
+    
+    CUBIC_EASE_IN,
+    CUBIC_EASE_OUT,
+    QUARTIC_EASE_IN,
+    QUARTIC_EASE_OUT,
+    QUINTIC_EASE_IN,
+    QUINTIC_EASE_OUT,
 
 	QUADRATIC_BEZIER_PARAM, //http://www.flong.com/texts/code/shapers_exp/
 
@@ -94,7 +101,7 @@ enum AnimCurve{
 
 	SMOOTH_STEP, //http://en.wikipedia.org/wiki/Smoothstep
 	SMOOTHER_STEP,
-
+    
 	NUM_ANIM_CURVES //leave that on the last to see how many we have
 
 	//todo add http://sol.gfxile.net/interpolation/ - Weighted Average
