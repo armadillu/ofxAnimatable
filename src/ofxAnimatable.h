@@ -157,6 +157,7 @@ class ofxAnimatable{
 
 		float getPercentDone();			///get how much of the animation has been "walked"
 		void setPercentDone(float p);			//Will allow to skip to any point of animation. use carefully
+		float getDirection(){return direction_;} //1 if going, -1 if going back (on loop back & forth)
 		bool isAnimating();				///is the animation still going on?
 		bool hasFinishedAnimating();	///has the animation finished?
 		bool isWaitingForAnimationToStart();	///an animation has been scheduled with "animateToAfterDelay"
