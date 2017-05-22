@@ -555,7 +555,7 @@ void ofxAnimatable::setCustomBounceParams(int bounceNum, float bounceElast_){
 }
 
 
-ofxAnimatable& ofxAnimatable::operator=(const ofxAnimatable& o) {
+void ofxAnimatable::copyMemberVars(const ofxAnimatable& o){
 	doubleExpSigmoidParam = o.doubleExpSigmoidParam;
 	quadraticBezierParamAx = o.quadraticBezierParamAx;
 	bounceAmp = o.bounceAmp;
@@ -592,9 +592,17 @@ ofxAnimatable& ofxAnimatable::operator=(const ofxAnimatable& o) {
 		warnedAboutCopy = true;
 	}
 	curveStylePtr_ = &curveStyle_;
-
 	direction_ = o.direction_;
+}
 
+
+ofxAnimatable::ofxAnimatable(const ofxAnimatable& o){
+	copyMemberVars(o);
+}
+
+
+ofxAnimatable& ofxAnimatable::operator=(const ofxAnimatable& o) {
+	copyMemberVars(o);
 	return *this;
 }
 

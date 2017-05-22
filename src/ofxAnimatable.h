@@ -187,6 +187,7 @@ class ofxAnimatable{
 		//we need a custom step when assigning ofxAnimatable objs
 		//otherwise the curve* of the 2nd will point to the curve of the 1st
 		ofxAnimatable& operator=(const ofxAnimatable& other);
+		ofxAnimatable(const ofxAnimatable& other);
 
 		struct AnimationEvent{
 			float percentDone;
@@ -203,6 +204,8 @@ class ofxAnimatable{
 		void setAnimFinishedLambda(std::function<void()> func){animEndedLambdaFunc = func;}
 
 	protected:
+
+		void copyMemberVars(const ofxAnimatable& other);
 
 		std::function<void()> animEndedLambdaFunc = nullptr;
 	
