@@ -696,8 +696,8 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 		glPointSize(4);
 		pts.setMode(OF_PRIMITIVE_POINTS);
 		int blink = (ofGetFrameNum()%6 > 2) ? 255 : 0;
-		auto pt0 = pts.getVertices()[0];
-		auto pt1 = pts.getVertices()[1];
+		ofVec2f pt0;
+		ofVec2f pt1;
 		switch (*curveStylePtr_) {
 			case CUBIC_BEZIER2_PARAM:
 			case CUBIC_BEZIER_PARAM:
@@ -706,7 +706,8 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 				pts.addColor(ofColor(ofColor::magenta,blink));
 				pts.addVertex(ofVec3f(xx + cubicBezierParamBx * size, yy + size - cubicBezierParamBy * size));
 				ofSetColor(ofColor::cyan);
-
+				pt0 = pts.getVertices()[0];
+				pt1 = pts.getVertices()[1];
 				ofDrawBitmapString("A", pt0.x + 5, pt0.y + 4);
 				ofSetColor(ofColor::magenta);
 				ofDrawBitmapString("B", pt1.x + 5, pt1.y + 4);
@@ -714,11 +715,13 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 			case QUADRATIC_BEZIER_PARAM:
 				pts.addColor(ofColor(ofColor::blue,blink));
 				pts.addVertex(ofVec3f(xx + quadraticBezierParamAx * size, yy + size - quadraticBezierParamAy * size));
+				pt0 = pts.getVertices()[0];
 				ofDrawBitmapString("QB", pt0.x + 5, pt0.y + 4);
 				break;
 			case EXPONENTIAL_SIGMOID_PARAM:
 				pts.addColor(ofColor(ofColor::cyan,blink));
 				pts.addVertex(ofVec3f(xx + doubleExpSigmoidParam * size, yy + size * 0.5));
+				pt0 = pts.getVertices()[0];
 				ofDrawBitmapString("ES", pt0.x + 5, pt0.y + 4);
 				break;
 			case BOUNCE_IN_CUSTOM:
@@ -727,7 +730,8 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 				pts.addVertex(ofVec3f(xx + (bounceNumB / (BOUNCES_MAX-1)) * size, yy + size));
 				pts.addColor(ofColor(ofColor::purple,blink));
 				pts.addVertex(ofVec3f(xx , yy + size -bounceElast * size));
-				ofDrawBitmapString("B1", pt0.x + 5, pt0.y + 4);
+				pt0 = pts.getVertices()[0];
+				pt1 = pts.getVertices()[1];
 				ofDrawBitmapString("BE", pt1.x + 5, pt1.y + 4);
 				break;
 			default: break;
