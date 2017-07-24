@@ -1,3 +1,3 @@
-ofxAnimatable
 ofxTimeMeasurements
 ofxRemoteUI
+ofxAnimatable
