@@ -1,5 +1,7 @@
 # ofxAnimatable
 
+[![Build Status](https://travis-ci.org/armadillu/ofxAnimatable.svg?branch=master)](https://travis-ci.org/armadillu/ofxAnimatable)
+
 Set up very simple animations, with curves, repeat modes and basic scheduling.
 
 Let's see how to make a value animate indefinitely between two values, with an EaseInEaseOut curve.
