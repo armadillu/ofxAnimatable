@@ -1,1 +1,2 @@
 ofxAnimatable
+ofxHistoryPlot
