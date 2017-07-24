@@ -1,11 +1,11 @@
-#include "testApp.h"
+#include "ofApp.h"
 
 int floorLine = 630;
 int xMargin = 0;
 int widthCol = 60;
 
 //--------------------------------------------------------------
-void testApp::setup(){
+void ofApp::setup(){
 
 	ofBackground(22);
 	ofSetFrameRate(60);
@@ -53,7 +53,7 @@ void testApp::setup(){
 }
 
 //--------------------------------------------------------------
-void testApp::update(){
+void ofApp::update(){
 
 	//app timebase, to send to all animatable objects
 	float dt = 1.0f / 60.0f;
@@ -125,7 +125,7 @@ void testApp::update(){
 }
 
 //--------------------------------------------------------------
-void testApp::draw(){
+void ofApp::draw(){
 
 	//all left animation plots
 	int vOff = 8;
@@ -186,7 +186,7 @@ void testApp::draw(){
 
 }
 
-void testApp::drawPlot(int x, int y, int size, AnimCurve curve, string title, ofColor c){
+void ofApp::drawPlot(int x, int y, int size, AnimCurve curve, string title, ofColor c){
 
 	pos[curve].drawCurve(x, y, size, true, c);
 }
@@ -194,7 +194,7 @@ void testApp::drawPlot(int x, int y, int size, AnimCurve curve, string title, of
 
 
 //--------------------------------------------------------------
-void testApp::mousePressed(int x, int y, int button){
+void ofApp::mousePressed(int x, int y, int button){
 	pointAnim.animateTo( ofPoint(x, y) );
 }
 
