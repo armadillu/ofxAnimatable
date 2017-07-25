@@ -1,3 +1,2 @@
 ofxAnimatable
 ofxHistoryPlot
-ofxRemoteUI
