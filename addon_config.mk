@@ -59,12 +59,11 @@ common:
 	# when parsing the file system looking for libraries exclude this for all or
 	# a specific platform
 	# ADDON_LIBS_EXCLUDE =
-	
-	
+
+
 linux64:
 linux:
 linuxarmv6l:
 linuxarmv7l:
-android/armeabi:	
-android/armeabi-v7a:	
-
+android/armeabi:
+android/armeabi-v7a:
