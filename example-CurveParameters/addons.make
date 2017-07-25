@@ -1,3 +1,6 @@
 ofxTimeMeasurements
-ofxRemoteUI
 ofxAnimatable
+ofxRemoteUI
+ofxPoco
+ofxOsc
+ofxXmlSettings
