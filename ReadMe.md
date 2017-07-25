@@ -1,6 +1,7 @@
 # ofxAnimatable
 
 [![Build Status](https://travis-ci.org/armadillu/ofxAnimatable.svg?branch=master)](https://travis-ci.org/armadillu/ofxAnimatable)
+[![Build status](https://ci.appveyor.com/api/projects/status/9ba7ocv3jcre1k0v/branch/master?svg=true)](https://ci.appveyor.com/project/armadillu/ofxanimatable/branch/master)
 
 Set up very simple animations, with curves, repeat modes and basic scheduling.
 
