@@ -467,7 +467,7 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 	return "error";
 }
 
-AnimCurve ofxAnimatable::getCurveFromName(const string& name){
+AnimCurve ofxAnimatable::getCurveFromName(const std::string& name){
 
 	if(name == "EASE_IN_EASE_OUT") return EASE_IN_EASE_OUT;
 	if(name == "EASE_IN") return EASE_IN;
@@ -530,8 +530,8 @@ AnimCurve ofxAnimatable::getCurveFromName(const string& name){
 	return EASE_IN_EASE_OUT;
 }
 
-vector<string> ofxAnimatable::getAllCurveNames(){
-    vector<string> curveNames;
+std::vector<std::string> ofxAnimatable::getAllCurveNames(){
+    std::vector<std::string> curveNames;
     for (int i = 0; i < NUM_ANIM_CURVES; i++) {
         curveNames.push_back( ofxAnimatable::getCurveName((AnimCurve)i) );
     }
@@ -657,7 +657,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 		ofDrawRectangle(x, y, size, size);
 	}
 	float steps = size;
-	string name = ofxAnimatable::getCurveName(*curveStylePtr_);
+	std::string name = ofxAnimatable::getCurveName(*curveStylePtr_);
 	glPointSize(1);
 	ofMesh m;
 

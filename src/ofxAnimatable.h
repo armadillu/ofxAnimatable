@@ -167,9 +167,9 @@ class ofxAnimatable{
 		float timeLeftForAnimationToStart(){ return delay_; }
 		float waitTimeLeftPercent(){ return 1.0f - delay_ / waitTime_; }
 	
-		static string getCurveName(AnimCurve c);
-		static AnimCurve getCurveFromName(const string& name);
-        static vector<string> getAllCurveNames();
+		static std::string getCurveName(AnimCurve c);
+		static AnimCurve getCurveFromName(const std::string& name);
+        static std::vector<std::string> getAllCurveNames();
 
 		static bool isCurveInvertable(AnimCurve c); //easeIn becomes easeOut, etc
 		static AnimCurve getInverseCurve(AnimCurve c); //does this curve have an inverse?
