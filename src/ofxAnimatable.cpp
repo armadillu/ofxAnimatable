@@ -10,6 +10,7 @@
 #include "ofxAnimatable.h"
 //from http://www.flong.com/texts/code/shapers_exp/
 
+using namespace std;
 
 bool ofxAnimatable::warnedAboutCopy = false;
 
