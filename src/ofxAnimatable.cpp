@@ -1202,6 +1202,7 @@ void ofxAnimatable::startAnimationAfterDelay(float delay){
 	direction_ = 1;
 	delay_ = delay;
 	waitTime_ = delay_;
+	percentDone_ = 0.0f; //
 	//animating_ = false;
 }
 

@@ -36,6 +36,7 @@ void ofxAnimatableFloat::animateToAfterDelay( float newVal, float delay ){
 		animateTo(newVal);
 	}else{
 		//originalTempVal_ = val();
+		reset(val());
 		targetTempVal_ = newVal;
 		ofxAnimatable::startAnimationAfterDelay(delay);
 	}
