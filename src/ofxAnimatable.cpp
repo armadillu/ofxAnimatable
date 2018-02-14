@@ -14,7 +14,7 @@ using namespace std;
 
 bool ofxAnimatable::warnedAboutCopy = false;
 
-inline float cubicBezier(float x, float a, float b, float c, float d){
+inline float cubicBezier(float x, float a, float b, float c, float d, float tx = 1.0f, float ty = 1.0f){
 
 	float y0a = 0.00f; // initial y
 	float x0a = 0.00f; // initial x
@@ -22,8 +22,8 @@ inline float cubicBezier(float x, float a, float b, float c, float d){
 	float x1a = a;    // 1st influence x
 	float y2a = d;    // 2nd influence y
 	float x2a = c;    // 2nd influence x
-	float y3a = 1.00f; // final y
-	float x3a = 1.00f; // final x
+	float y3a = ty; // final y
+	float x3a = tx; // final x
 
 	float A = x3a - 3.0f * x2a + 3.0f * x1a - x0a;
 	float B = 3.0f * x2a - 6.0f * x1a + 3.0f * x0a;
@@ -61,7 +61,7 @@ inline float  findy (float t, float y0, float y1, float y2, float y3){
 	return y0 * B0F(t) + y1 * B1F(t) + y2 * B2F(t) + y3 * B3F(t);
 }
 
-inline float cubicBezierNearlyThroughTwoPoints(float x, float a, float b, float c, float d){
+inline float cubicBezierNearlyThroughTwoPoints(float x, float a, float b, float c, float d, float tx = 1.0f, float ty = 1.0f){
 
 	float y = 0.0f;
 	float epsilon = 0.00001f;
@@ -78,8 +78,8 @@ inline float cubicBezierNearlyThroughTwoPoints(float x, float a, float b, float 
 	float y4 = b;
 	float x5 = c;
 	float y5 = d;
-	float x3 = 1.0f;
-	float y3 = 1.0f;
+	float x3 = tx;
+	float y3 = ty;
 	float x1,y1,x2,y2; // to be solved.
 
 	// arbitrary but reasonable
@@ -110,7 +110,7 @@ inline float cubicBezierNearlyThroughTwoPoints(float x, float a, float b, float 
 	x2 = max(0.0f + epsilon, min(1.0f - epsilon, x2));
 
 	// Note that this function also requires cubicBezier()!
-	y = cubicBezier(x, x1, y1, x2, y2);
+	y = cubicBezier(x, x1, y1, x2, y2, tx, ty);
 	y = MAX(0.0f, MIN(1.0f, y));
 	return y;
 }
@@ -463,6 +463,8 @@ std::string ofxAnimatable::getCurveName(AnimCurve c){
 		case VERY_LATE_EASE_IN_EASE_OUT: return "VERY_LATE_EASE_IN_EASE_OUT";
 		case EARLY_QUADRATIC_EASE_OUT: return "EARLY_QUADRATIC_EASE_OUT";
 
+		case CUBIC_BEZIER_CAMEL_LIKE: return "CUBIC_BEZIER_CAMEL_LIKE";
+
 		default: return "UNKNOWN_CURVE!";
 	}
 	return "error";
@@ -526,6 +528,8 @@ AnimCurve ofxAnimatable::getCurveFromName(const std::string& name){
 
 	if(name == "SMOOTH_STEP") return SMOOTH_STEP;
 	if(name == "SMOOTHER_STEP") return SMOOTHER_STEP;
+
+	if(name == "CUBIC_BEZIER_CAMEL_LIKE") return CUBIC_BEZIER_CAMEL_LIKE;
     
 	ofLogError("ofxAnimatable") << "Unknown Curve (" << name << ")";
 	return EASE_IN_EASE_OUT;
@@ -690,7 +694,8 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 		*curveStylePtr_ == QUADRATIC_BEZIER_PARAM ||
 		*curveStylePtr_ == EXPONENTIAL_SIGMOID_PARAM ||
 		*curveStylePtr_ == BOUNCE_IN_CUSTOM ||
-		*curveStylePtr_ == BOUNCE_OUT_CUSTOM
+		*curveStylePtr_ == BOUNCE_OUT_CUSTOM ||
+		*curveStylePtr_ == CUBIC_BEZIER_CAMEL_LIKE
 
 		){
 		ofMesh pts;
@@ -700,6 +705,7 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 		ofVec2f pt0;
 		ofVec2f pt1;
 		switch (*curveStylePtr_) {
+			case CUBIC_BEZIER_CAMEL_LIKE:
 			case CUBIC_BEZIER2_PARAM:
 			case CUBIC_BEZIER_PARAM:
 				pts.addColor(ofColor(ofColor::cyan,blink));
@@ -770,6 +776,7 @@ inline void ofxAnimatable::fillInParams(float &p1, float &p2, float &p3, float &
 
 		case CUBIC_BEZIER_PARAM:
 		case CUBIC_BEZIER2_PARAM:
+		case CUBIC_BEZIER_CAMEL_LIKE:
 			p1 = cubicBezierParamAx;
 			p2 = cubicBezierParamAy;
 			p3 = cubicBezierParamBx;
@@ -917,6 +924,7 @@ float ofxAnimatable::calcCurveAt(float percent, AnimCurve type, float p1, float 
 		case EXPONENTIAL_SIGMOID_PARAM: r = doubleExponentialSigmoid(percent, p1); break;
 		case CUBIC_BEZIER_PARAM: r = cubicBezier(percent, p1, p2, p3, p4); break;
 		case CUBIC_BEZIER2_PARAM: r = cubicBezierNearlyThroughTwoPoints(percent, p1, p2, p3, p4); break;
+		case CUBIC_BEZIER_CAMEL_LIKE: r = cubicBezierNearlyThroughTwoPoints(percent, p1, p2, p3, p4, 1.0f, 0.0f); break; //target point is [1,0] instead of the classic [1,1]
 
 		case SWIFT_GOOGLE:{
 			r = cubicBezier(percent, 0.444f, 0.013f, 0.188f, 0.956f); break;

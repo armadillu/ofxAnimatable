@@ -50,6 +50,11 @@ public:
 	float cubicBez2Bx;
 	float cubicBez2By;
 
+	float cubicBezCamelAx;
+	float cubicBezCamelAy;
+	float cubicBezCamelBx;
+	float cubicBezCamelBy;
+
 	float dropBounceHeight;
 
 	float elasticG;

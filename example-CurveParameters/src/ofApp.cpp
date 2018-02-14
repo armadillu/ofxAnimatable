@@ -44,6 +44,15 @@ void ofApp::setup(){
 	RUI_SHARE_PARAM(cubicBez2Bx, -0.5, 2);
 	RUI_SHARE_PARAM(cubicBez2By, -0.5, 2);
 
+	RUI_NEW_GROUP("CUBIC BEZIER CAMEL");
+	cubicBezCamelAx = 0.36; cubicBezCamelAy = 0.22;
+	cubicBezCamelBx = 0.55; cubicBezCamelBy = 0.81;
+	RUI_SHARE_PARAM(cubicBezCamelAx, -0.5, 2);
+	RUI_SHARE_PARAM(cubicBezCamelAy, -0.5, 2);
+	RUI_NEW_COLOR();
+	RUI_SHARE_PARAM(cubicBezCamelBx, -0.5, 2);
+	RUI_SHARE_PARAM(cubicBezCamelBy, -0.5, 2);
+
 	RUI_NEW_GROUP("ELASTIC");
 	elasticG = 0.26; elasticFreq = 0.52; elasticDecay = 0.08;
 	RUI_SHARE_PARAM(elasticG, 0, 1);
@@ -90,6 +99,8 @@ void ofApp::update(){
 
 	pos[CUBIC_BEZIER_PARAM].setCubicBezierParams(cubicBezAx, cubicBezAy, cubicBezBx, cubicBezBy);
 	pos[CUBIC_BEZIER2_PARAM].setCubicBezierParams(cubicBez2Ax, cubicBez2Ay, cubicBez2Bx, cubicBez2By);
+
+	pos[CUBIC_BEZIER_CAMEL_LIKE].setCubicBezierParams(cubicBezCamelAx, cubicBezCamelAy, cubicBezCamelBx, cubicBezCamelBy);
 
 
 	pos[EASE_IN_ELASTIC].setElasticParams(elasticG, elasticFreq, elasticDecay);

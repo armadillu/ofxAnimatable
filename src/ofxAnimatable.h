@@ -103,6 +103,8 @@ enum AnimCurve{
 	VERY_LATE_EASE_IN_EASE_OUT,
 	EARLY_QUADRATIC_EASE_OUT,
 
+	CUBIC_BEZIER_CAMEL_LIKE,
+
 
 	NUM_ANIM_CURVES //leave that on the last to see how many we have
 
