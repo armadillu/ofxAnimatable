@@ -1026,6 +1026,8 @@ void ofxAnimatable::autoUpdate(ofEventArgs&){
 
 void ofxAnimatable::update(float dt){
 	
+    dt = max(dt,0.f);
+    
 	if (delay_ > 0.0f ){
 		delay_ -= dt;
 		if (delay_ <= 0.0f){
@@ -1045,7 +1047,7 @@ void ofxAnimatable::update(float dt){
 		
 		percentDone_ += direction_ * transitionSpeed_ * dt;
 		
-		if ( percentDone_ >= 1.0f || percentDone_ <= 0.0f ){
+		if ( percentDone_ >= 1.0f || percentDone_ < 0.0f ){
 
 			animating_ = false;
 			
