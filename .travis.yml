@@ -186,14 +186,14 @@ matrix:
   exclude:
     - compiler: gcc
 
-install: travis_wait 30 
+install:
   - cd ~
   - git clone --depth=1 --branch=$OF_BRANCH https://github.com/openframeworks/openFrameworks
   - cd openFrameworks
-  - scripts/ci/addons/install.sh
+  - travis_wait 30 scripts/ci/addons/install.sh
 
 script:
-  - scripts/ci/addons/build.sh
+  - travis_wait 30 scripts/ci/addons/build.sh
 
 git:
   depth: 10
