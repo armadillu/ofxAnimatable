@@ -127,6 +127,7 @@ class ofxAnimatable{
 		void startAutoUpdate();
 		void stopAutoUpdate();
 
+        bool getPaused() const { return paused_; }
 		void pause();					//really needed?
 		void resume();					//
 
