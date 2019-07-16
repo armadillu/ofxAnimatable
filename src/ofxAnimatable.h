@@ -199,9 +199,9 @@ class ofxAnimatable{
 			ofxAnimatable * who;
 		};
 
-		ofEvent<AnimationEvent> animFinished;
-		ofEvent<AnimationEvent> delayedAnimStart;
-		ofEvent<AnimationEvent> animLooped;
+		ofFastEvent<AnimationEvent> animFinished;
+		ofFastEvent<AnimationEvent> delayedAnimStart;
+		ofFastEvent<AnimationEvent> animLooped;
 	
 		void setAnimFinishedLambda(std::function<void()> func){animEndedLambdaFunc = func;}
 
