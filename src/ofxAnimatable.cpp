@@ -1229,6 +1229,9 @@ void ofxAnimatable::reset(){
 
 
 void ofxAnimatable::setDuration( float seconds ){
+	if(seconds <= 0.0f){ //lets not have negative or zero sec pauses
+		seconds = 0.001f;
+	}
 	transitionSpeed_ = 1.0f / seconds;
 }
 
