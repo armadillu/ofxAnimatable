@@ -205,6 +205,8 @@ class ofxAnimatable{
 	
 		void setAnimFinishedLambda(std::function<void()> func){animEndedLambdaFunc = func;}
 
+		inline bool getIsAutoUpdating()	{ return autoUpdating; }
+
 	protected:
 
 		void copyMemberVars(const ofxAnimatable& other);
