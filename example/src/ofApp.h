@@ -23,6 +23,7 @@ class ofApp : public ofBaseApp{
 		void mousePressed(int x, int y, int button);
 
 		void drawPlot(int x, int y, int size, AnimCurve curve, string title, ofColor);
+		void keyPressed(int key);
 	
 		float position;
 	

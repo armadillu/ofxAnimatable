@@ -183,8 +183,15 @@ void ofApp::draw(){
 			x = 0;
 		}
 	}
-
 }
+
+void ofApp::keyPressed(int key){
+
+	if(key == 'f'){
+		ofToggleFullscreen();
+	}
+}
+
 
 void ofApp::drawPlot(int x, int y, int size, AnimCurve curve, string title, ofColor c){
 
