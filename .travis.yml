@@ -24,7 +24,7 @@ matrix:
     dist: trusty
     sudo: required
     cache: ccache
-    env: TARGET="linux64" OF_BRANCH="master"
+    env: TARGET="linux64" OF_BRANCH="main"
     addons:
       apt:
         sources:
@@ -53,7 +53,7 @@ matrix:
     osx_image: xcode9.4
     compiler: clang
     cache: ccache
-    env: TARGET="osx" OF_BRANCH="master"
+    env: TARGET="osx" OF_BRANCH="main"
 
 # OSX, OF stable:  Not supported yet
 #  - os: osx
@@ -184,7 +184,7 @@ matrix:
 
 install:
   - cd ~
-  - git clone --depth=1 --branch=$OF_BRANCH https://github.com/openframeworks/openFrameworks
+  - git clone --depth=1 --branch=feature/uri.cat https://github.com/armadillu/openFrameworks
   - cd openFrameworks
   - travis_wait 45 scripts/ci/addons/install.sh
 
