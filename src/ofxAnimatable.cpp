@@ -650,7 +650,7 @@ void ofxAnimatable::setup(){
 }
 
 
-void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
+void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c, bool bShowLabel){
 
 #if defined(OF_VERSION) || defined(OF_VERSION_MAJOR)
 	int xx = x;
@@ -680,14 +680,16 @@ void ofxAnimatable::drawCurve(int x, int y, int size, bool bg, ofColor c ){
 	ofSetLineWidth(2);
 	m.draw();
 
-	ofSetLineWidth(1);
-	ofSetColor(255,255); //axes
-	ofDrawLine(xx,yy + s, xx + s, yy + s);
-	ofDrawLine(xx,yy, xx, yy + s);
-	ofSetColor(255,32); //linear
-	ofDrawLine(xx,yy + s, xx + s, yy );
-	ofSetColor(c); //label
-	ofDrawBitmapString(name, x, y + s + 15);
+	if (bShowLabel){
+		ofSetLineWidth(1);
+		ofSetColor(255,255); //axes
+		ofDrawLine(xx,yy + s, xx + s, yy + s);
+		ofDrawLine(xx,yy, xx, yy + s);
+		ofSetColor(255,32); //linear
+		ofDrawLine(xx,yy + s, xx + s, yy );
+		ofSetColor(c); //label
+		ofDrawBitmapString(name, x, y + s + 15);
+	}
 
 	if (*curveStylePtr_ == CUBIC_BEZIER_PARAM ||
 		*curveStylePtr_ == CUBIC_BEZIER2_PARAM ||
