@@ -79,9 +79,9 @@ void ofxAnimatableOfColor::fadeIn(){
 	if ( sizeof(targetC.r) == sizeof(float) )
 		targetC.a = (float)1.0f;
 	else if ( sizeof(targetC.r) == sizeof(unsigned char) )
-		targetC.a = (unsigned char) numeric_limits<unsigned char>::max();
+		targetC.a = (unsigned char) std::numeric_limits<unsigned char>::max();
 	else if ( sizeof(targetC.r) == sizeof(unsigned short) )
-		targetC.a = (unsigned char) numeric_limits<unsigned short>::max();
+		targetC.a = (unsigned char) std::numeric_limits<unsigned short>::max();
 
 	animateTo( targetC );	
 }
